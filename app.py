@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 
+import secrets
 from models import database
 from controllers import login
 

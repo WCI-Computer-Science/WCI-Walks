@@ -6,7 +6,6 @@ from models import database
 bp = Blueprint('login', __name__, url_prefix='/users')
 
 @bp.route('/', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
-@bp.route('/login', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def login():
     if request.method == 'POST':
         print('Ok2', file=sys.stderr)       
@@ -32,6 +31,10 @@ def login():
         flash(error) #in the future, alert front end (maybe make an error html file?)
 
     return render_template('users.html')
+
+@bp.route('/login', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
+def filler():
+    return render_template('users.html') #fix later
 
 @bp.route('/sign-up', methods=('GET', 'POST'))
 def signup():
