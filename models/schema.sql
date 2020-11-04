@@ -2,7 +2,7 @@
 
 /* Total distance travelled as a school */
 CREATE TABLE IF NOT EXISTS total (
-    distance INTEGER;
+    distance INTEGER
 );
 
 /* Info stored for each user:
