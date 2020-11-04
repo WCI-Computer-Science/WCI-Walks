@@ -1,6 +1,9 @@
 from flask import Flask, render_template
+from models import database
 
 app = Flask(__name__)
+database.init_app(app)
+
 @app.route('/')
 def index():
     return render_template('index.html', message='123')

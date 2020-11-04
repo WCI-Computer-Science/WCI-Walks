@@ -23,4 +23,6 @@ def init_db():
     with current_app.open_resource('models/schema.sql') as schema:
         db.executescript(schema.read().decode('utf8'))
 
-init_db()
+def init_app(app):
+    app.teardown_appcontext(close_db)
+    app.cli.add_command(init_db)
