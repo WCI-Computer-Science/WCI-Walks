@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from models import database
+import secrets
 
 app = Flask(__name__)
 
