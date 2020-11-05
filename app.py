@@ -2,7 +2,7 @@ from flask import Flask, render_template
 
 import secrets
 from models import database
-from controllers import userlogin
+from controllers import userinfo
 
 app = Flask(__name__)
 
@@ -19,7 +19,7 @@ def index():
     return render_template('index.html')
 
 # Route /users to login and user statistics page
-app.register_blueprint(userlogin.bp)
+app.register_blueprint(userinfo.bp)
 
 # Test app for startup
 if (__name__ == '__main__'):
