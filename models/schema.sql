@@ -11,10 +11,11 @@ CREATE TABLE IF NOT EXISTS total (
     username: student's name
     distance: student's total distance
  */
-CREATE TABLE IF NOT EXISTS user (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
     username TEXT NOT NULL,
+    password TEXT NOT NULL,
     distance INTEGER NOT NULL
 );
 
