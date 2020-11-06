@@ -9,9 +9,11 @@ bp = Blueprint('login', __name__, url_prefix='/users')
 
 @bp.route('/', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def info():
-    #check for cookie
-    #if no cookie redirect to login
-    return render_template('users.html') #fix later
+    if 'userid' not in session:
+        return redirect('/users/login')
+
+    return render_template('users.html')
+    
 
 @bp.route('/signup', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def signup():
@@ -44,7 +46,7 @@ def signup():
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
 
-    return render_template('usersignup.html') #fix later
+    return render_template('usersignup.html')
 
 @bp.route('/login', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def login():
@@ -64,11 +66,13 @@ def login():
             user = db.execute(
                 'SELECT * FROM users WHERE email=?', (email,)
             ).fetchone()
-            if user is None or not check_password_hash(user['password'], password):
+            if user is None or user['username'].lower() != username.lower() or not check_password_hash(user['password'], password):
                 error = 'Login credentials failed. Have you signed up yet?'
         
         if error is None:
-            #store a cookie
+            session.clear()
+            session['userid'] = user['id']
+            session['email'] = user['email']
             print('Store a cookie', file=sys.stderr)
             return redirect('/users')
 
@@ -76,3 +80,8 @@ def login():
         print(error, file=sys.stderr)
 
     return render_template('userlogin.html')
+
+@bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
+def logout():
+    session.clear()
+    return redirect('/')
