@@ -1,6 +1,8 @@
-import functools, sys
+import functools, sys #sys for debugging
 
-from flask import Blueprint, redirect, render_template, request
+from flask import Blueprint, redirect, render_template, request, session
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from models import database
 
 bp = Blueprint('login', __name__, url_prefix='/users')
@@ -32,9 +34,9 @@ def signup():
         
         if error is None:
             # implement two factor auth
-            #encrypt password later
             db.execute(
-                'INSERT INTO users (email, username, password, distance) VALUES (?, ?, ?, 0)', (email, username, password)
+                'INSERT INTO users (email, username, password, distance) VALUES (?, ?, ?, 0)',
+                (email, username, generate_password_hash(password))
             )
             db.commit()
             return redirect('/users/login')
@@ -64,7 +66,7 @@ def login():
             ).fetchone()
             if user is None:
                 error = 'Username not found. Have you signed up yet?'
-            elif password != user['password']:
+            elif not check_password_hash(password, user['password']):
                 error = 'Incorrect password.'
         
         if error is None:
