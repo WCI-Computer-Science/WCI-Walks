@@ -64,10 +64,8 @@ def login():
             user = db.execute(
                 'SELECT * FROM users WHERE email=?', (email,)
             ).fetchone()
-            if user is None:
-                error = 'Username not found. Have you signed up yet?'
-            elif not check_password_hash(password, user['password']):
-                error = 'Incorrect password.'
+            if user is None or not check_password_hash(user['password'], password):
+                error = 'Login credentials failed. Have you signed up yet?'
         
         if error is None:
             #store a cookie
