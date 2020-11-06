@@ -60,7 +60,7 @@ def login():
             error = 'Please fill out all values.'
         else:
             user = db.execute(
-                'SELECT id FROM users WHERE email=?', (email,)
+                'SELECT * FROM users WHERE email=?', (email,)
             ).fetchone()
             if user is None:
                 error = 'Username not found. Have you signed up yet?'
