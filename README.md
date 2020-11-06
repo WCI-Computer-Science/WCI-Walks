@@ -1,2 +1,6 @@
 # WCI-Walks
-Walkathon web app
+Walkathon web app  
+Backend: Flask  
+Frontend: HTML/CSS/JS?  
+
+Pattern: MVC
