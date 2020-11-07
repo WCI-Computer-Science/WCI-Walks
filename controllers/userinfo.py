@@ -31,7 +31,7 @@ def signup():
             error = 'Please fill out all values.'
         elif db.execute(
                 'SELECT id FROM users WHERE email=?', (email,)
-            ).fetchone() is not None:
+             ).fetchone() is not None:
                 error = 'This email is already taken.'
         
         if error is None:
