@@ -134,3 +134,4 @@ venv
 __pycache__
 secrets.py
 .vs_code
+secrets.pyc
