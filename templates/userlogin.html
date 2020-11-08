@@ -4,7 +4,6 @@
 <a href='/users/signup'>Sign up</a>
 <p>Login page</p>
 <form id='login' action='/users/login' method='post'>
-    <div>{{ userform.username.label }}: {{ userform.username }}</div>
     <div>{{ userform.email.label }}: {{ userform.email }}</div>
     <div>{{ userform.password.label }}: {{ userform.password }}</div>
     {{ userform.submit }}

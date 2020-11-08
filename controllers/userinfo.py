@@ -60,24 +60,24 @@ def signup():
 def login():
     userform = UserForm(request.form)
     if request.method == 'POST':
-        username = userform.username.data
         email = userform.email.data
         password = userform.password.data
 
-        print(username, file=sys.stderr)
+        print(email, file=sys.stderr)
 
         error = None
         db = database.get_db()
 
-        if not username or not email or not password:
+        if not email or not password:
             error = 'Please fill out all values.'
         else:
             user = db.execute(
                 'SELECT * FROM users WHERE email=?', (email,)
             ).fetchone()
-            if user is None or user['username'].lower() != username.lower() or not check_password_hash(user['password'], password):
+            if user is None or not check_password_hash(user['password'], password):
                 error = 'Login credentials failed. Have you signed up yet?'
-        
+            else:
+                print(user["username"], file=sys.stderr)
         if error is None:
             session.clear()
             session['userid'] = user['id']
