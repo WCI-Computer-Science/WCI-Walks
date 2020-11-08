@@ -4,8 +4,16 @@ from flask import Blueprint, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import database
+from wtforms import Form, PasswordField, StringField, SubmitField
+from wtforms.fields.html5 import EmailField
 
 bp = Blueprint('login', __name__, url_prefix='/users')
+
+class UserForm(Form):
+    username = StringField("First and last name")
+    email = EmailField("WRDSB email address")
+    password = PasswordField("Password")
+    submit = SubmitField()
 
 @bp.route('/', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def info():
@@ -17,10 +25,11 @@ def info():
 
 @bp.route('/signup', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def signup():
-    if request.method == 'POST':      
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
+    userform = UserForm(request.form)
+    if request.method == 'POST':
+        username = userform.username.data
+        email = userform.email.data
+        password = userform.password.data
 
         print(username, file=sys.stderr)
 
@@ -33,7 +42,7 @@ def signup():
                 'SELECT id FROM users WHERE email=?', (email,)
              ).fetchone() is not None:
                 error = 'This email is already taken.'
-        
+
         if error is None:
             # implement two factor auth
             db.execute(
@@ -45,15 +54,15 @@ def signup():
 
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
-
-    return render_template('usersignup.html')
+    return render_template('usersignup.html', userform=userform)
 
 @bp.route('/login', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def login():
-    if request.method == 'POST':      
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
+    userform = UserForm(request.form)
+    if request.method == 'POST':
+        username = userform.username.data
+        email = userform.email.data
+        password = userform.password.data
 
         print(username, file=sys.stderr)
 
@@ -79,7 +88,7 @@ def login():
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
 
-    return render_template('userlogin.html')
+    return render_template('userlogin.html', userform=userform)
 
 @bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def logout():
