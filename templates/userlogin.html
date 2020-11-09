@@ -3,7 +3,21 @@
     <h1>Login page</h1>
     <form id='login' action='/users/login' method='post'>
         <div>{{ userform.email.label }}: {{ userform.email }}</div>
+            {% if userform.email.errors %}
+                <ul class="errors">
+                    {% for error in userform.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         <div>{{ userform.password.label }}: {{ userform.password }}</div>
+        {% if userform.password.errors %}
+            <ul class="errors">
+                {% for error in userform.password.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {{ userform.submit }}
     </form>
     <p><a href='/users/signup'>Sign up</a></p>

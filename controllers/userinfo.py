@@ -13,7 +13,7 @@ class UserForm(Form):
     username = StringField("First and last name", [validators.InputRequired()])
     email = EmailField("WRDSB email address", [validators.InputRequired()])
     password = PasswordField("Password", [validators.InputRequired()])
-    confirm = PasswordField("Confirm Password",
+    confirmpassword = PasswordField("Confirm Password",
         [validators.InputRequired(), validators.EqualTo('password', message='Passwords must match')])
     submit = SubmitField()
 
@@ -27,7 +27,7 @@ def info():
 @bp.route('/signup', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def signup():
     userform = UserForm(request.form)
-    if request.method == 'POST':
+    if userform.validate() and request.method == 'POST':
         username = userform.username.data
         email = userform.email.data
         password = userform.password.data
@@ -60,7 +60,7 @@ def signup():
 @bp.route('/login', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def login():
     userform = UserForm(request.form)
-    if request.method == 'POST':
+    if userform.validate() and request.method == 'POST':
         email = userform.email.data
         password = userform.password.data
 
