@@ -8,12 +8,7 @@
         {% endblock %}
     </head>
     <body>
-        <nav>
-            <ul>
-                <li><a href="/">WCI Walks</a></li>
-                <li><a href="/users">Profile</a></li>
-            </ul>
-        </nav>
+        {% include "utils/navbar.html" %}
         {% block body %}
         {% endblock %}
     </body>
