@@ -26,8 +26,11 @@ def info():
 
 @bp.route('/signup', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def signup():
+    good=False # a variable instead of indenting everything even more
     userform = UserForm(request.form)
-    if userform.validate() and request.method == 'POST':
+    if request.method == 'POST':
+        if userform.validate(): good=True
+    if good:
         username = userform.username.data
         email = userform.email.data
         password = userform.password.data
@@ -59,8 +62,12 @@ def signup():
 
 @bp.route('/login', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def login():
+    good=False # a variable instead of indenting everything even more
     userform = UserForm(request.form)
-    if userform.validate() and request.method == 'POST':
+    if request.method == 'POST':
+        if userform.validate():
+            good=True
+    if good:
         email = userform.email.data
         password = userform.password.data
 

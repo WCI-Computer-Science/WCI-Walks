@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask
 
 import secrets
 from models import database
