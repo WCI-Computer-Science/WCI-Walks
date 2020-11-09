@@ -1,11 +1,10 @@
 {% extends "utils/layout.html" %}
 {% block body %}
-<a href='/'>Main page</a>
-<p>Sign up page</p>
-<form id='login' action='/users/signup' method='post'>
-    <div>{{ userform.username.label }}: {{ userform.username() }}</div>
-    <div>{{ userform.email.label }}: {{ userform.email() }}</div>
-    <div>{{ userform.password.label }}: {{ userform.password() }}</div>
-    {{ userform.submit }}
-</form>
+    <h1>Sign up page</h1>
+    <form id='signup' action='/users/signup' method='post'>
+        <div>{{ userform.username.label }}: {{ userform.username() }}</div>
+        <div>{{ userform.email.label }}: {{ userform.email() }}</div>
+        <div>{{ userform.password.label }}: {{ userform.password() }}</div>
+        {{ userform.submit }}
+    </form>
 {% endblock %}

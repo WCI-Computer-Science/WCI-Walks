@@ -2,7 +2,7 @@ from flask import Flask, render_template, url_for
 
 import secrets
 from models import database
-from controllers import userinfo
+from controllers import *
 
 app = Flask(__name__)
 
@@ -14,9 +14,7 @@ app.config['DB'] = 'models/db.sqlite'
 database.init_app(app)
 
 # Route / to main page
-@app.route('/')
-def index():
-    return render_template('index.html')
+app.register_blueprint(index.bp)
 
 # Route /users to login and user statistics page
 app.register_blueprint(userinfo.bp)

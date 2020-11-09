@@ -4,15 +4,17 @@ from flask import Blueprint, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import database
-from wtforms import Form, PasswordField, StringField, SubmitField
+from wtforms import Form, PasswordField, StringField, SubmitField, validators
 from wtforms.fields.html5 import EmailField
 
-bp = Blueprint('login', __name__, url_prefix='/users')
+bp = Blueprint('userinfo', __name__, url_prefix='/users')
 
 class UserForm(Form):
-    username = StringField("First and last name")
-    email = EmailField("WRDSB email address")
-    password = PasswordField("Password")
+    username = StringField("First and last name", [validators.InputRequired()])
+    email = EmailField("WRDSB email address", [validators.InputRequired()])
+    password = PasswordField("Password", [validators.InputRequired()])
+    confirm = PasswordField("Confirm Password",
+        [validators.InputRequired(), validators.EqualTo('password', message='Passwords must match')])
     submit = SubmitField()
 
 @bp.route('/', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
@@ -21,7 +23,6 @@ def info():
         return redirect('/users/login')
 
     return render_template('users.html')
-    
 
 @bp.route('/signup', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def signup():
