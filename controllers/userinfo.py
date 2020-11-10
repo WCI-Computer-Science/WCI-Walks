@@ -5,20 +5,25 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import database
 from wtforms import Form, PasswordField, StringField, SubmitField, validators
-from wtforms.fields.html5 import EmailField
+from wtforms.fields.html5 import EmailField, IntegerField
 
 bp = Blueprint('userinfo', __name__, url_prefix='/users')
 
+class SubmitDistanceForm(Form):
+    distance = IntegerField("Enter distance travelled in km", [validators.InputRequired(), validators.NumberRange(min=0.000001, message="You can't have travelled a mm or less!")])
+    password = PasswordField("Enter password", [validators.InputRequired()])
+    submit = SubmitField()
+
 class SignupForm(Form):
     username = StringField("First and last name", [validators.InputRequired()])
-    email = EmailField("WRDSB email address", [validators.InputRequired()])
+    email = EmailField("WRDSB email address", [validators.InputRequired(), validators.Email()])
     password = PasswordField("Password", [validators.InputRequired()])
-    confirmpassword = PasswordField("Confirm Password",
+    confirmpassword = PasswordField("Confirm password",
         [validators.InputRequired(), validators.EqualTo('password', message='Passwords must match')])
     submit = SubmitField()
 
 class LoginForm(Form):
-    email = EmailField("Email address", [validators.InputRequired()])
+    email = EmailField("Email address", [validators.InputRequired(), validators.Email()])
     password = PasswordField("Password", [validators.InputRequired()])
     submit = SubmitField()
 
@@ -27,8 +32,8 @@ def info():
     if 'userid' not in session:
         return redirect('/users/login')
     db = database.get_db()
-
-    return render_template('users.html')
+    form = SubmitDistanceForm(request.form)
+    return render_template('users.html', form=form)
 
 @bp.route('/signup', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def signup():
