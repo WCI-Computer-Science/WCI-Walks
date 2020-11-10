@@ -8,7 +8,5 @@ def get_leaderboard():
             if userdistances[i][1] > userdistances[i + 1][1]:
                 userdistances[i], userdistances[i + 1] = userdistances[i + 1], userdistances[i]
     for i in range(len(userdistances)):
-        print(userdistances[i])
         userdistances[i]=list(userdistances[i])
-        print(userdistances[i])
     return userdistances
