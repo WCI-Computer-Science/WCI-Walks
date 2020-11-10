@@ -3,7 +3,7 @@
 <h1>WCI Walks</h1>
 <p>Testing version 0.0.1.</p>
 <div id='leaderboard'>
-    {% if len(leaderboard) > 0 %}
+    {% if leaderboard|length > 0 %}
         <h1>Leaderboard:</h1>
         {% for i in leaderboard %}
             <div>{{i[0]}}: {{i[1]}}</div>
