@@ -3,8 +3,7 @@
     <p>User page should only load up if cookie is connected</p>
     <h1>Submit distance:</h1>
     <form method="post">
-        {{ form.distance.label }}: {{ form.distance(min="0", max="50") }}<br />
-        {{ form.password.label }}: {{ form.password() }}<br />
+        <dib>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</dib>
         {{ form.submit() }}
     </form>
 {% endblock %}

@@ -4,14 +4,16 @@ from flask import Blueprint, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import database
-from wtforms import Form, PasswordField, StringField, SubmitField, validators
+from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField, validators
 from wtforms.fields.html5 import EmailField, IntegerField
 
 bp = Blueprint('userinfo', __name__, url_prefix='/users')
 
 class SubmitDistanceForm(Form):
-    distance = IntegerField("Enter distance travelled in km", [validators.InputRequired(), validators.NumberRange(min=0.000001, message="You can't have travelled a mm or less!")])
-    password = PasswordField("Enter password", [validators.InputRequired()])
+    distance = DecimalField(
+        "Log your distance:",
+        [validators.InputRequired(), validators.NumberRange(min=0.01, max=42, message="Invalid distance")],
+        places=2)
     submit = SubmitField()
 
 class SignupForm(Form):
