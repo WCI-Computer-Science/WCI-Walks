@@ -26,6 +26,7 @@ class LoginForm(Form):
 def info():
     if 'userid' not in session:
         return redirect('/users/login')
+    db = database.get_db()
 
     return render_template('users.html')
 
