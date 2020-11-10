@@ -29,7 +29,7 @@ class LoginForm(Form):
     password = PasswordField("Password", [validators.InputRequired()])
     submit = SubmitField()
 
-@bp.route('/', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
+@bp.route('/', methods=('GET', 'POST'))
 def info():
     if 'userid' not in session:
         return redirect('/users/login')
