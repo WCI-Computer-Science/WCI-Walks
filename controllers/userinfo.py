@@ -31,12 +31,14 @@ class LoginForm(Form):
 
 @bp.route('/', methods=('GET', 'POST'))
 def info():
+    print("hi")
     if 'userid' not in session:
         return redirect('/users/login')
 
     form = SubmitDistanceForm(request.form)
 
     if request.method == 'GET':
+        print("getted!")
         return render_template('users.html', form=form)
 
     db = database.get_db()
@@ -44,14 +46,15 @@ def info():
     error = None
     if form.validate():
         distance = form.distance
-
+        print(distance)
         user = db.execute(
             'SELECT * FROM users WHERE id=?', (session['userid'],)
         ).fetchone()
+        print(user.distance)
         walk = db.execute(
             'SELECT * FROM walks WHERE id=? AND walkdate=?', (session['userid'], date)
         ).fetchone()
-
+        print(walk.distance)
         if walk is None:
             db.execute(
                 'INSERT INTO walks (id, distance, walkdate) VALUES (?, ?, ?',
@@ -67,7 +70,7 @@ def info():
             'UPDATE users SET distance=? WHERE id=?', (user.distance + distance, session['userid'])
         )
     else:
-        error = "You can't go more that 50km or less than 0!"
+        error = "Wow! you went more than a marathon or backwards! Please enter a number between 0 and 42."
 
     return render_template('users.html', form=form, error=error)
 
