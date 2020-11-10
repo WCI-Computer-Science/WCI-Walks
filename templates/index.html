@@ -2,8 +2,14 @@
 {% block body %}
 <h1>WCI Walks</h1>
 <p>Testing version 0.0.1.</p>
-<h1>Leaderboard:</h1>
-{% for i in leaderboard %}
-    {{i[0]}}: {{i[1]}}<br />
-{% endfor %}
+<div id='leaderboard'>
+    {% if len(leaderboard) > 0 %}
+        <h1>Leaderboard:</h1>
+        {% for i in leaderboard %}
+            <div>{{i[0]}}: {{i[1]}}</div>
+        {% endfor %}
+    {% else %}
+        <h1>No users so far</h1>
+    {% endif %}
+</div>
 {% endblock %}

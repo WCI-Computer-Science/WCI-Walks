@@ -1,7 +1,7 @@
 {% extends "utils/layout.html" %}
 {% block body %}
     <h1>Sign up page</h1>
-    <form id='signup' action='/users/signup' method='post'>
+    <form id='signupform' action='/users/signup' method='post'>
         <div>{{ userform.username.label }}: {{ userform.username() }}</div>
         {% if userform.username.errors %}
             <ul>

@@ -39,11 +39,8 @@ def info():
 
 @bp.route('/signup', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def signup():
-    good=False # a variable instead of indenting everything even more
     userform = SignupForm(request.form)
-    if request.method == 'POST':
-        if userform.validate(): good=True
-    if good:
+    if request.method == 'POST' and userform.validate(): # Using "and" is nicer
         username = userform.username.data
         email = userform.email.data
         password = userform.password.data
@@ -71,16 +68,13 @@ def signup():
 
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
+        
     return render_template('usersignup.html', userform=userform)
 
 @bp.route('/login', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def login():
-    good=False # a variable instead of indenting everything even more
     userform = LoginForm(request.form)
-    if request.method == 'POST':
-        if userform.validate():
-            good=True
-    if good:
+    if request.method == 'POST' and userform.validate(): # Using and is nicer
         email = userform.email.data
         password = userform.password.data
 
