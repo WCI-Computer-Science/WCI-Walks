@@ -1,4 +1,4 @@
-import functools, sys #sys for debugging
+import functools, sys, datetime #sys for debugging
 
 from flask import Blueprint, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -33,14 +33,50 @@ class LoginForm(Form):
 def info():
     if 'userid' not in session:
         return redirect('/users/login')
-    db = database.get_db()
+
     form = SubmitDistanceForm(request.form)
+
+    if request.method == 'GET':
+        return render_template('users.html', form=form)
+
+    db = database.get_db()
+    date = str(datetime.date.today())
+    
+    if form.validate():
+        distance = form.distance
+
+        user = db.execute(
+            'SELECT * FROM users WHERE id=?', (session['userid'],)
+        ).fetchone()
+        walk = db.execute(
+            'SELECT * FROM walks WHERE id=? AND walkdate=?', (session['userid'], date)
+        ).fetchone()
+
+        if walk is None:
+            db.execute(
+                'INSERT INTO walks (id, distance, walkdate) VALUES (?, ?, ?',
+                (session['userid'], distance, date)
+            )
+        else:
+            db.execute(
+                'UPDATE walks SET distance=? WHERE id=? AND walkdate=?',
+                (walk.distance + distance, session['userid'], date)
+            )
+        
+        db.execute(
+            'UPDATE users SET distance=? WHERE id=?', (user.distance + distance, session['userid'])
+        )
+
     return render_template('users.html', form=form)
 
-@bp.route('/signup', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
+@bp.route('/signup', methods=('GET', 'POST'))
 def signup():
     userform = SignupForm(request.form)
-    if request.method == 'POST' and userform.validate(): # Using "and" is nicer
+
+    if request.method == 'GET':
+        return render_template('usersignup.html', userform=userform)
+
+    if userform.validate(): # Using "and" is nicer
         username = userform.username.data
         email = userform.email.data
         password = userform.password.data
@@ -71,10 +107,14 @@ def signup():
         
     return render_template('usersignup.html', userform=userform)
 
-@bp.route('/login', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
+@bp.route('/login', methods=('GET', 'POST'))
 def login():
     userform = LoginForm(request.form)
-    if request.method == 'POST' and userform.validate(): # Using and is nicer
+
+    if request.method == 'GET':
+        return render_template('userlogin.html', userform=userform)
+
+    if userform.validate(): # Using "if" is nicer
         email = userform.email.data
         password = userform.password.data
 
