@@ -41,7 +41,7 @@ def info():
 
     db = database.get_db()
     date = str(datetime.date.today())
-    
+    error = None
     if form.validate():
         distance = form.distance
 
@@ -66,9 +66,10 @@ def info():
         db.execute(
             'UPDATE users SET distance=? WHERE id=?', (user.distance + distance, session['userid'])
         )
+    else:
+        error = "You can't go more that 50km or less than 0!"
 
-        return render_template('users.html', form=form)
-    abort(500)
+    return render_template('users.html', form=form, error=error)
 
 @bp.route('/signup', methods=('GET', 'POST'))
 def signup():
@@ -105,9 +106,9 @@ def signup():
 
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
-        
-        return render_template('usersignup.html', userform=userform, error=error)
-    abort(500)
+    else:
+        error="Please check that all fields are filled out correctly!"
+    return render_template('usersignup.html', userform=userform, error=error)
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
@@ -144,7 +145,8 @@ def login():
 
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
-
+    else:
+        error="Please check that you have filled out all fields correctly!"
     return render_template('userlogin.html', userform=userform, error=error)
 
 @bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))

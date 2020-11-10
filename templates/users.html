@@ -2,7 +2,8 @@
 {% block body %}
     <p>User page should only load up if cookie is connected</p>
     <div id='submitdistance'>
-        <h1>Submit distance:</h1>
+        <h1>Submit distance:</h1><br />
+        {{ error }}
         <form id='submitdistanceform' action='/users' method="post">
             <dib>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</dib>
             {{ form.submit() }}
