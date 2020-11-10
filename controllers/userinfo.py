@@ -9,12 +9,17 @@ from wtforms.fields.html5 import EmailField
 
 bp = Blueprint('userinfo', __name__, url_prefix='/users')
 
-class UserForm(Form):
+class SignupForm(Form):
     username = StringField("First and last name", [validators.InputRequired()])
     email = EmailField("WRDSB email address", [validators.InputRequired()])
     password = PasswordField("Password", [validators.InputRequired()])
     confirmpassword = PasswordField("Confirm Password",
         [validators.InputRequired(), validators.EqualTo('password', message='Passwords must match')])
+    submit = SubmitField()
+
+class LoginForm(Form):
+    email = EmailField("Email address", [validators.InputRequired()])
+    password = PasswordField("Password", [validators.InputRequired()])
     submit = SubmitField()
 
 @bp.route('/', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
@@ -27,7 +32,7 @@ def info():
 @bp.route('/signup', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def signup():
     good=False # a variable instead of indenting everything even more
-    userform = UserForm(request.form)
+    userform = SignupForm(request.form)
     if request.method == 'POST':
         if userform.validate(): good=True
     if good:
@@ -63,7 +68,7 @@ def signup():
 @bp.route('/login', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def login():
     good=False # a variable instead of indenting everything even more
-    userform = UserForm(request.form)
+    userform = LoginForm(request.form)
     if request.method == 'POST':
         if userform.validate():
             good=True
