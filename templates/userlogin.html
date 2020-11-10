@@ -1,6 +1,7 @@
 {% extends "utils/layout.html" %}
 {% block body %}
-    <h1>Login page</h1>
+    <h1>Login page</h1><br />
+    {{ error }}
     <form id='loginform' action='/users/login' method='post'>
         <div>{{ userform.email.label }}: {{ userform.email }}</div>
             {% if userform.email.errors %}

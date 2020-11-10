@@ -1,6 +1,6 @@
 import functools, sys, datetime #sys for debugging
 
-from flask import Blueprint, redirect, render_template, request, session
+from flask import abort, Blueprint, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import database
@@ -11,7 +11,7 @@ bp = Blueprint('userinfo', __name__, url_prefix='/users')
 
 class SubmitDistanceForm(Form):
     distance = DecimalField(
-        "Log your distance:",
+        "Log your distance",
         [validators.InputRequired(), validators.NumberRange(min=0.01, max=42, message="Invalid distance")],
         places=2)
     submit = SubmitField()
@@ -67,7 +67,8 @@ def info():
             'UPDATE users SET distance=? WHERE id=?', (user.distance + distance, session['userid'])
         )
 
-    return render_template('users.html', form=form)
+        return render_template('users.html', form=form)
+    abort(500)
 
 @bp.route('/signup', methods=('GET', 'POST'))
 def signup():
@@ -105,7 +106,8 @@ def signup():
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
         
-    return render_template('usersignup.html', userform=userform)
+        return render_template('usersignup.html', userform=userform, error=error)
+    abort(500)
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
@@ -143,7 +145,7 @@ def login():
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
 
-    return render_template('userlogin.html', userform=userform)
+    return render_template('userlogin.html', userform=userform, error=error)
 
 @bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def logout():
