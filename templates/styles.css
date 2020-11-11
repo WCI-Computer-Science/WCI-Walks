@@ -1,0 +1,64 @@
+/*nav li {
+    display: inline;
+}*/
+
+/* Split the screen in half */
+.flexy {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.split {
+  height: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.largesplit {
+  height: 100%;
+  width: 45%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+/* Control the left side */
+.left {
+  right: 60%;
+  background-color: yellow;
+  width: 40%
+}
+
+/* Control the middle side */
+.middle {
+  right: 30%;
+  background-color: red;
+  width: 30%;
+}
+
+.right {
+  right: 0;
+  background-color: green;
+  width: 30%;
+}
+
+/* If you want the content centered horizontally and vertically */
+.centered {
+  border-style: dashed;
+  color: white;
+  z-index: 3;
+  background-color: black
+}
+
+
+.distance {float: right;}
+.name {float: left;}
+.bold {font-weight: bold;}
+
