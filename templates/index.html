@@ -1,4 +1,4 @@
-{% extends "utils/layout.html" %}
+<!--{% extends "utils/layout.html" %}
 {% block body %}
 <h1>WCI Walks</h1>
 <p>Testing version 0.0.1.</p>
@@ -12,4 +12,40 @@
         <h1>No users so far</h1>
     {% endif %}
 </div>
-{% endblock %}
+{% endblock %}-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WCI Walks</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="largesplit left flexy">
+      <div class="centered">
+        <h2>Jane Flex</h2>
+      </div>
+    </div>
+
+    <div class="split right flexy">
+      <div class="centered flexy">
+        <h2>Top Scores: Yesterday</h2>
+        <ol>
+            <li><span class="name bold">AAA BBB</span><span class="distance bold">1000km</span></li>
+            <li><span class="name">AAA BBBBBBBBBBBBBBBBBBBB</span><span class="distance">99km</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="split middle flexy">
+        <div class="centered">
+            <h2>Top Scores: All Time</h2>
+            <ol>
+                <li><span class="name bold">AAA BBB</span><span class="distance bold">1000km</span></li>
+                <li><span class="name">AAA BBBBBBBBBBBBBBBBBBBB</span><span class="distance">99km</span></li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
