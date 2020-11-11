@@ -31,48 +31,48 @@ class LoginForm(Form):
 
 @bp.route('/', methods=('GET', 'POST'))
 def info():
-    print("hi")
     if 'userid' not in session:
         return redirect('/users/login')
 
     form = SubmitDistanceForm(request.form)
+    message = None
 
     if request.method == 'GET':
-        print("getted!")
         return render_template('users.html', form=form)
 
     db = database.get_db()
     date = str(datetime.date.today())
     error = None
     if form.validate():
-        distance = form.distance
-        print(distance)
+        distance = float(form.distance.data)
         user = db.execute(
             'SELECT * FROM users WHERE id=?', (session['userid'],)
         ).fetchone()
-        print(user.distance)
+        print('user distance '+str(user['distance']), file=sys.stderr)
         walk = db.execute(
             'SELECT * FROM walks WHERE id=? AND walkdate=?', (session['userid'], date)
         ).fetchone()
-        print(walk.distance)
+        
         if walk is None:
             db.execute(
-                'INSERT INTO walks (id, distance, walkdate) VALUES (?, ?, ?',
+                'INSERT INTO walks (id, distance, walkdate) VALUES (?, ?, ?)',
                 (session['userid'], distance, date)
             )
         else:
             db.execute(
                 'UPDATE walks SET distance=? WHERE id=? AND walkdate=?',
-                (walk.distance + distance, session['userid'], date)
+                (round(walk['distance'] + distance, 1), session['userid'], date)
             )
         
         db.execute(
-            'UPDATE users SET distance=? WHERE id=?', (user.distance + distance, session['userid'])
+            'UPDATE users SET distance=? WHERE id=?', (round(user['distance'] + distance, 1), session['userid'])
         )
+        db.commit()
+        message = "You've successfully updated the distance!"
     else:
-        error = "Wow! you went more than a marathon or backwards! Please enter a number between 0 and 42."
+        error = "Please enter a number between 0 and 42."
 
-    return render_template('users.html', form=form, error=error)
+    return render_template('users.html', form=form, error=error, message=message)
 
 @bp.route('/signup', methods=('GET', 'POST'))
 def signup():
@@ -81,7 +81,7 @@ def signup():
     if request.method == 'GET':
         return render_template('usersignup.html', userform=userform)
 
-    if userform.validate(): # Using "and" is nicer
+    if userform.validate():
         username = userform.username.data
         email = userform.email.data
         password = userform.password.data
@@ -120,7 +120,7 @@ def login():
     if request.method == 'GET':
         return render_template('userlogin.html', userform=userform)
 
-    if userform.validate(): # Using "if" is nicer
+    if userform.validate():
         email = userform.email.data
         password = userform.password.data
 

@@ -1,11 +1,16 @@
 {% extends "utils/layout.html" %}
 {% block body %}
-    <p>User page should only load up if cookie is connected</p>
+    <p>Testing: User page should only load up if cookie is connected</p>
+    {% if message is not none %}
+        <div id='submitdistancesuccess'><p>{{ message }}</p></div>
+    {% endif %}
     <div id='submitdistance'>
-        <h1>Submit distance:</h1><br />
-        {{ error }}
+        <h1>Submit distance:</h1>
         <form id='submitdistanceform'  method="post">
-            <dib>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</dib>
+            {% if error is not none %}
+                <p>{{ error }}</p>
+            {% endif %}
+            <div>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</div>
             {{ form.submit() }}
         </form>
     </div>
