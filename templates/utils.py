@@ -11,14 +11,14 @@ def get_all_time_leaderboard():
     # no need to convert to list, tuple is iterable
     userdistances = sorted(db.execute(
         "SELECT username, distance FROM users;"
-    ).fetchall(), key=lambda user: user[1])
+    ).fetchall(), key=lambda user: user[1], reverse=True)
     return userdistances
 
 def get_day_leaderboard(date):
     db = database.get_db()
     userdistances = sorted(db.execute(
         "SELECT id, distance FROM walks WHERE walkdate=?;", (date,)
-    ).fetchall(), key=lambda user: user[1]) 
+    ).fetchall(), key=lambda user: user[1], reverse=True)
     for i in range(len(userdistances)):
         userdistances[i]=list(userdistances[i])
         userdistances[i][0] = list(db.execute("SELECT username FROM users WHERE id=?;", (userdistances[i][0],)).fetchone())[0]
