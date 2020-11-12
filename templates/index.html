@@ -2,10 +2,10 @@
 {% block body %}
 <h1>WCI Walks</h1>
 <p>Testing version 0.0.1.</p>
-<div id='leaderboard'>
-    {% if leaderboard|length > 0 %}
-        <h1>Leaderboard:</h1>
-        {% for i in leaderboard %}
+<div id='alltimeleaderboard'>
+    {% if alltimeleaderboard|length > 0 %}
+        <h1>All Time Leaderboard:</h1>
+        {% for i in alltimeleaderboard %}
             <div>{{i[0]}}: {{i[1]}}</div>
         {% endfor %}
     {% else %}

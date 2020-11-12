@@ -1,5 +1,5 @@
 from models import database
-def get_leaderboard():
+def get_all_time_leaderboard():
     db = database.get_db()
     userdistances = list(db.execute("SELECT username, distance FROM users;").fetchall())
 
