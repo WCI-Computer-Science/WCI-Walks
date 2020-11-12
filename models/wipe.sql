@@ -2,6 +2,6 @@
    For debugging purposes only.
    Delete this file after production. */
 
-DELETE FROM total;
-DELETE FROM users;
-DELETE FROM walks;
+DROP TABLE total;
+DROP TABLE users;
+DROP TABLE walks;

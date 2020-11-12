@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS users (
 */
 CREATE TABLE IF NOT EXISTS walks (
     id INTEGER NOT NULL,
+    username TEXT NOT NULL,
     distance REAL NOT NULL,
     walkdate TEXT NOT NULL
 );

@@ -55,8 +55,8 @@ def info():
         
         if walk is None:
             db.execute(
-                'INSERT INTO walks (id, distance, walkdate) VALUES (?, ?, ?)',
-                (session['userid'], distance, date)
+                'INSERT INTO walks (id, username, distance, walkdate) VALUES (?, ?, ?, ?)',
+                (session['userid'], user['username'], distance, date)
             )
         else:
             db.execute(
