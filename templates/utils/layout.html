@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html height="100%">
     <head>
         <title>WCI Walks</title>
         <meta charset="UTF-8">
@@ -10,7 +10,7 @@
         {% block head %}
         {% endblock %}
     </head>
-    <body>
+    <body onload="{% block onload %}{% endblock %}">
         {% include "utils/navbar.html" %}
         {% block body %}
         {% endblock %}
