@@ -12,6 +12,16 @@
         <h1>No users so far</h1>
     {% endif %}
 </div>
+<div id='yesterdayleaderboard'>
+    {% if yesterdayleaderboard|length >0 %}
+        <h1>Yesterday's Leaderboard:</h1>
+        {% for i in yesterdayleaderboard %}
+            <div>{{i[0]}}: {{i[1]}}</div>
+        {% endfor %}
+    {% else %}
+        <h1>No one did anything yesterday. :(</h1>
+    {% endif %}
+</div>
 {% endblock %}
 
 <!--

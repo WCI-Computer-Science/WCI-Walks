@@ -12,3 +12,19 @@ def get_all_time_leaderboard():
     for i in range(len(userdistances)):
         userdistances[i]=list(userdistances[i])
     return userdistances
+
+def get_day_leaderboard(date):
+    db = database.get_db()
+    userdistances = list(db.execute("SELECT id, distance FROM walks WHERE walkdate=?;", (date,)).fetchall())
+
+    for _ in range(len(userdistances) - 1):
+        for i in range(len(userdistances) - 1):
+            if userdistances[i][1] < userdistances[i + 1][1]:
+                userdistances[i], userdistances[i + 1] = userdistances[i + 1], userdistances[i]
+            elif userdistances[i][1] == userdistances[i + 1][1] and userdistances[i][0]>userdistances[i+1][0]:
+                userdistances[i], userdistances[i + 1] = userdistances[i + 1], userdistances[i]
+    for i in range(len(userdistances)):
+        userdistances[i]=list(userdistances[i])
+        userdistances[i][0] = list(db.execute("SELECT username FROM users WHERE id=?;", (userdistances[i][0],)).fetchone())[0]
+    return userdistances
+
