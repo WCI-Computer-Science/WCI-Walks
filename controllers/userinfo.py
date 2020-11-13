@@ -95,7 +95,8 @@ def signup():
 
         error = None
         db = database.get_db()
-
+        if email[-9:] != "@wrdsb.ca":
+            error = "Please use a WRDSB email!"
         if not username or not email or not password:
             error = 'Please fill out all values.'
         elif db.execute(
