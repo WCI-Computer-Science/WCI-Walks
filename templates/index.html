@@ -1,12 +1,12 @@
 {% extends "utils/layout.html" %}
 {% block body %}
-<h1>WCI Walks</h1>
+<!--<h1>WCI Walks</h1>
 <p>Testing version 0.0.1.</p>
 <div id='alltimeleaderboard'>
     {% if alltimeleaderboard|length > 0 %}
         <h1>All Time Leaderboard:</h1>
         {% for i in range([alltimeleaderboard|length, 20] | min) %}
-            <div name="alltimeleaderboard{{i}}">{{alltimeleaderboard[i][0]}}: {{alltimeleaderboard[i][1]}}</div>
+            {{i}} - {{alltimeleaderboard[i][0]}}: {{alltimeleaderboard[i][1]}}
         {% endfor %}
     {% else %}
         <h1>No users so far</h1>
@@ -16,24 +16,15 @@
     {% if yesterdayleaderboard|length >0 %}
         <h1>Yesterday's Leaderboard:</h1>
         {% for i in range([yesterdayleaderboard|length, 20] | min) %}
-            <div name="yesterdayleaderboard{{i}}">{{yesterdayleaderboard[i][0]}}: {{yesterdayleaderboard[i][1]}}</div>
+            {{i}} - {{yesterdayleaderboard[i][0]}}: {{yesterdayleaderboard[i][1]}}</div>
         {% endfor %}
     {% else %}
         <h1>No one did anything yesterday. :(</h1>
     {% endif %}
 </div>
-{% endblock %}
+-->
 
-<!--
 Allon's code.
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>WCI Walks</title>
-    <link rel="stylesheet" href="./styles.css">
-</head>
-<body>
     <div class="largesplit left flexy">
         <div class="centered b">
             <h2>Jane Flex</h2>
@@ -42,73 +33,36 @@ Allon's code.
 
     <div class="split right flexy">
         <div class="centered leaderborder">
-            <h2>Top Scores: Yesterday</h2>
-            <table>
-                <tr class="bold">
-                    <td>1. </td><td>AAA BBB</td><td class="d">10000km</td>
-                </tr>
-                <tr><td>2. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>3. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>4. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>5. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>6. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>7. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>8. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>9. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>10. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>11. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>12. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>13. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>14. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>15. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>16. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>17. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>18. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>19. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>20. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>21. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>22. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>23. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>24. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>25. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-            </table>
+            {% if yesterdayleaderboard|length > 0 %}
+                <h2>Top Scores: Yesterday</h2>
+                <table>
+                    <tr class="bold"><td>1 - {{yesterdayleaderboard[0][0]}}</td><td class="d">{{yesterdayleaderboard[0][1]}}km</td></tr>
+                    {% for i in range(1, [yesterdayleaderboard|length, 21] | min) %}
+                        <tr><td>{{i+1}} - {{yesterdayleaderboard[i][0]}}</td><td class="d">{{yesterdayleaderboard[i][1]}}km</td></tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <table><tr><td><h2>No users :(</h2></td></tr></table>
+            {% endif %}
         </div>
     </div>
 
     <div class="split middle flexy">
         <div class="centered leaderborder">
-            <h2>Top Scores: All Time</h2>
-            <table>
-                <tr class="bold">
-                    <td>1. </td><td>AAA BBB</td><td class="d">10000km</td>
-                </tr>
-                <tr><td>2. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>3. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>4. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>5. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>6. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>7. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>8. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>9. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>10. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>11. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>12. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>13. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>14. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>15. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>16. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>17. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>18. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>19. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>20. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>21. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>22. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>23. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>24. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-                <tr><td>25. </td><td>AAAAAAAAAAAAA BBB</td><td class="d">2km</td></tr>
-            </table>
+            {% if alltimeleaderboard|length > 0 %}
+                <h2>Top Scores: All Time</h2>
+                <table>
+                    <tr class="bold"><td>1 - {{alltimeleaderboard[0][0]}}</td><td class="d">{{alltimeleaderboard[0][1]}}km</td></tr>
+                    {% for i in range(1, [alltimeleaderboard|length, 21] | min) %}
+                        <tr><td>{{i+1}} - {{alltimeleaderboard[i][0]}}</td><td class="d">{{alltimeleaderboard[i][1]}}km</td></tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <table><tr><td><h2>No users :(</h2></td></tr></table>
+            {% endif %}
         </div>
     </div>
 </body>
 </html>
 -->
+{% endblock %}
