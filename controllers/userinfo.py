@@ -51,9 +51,9 @@ def info():
         walk = db.execute(
             'SELECT * FROM walks WHERE id=? AND walkdate=?', (session['userid'], date)
         ).fetchone()
-        total = db.execute(
-            'SELECT * FROM total'
-        ).fetchone()['distance']
+        ##total = db.execute(
+        ##    'SELECT * FROM total'
+        ##).fetchone()['distance']
         
         if walk is None:
             db.execute(
@@ -69,9 +69,9 @@ def info():
         db.execute(
             'UPDATE users SET distance=? WHERE id=?', (round(user['distance'] + distance, 1), session['userid'])
         )
-        db.execute(
-            'UPDATE total SET distance=?', (round(total + distance, 1))
-        )
+        ##db.execute(
+        ##    'UPDATE total SET distance=?', (round(total + distance, 1))
+        ##)
         db.commit()
         message = "You've successfully updated the distance!"
     else:

@@ -8,12 +8,12 @@ bp = Blueprint('index', __name__, url_prefix='/')
 def home():
     # might need database for the display
     db = database.get_db()
-    total = db.execute(
-            'SELECT * FROM total'
-    ).fetchone()['distance']
+    ##total = db.execute(
+    ##        'SELECT * FROM total'
+    ##).fetchone()['distance']
     return render_template(
         'index.html',
         alltimeleaderboard=get_all_time_leaderboard(),
         yesterdayleaderboard=get_day_leaderboard(datetime.date.today()-datetime.timedelta(days=1)),
-        total=total
+        #total=total
     )
