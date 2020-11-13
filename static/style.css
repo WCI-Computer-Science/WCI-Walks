@@ -1,3 +1,7 @@
+body {
+  background-color: black;
+}
+
 /* Split the screen in 3 */
 .flexy {
     display: flex;
@@ -28,27 +32,23 @@
 /* Control the left side */
 .left {
   right: 60%;
-  background-color: black;
   width: 40%
 }
 
 /* Control the middle side */
 .middle {
   right: 30%;
-  background-color: black;
   width: 30%;
 }
 
 .right {
   right: 0;
-  background-color: black;
   width: 30%;
 }
 
 /* Div inside div: leaderboard, "actions" on left side */
 .centered {
   z-index: 3;
-  background-color: black;
 }
 
 table { /* makes table*/
