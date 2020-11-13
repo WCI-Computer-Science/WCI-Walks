@@ -73,3 +73,15 @@ h2 {
     margin-bottom: 0;
     font-size: 1.75em;
 }
+h1 {
+    color: white;
+}
+p {
+    color: white;
+}
+label {
+    color: white;
+}
+.erros {
+    color: white;
+}

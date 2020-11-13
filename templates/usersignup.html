@@ -1,11 +1,11 @@
 {% extends "utils/layout.html" %}
 {% block body %}
     <h1>Sign up page</h1><br />
-    {{ error }}
+    <p>{{ error }}</p>
     <form id='signupform' action='/users/signup' method='post'>
         <div>{{ userform.username.label }}: {{ userform.username() }}</div>
         {% if userform.username.errors %}
-            <ul>
+            <ul class="errors">
                 {% for error in userform.username.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -13,7 +13,7 @@
         {% endif %}
         <div>{{ userform.email.label }}: {{ userform.email() }}</div>
         {% if userform.email.errors %}
-            <ul>
+            <ul class="errors">
                 {% for error in userform.email.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -21,7 +21,7 @@
         {% endif %}
         <div>{{ userform.password.label }}: {{ userform.password() }}</div>
         {% if userform.password.errors %}
-            <ul>
+            <ul class="errors">
                 {% for error in userform.password.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -29,7 +29,7 @@
         {% endif %}
         <div>{{ userform.confirmpassword.label }}: {{ userform.confirmpassword() }}</div>
         {% if userform.confirmpassword.errors %}
-            <ul>
+            <ul class="errors">
                 {% for error in userform.confirmpassword.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
