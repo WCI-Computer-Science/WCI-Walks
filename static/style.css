@@ -1,5 +1,12 @@
 body {
+  margin: 0;
+  padding: 0;
   background-color: black;
+  color: white; /*create default text color, can adjust individual ones later*/
+}
+
+h2 { /*Shouldn't be adjusting margin/padding in text selector, use specific selectors or divs instead*/
+  font-size: 1.75em;
 }
 
 li {
@@ -11,8 +18,8 @@ nav {
 }
 
 nav ul {
-  margin: 0;
-  padding: 0;
+  margin: 30px 0 15px 0;
+  padding: 0 0 0 4%;
   width: 100%;
   max-width: 1000px;
   text-align: center;
@@ -26,88 +33,30 @@ nav li {
   text-align: center;
 }
 
-/* Split the screen in 3 */
-.flexy {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+.columns {
+  margin: 20px 0;
+  overflow: auto;
+  text-align: center;
 }
 
-.split {  /* right 2 divs*/
-  height: 100%;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  overflow-x: hidden;
-  padding-top: 0px;
+.column {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 2%;
+  float: left;
+  text-align: center;
 }
 
-.largesplit { /*left div*/
-  height: 100%;
-  width: 45%;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  overflow-x: hidden;
-  padding-top: 0px;
+.appinfo {
+  width: 50%;
+  min-width: 200px;
 }
 
-/* Control the left side */
-.left {
-  right: 60%;
-  width: 40%
+.leaderboard {
+  width: 25%;
+  min-width: 200px;
 }
 
-/* Control the middle side */
-.middle {
-  right: 30%;
-  width: 30%;
-}
-
-.right {
-  right: 0;
-  width: 30%;
-}
-
-/* Div inside div: leaderboard, "actions" on left side */
-.centered {
-  z-index: 3;
-}
-
-table { /* makes table*/
-    width: 100%;
-}
-.d {float: right;}  /*table stuff*/
-.bold {font-weight: bold;}
-
-.b {
-
-}
-
-.leaderborder {  /* This used to be a pun [border was removed because it was super ugly], I'm too lazy to change*/
-    color: white;
-    width: 80%;
-    height: 90%;
-    padding: 5%;
-    padding-top: 0;
-}
-
-h2 {
-    color: white;
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: 1.75em;
-}
-h1 {
-    color: white;
-}
-p {
-    color: white;
-}
-label {
-    color: white;
-}
 .errors {
     color: white;
 }
