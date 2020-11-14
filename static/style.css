@@ -1,6 +1,12 @@
 body {
+  margin: 0;
+  padding: 0;
   background-color: black;
-  color: white;
+  color: white; /*create default text color, can adjust individual ones later*/
+}
+
+h2 { /*Shouldn't be adjusting margin/padding in text selector, use specific selectors or divs instead*/
+  font-size: 1.75em;
 }
 
 li {
@@ -12,8 +18,8 @@ nav {
 }
 
 nav ul {
-  margin: 0;
-  padding: 0;
+  margin: 30px 0 15px 0;
+  padding: 0 0 0 4%;
   width: 100%;
   max-width: 1000px;
   text-align: center;
@@ -27,8 +33,28 @@ nav li {
   text-align: center;
 }
 
-h2 { /*Shouldn't be adjusting margin/padding in text selector, use specific selectors or divs instead*/
-    font-size: 1.75em;
+.columns {
+  margin: 20px 0;
+  overflow: auto;
+  text-align: center;
+}
+
+.column {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 2%;
+  float: left;
+  text-align: center;
+}
+
+.appinfo {
+  width: 50%;
+  min-width: 200px;
+}
+
+.leaderboard {
+  width: 25%;
+  min-width: 200px;
 }
 
 .errors {
