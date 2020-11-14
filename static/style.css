@@ -57,7 +57,9 @@ table { /* makes table*/
 .d {float: right;}  /*table stuff*/
 .bold {font-weight: bold;}
 
-.b {}
+.b {
+
+}
 
 .leaderborder {  /* This used to be a pun [border was removed because it was super ugly], I'm too lazy to change*/
     color: white;
@@ -82,6 +84,6 @@ p {
 label {
     color: white;
 }
-.erros {
+.errors {
     color: white;
 }
