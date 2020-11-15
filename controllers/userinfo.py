@@ -37,6 +37,15 @@ class LoginForm(Form):
 def info():
     if 'userid' not in session:
         return redirect(url_for('userinfo.login'))
+    
+    db = database.get_db()
+    user = db.execute(
+        'SELECT * FROM users WHERE id=?', (session['userid'],)
+    ).fetchone()
+
+    if not user['confirmed']:
+        # Tell user to authenticate email
+        return render_template()
 
     form = SubmitDistanceForm(request.form)
     message = None
@@ -44,14 +53,10 @@ def info():
     if request.method == 'GET':
         return render_template('users.html', form=form)
 
-    db = database.get_db()
     date = str(datetime.date.today())
     error = None
     if form.validate():
         distance = float(form.distance.data)
-        user = db.execute(
-            'SELECT * FROM users WHERE id=?', (session['userid'],)
-        ).fetchone()
         walk = db.execute(
             'SELECT * FROM walks WHERE id=? AND walkdate=?', (session['userid'], date)
         ).fetchone()
@@ -123,9 +128,11 @@ def signup():
                 'REPLACE INTO users (email, username, password, distance) VALUES (?, ?, ?, 0)',
                 (email, username, generate_password_hash(password))
             )
+            db.commit()
             token = confirm.get_confirm_token(email)
             confirm_url = url_for('users.confirmemail', token=token, _external=True)
             confirm.email_confirm_token(email, confirm_url)
+            session['userid'] = db.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()[0]
             # redirect to view telling user to confirm email
             redirect(url_for('userinfo.login'))
 
@@ -138,9 +145,14 @@ def signup():
 
 @bp.route('/confirm/<token>', methods=('POST'))
 def confirmemail(token):
+    if 'userid' not in session:
+        return redirect(url_for('userinfo.signup'))
+    db = database.get_db()
+    if db.execute('SELECT confirmed FROM users WHERE id=?', (session['userid'],)).fetchone()[0]:
+        return redirect(url_for('userinfo.info'))
+    
     try:
         email = confirm.authenticate_confirm_token(token)
-        db = database.get_db()
         confirmed = db.execute(
             'SELECT confirmed FROM users WHERE email=?', (email,)
         )
@@ -181,6 +193,8 @@ def login():
             ).fetchone()
             if user is None or not check_password_hash(user['password'], password):
                 error = 'Login credentials failed. Have you signed up yet?'
+            elif not user['confirmed']:
+                error = 'This account hasn\'t been confirmed. Check your email or sign up again.'
             else:
                 print(user["username"], file=sys.stderr)
         if error is None:
