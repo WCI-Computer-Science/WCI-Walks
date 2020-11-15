@@ -1,11 +1,14 @@
 import functools, sys, datetime #sys for debugging
 
-from flask import Blueprint, url_for, redirect, render_template, request, session
+from flask import abort, Blueprint, url_for, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
+from itsdangerous import URLSafeTimedSerializer
 
-from models import database
 from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField, validators
 from wtforms.fields.html5 import EmailField, IntegerField
+
+from models import database
+from .utils import confirm
 
 bp = Blueprint('userinfo', __name__, url_prefix='/users')
 
@@ -112,19 +115,29 @@ def signup():
                 error = 'This email is already taken.'
 
         if error is None:
-            # implement two factor auth
-            db.execute(
-                'INSERT INTO users (email, username, password, distance) VALUES (?, ?, ?, 0)',
-                (email, username, generate_password_hash(password))
-            )
-            db.commit()
-            return redirect(url_for('userinfo.login'))
+            
+            # redirect to view telling user to confirm email
+            pass
 
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
     else:
         error="Please check that all fields are filled out correctly!"
+    
     return render_template('usersignup.html', userform=userform, error=error)
+
+@bp.route('/confirm/<token>', methods=('POST'))
+def confirm():
+    if 'email' not in session:
+        abort(404)
+
+    db = database.get_db()
+    db.execute(
+        'INSERT INTO users (email, username, password, distance) VALUES (?, ?, ?, 0)',
+        (email, username, generate_password_hash(password))
+    )
+    db.commit()
+    return redirect(url_for('userinfo.login'))
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():

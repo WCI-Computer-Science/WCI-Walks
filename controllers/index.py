@@ -1,15 +1,19 @@
+import datetime
+
 from flask import Blueprint, url_for, redirect, render_template, request, session
 from templates.utils import get_all_time_leaderboard, get_day_leaderboard
+
 from models import database
-import datetime
+
 bp = Blueprint('index', __name__, url_prefix='/')
 
-@bp.route('/', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
+@bp.route('/', methods=('GET'))
 def home():
     db = database.get_db()
     total = db.execute(
         'SELECT * FROM total'
     ).fetchone()
+    
     return render_template(
         'index.html',
         alltimeleaderboard=get_all_time_leaderboard(),
