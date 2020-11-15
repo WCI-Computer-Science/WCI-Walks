@@ -1,6 +1,6 @@
 import functools, sys, datetime #sys for debugging
 
-from flask import abort, Blueprint, redirect, render_template, request, session
+from flask import Blueprint, url_for, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import database
@@ -32,7 +32,7 @@ class LoginForm(Form):
 @bp.route('/', methods=('GET', 'POST'))
 def info():
     if 'userid' not in session:
-        return redirect('/users/login')
+        return redirect(url_for('userinfo.login'))
 
     form = SubmitDistanceForm(request.form)
     message = None
@@ -118,7 +118,7 @@ def signup():
                 (email, username, generate_password_hash(password))
             )
             db.commit()
-            return redirect('/users/login')
+            return redirect(url_for('userinfo.login'))
 
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
@@ -157,7 +157,7 @@ def login():
             session['userid'] = user['id']
             session['email'] = user['email']
             print('Store a cookie', file=sys.stderr)
-            return redirect('/users')
+            return redirect(url_for('userinfo.info'))
 
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
@@ -168,4 +168,4 @@ def login():
 @bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def logout():
     session.clear()
-    return redirect('/')
+    return redirect(url_for('index.home'))
