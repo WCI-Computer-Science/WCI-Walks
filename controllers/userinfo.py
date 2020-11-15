@@ -124,6 +124,8 @@ def signup():
                 (email, username, generate_password_hash(password))
             )
             token = confirm.get_confirm_token(email)
+            confirm_url = url_for('users.confirmemail', token=token, _external=True)
+            confirm.email_confirm_token(email, confirm_url)
             # redirect to view telling user to confirm email
             redirect(url_for('userinfo.login'))
 
