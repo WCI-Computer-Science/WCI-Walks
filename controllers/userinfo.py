@@ -6,6 +6,7 @@ from itsdangerous import URLSafeTimedSerializer
 
 from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField, validators
 from wtforms.fields.html5 import EmailField, IntegerField
+from validate_email import validate_email
 
 from models import database
 from .utils import confirm
@@ -106,18 +107,25 @@ def signup():
         error = None
         db = database.get_db()
         if email[-9:] != "@wrdsb.ca":
-            error = "Please use a WRDSB email!"
+            error = "Please use a WRDSB email."
+        if not validate_email(email_address=email, check_mx=True, debug=True):
+            error = "Please use a real email."
         if not username or not email or not password:
             error = 'Please fill out all values.'
-        elif db.execute(
-                'SELECT id FROM users WHERE email=?', (email,)
-             ).fetchone() is not None:
-                error = 'This email is already taken.'
+        user = db.execute(
+            'SELECT id FROM users WHERE email=?', (email,)
+        ).fetchone()
+        if user is not None and user['confirmed']:
+            error = 'This email is already taken.'
 
         if error is None:
-            
+            db.execute(
+                'REPLACE INTO users (email, username, password, distance) VALUES (?, ?, ?, 0)',
+                (email, username, generate_password_hash(password))
+            )
+            token = confirm.get_confirm_token(email)
             # redirect to view telling user to confirm email
-            pass
+            redirect(url_for('userinfo.login'))
 
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
@@ -127,9 +135,7 @@ def signup():
     return render_template('usersignup.html', userform=userform, error=error)
 
 @bp.route('/confirm/<token>', methods=('POST'))
-def confirm():
-    if 'email' not in session:
-        abort(404)
+def confirmemail():
 
     db = database.get_db()
     db.execute(
