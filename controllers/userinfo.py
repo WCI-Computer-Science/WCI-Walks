@@ -137,14 +137,24 @@ def signup():
     return render_template('usersignup.html', userform=userform, error=error)
 
 @bp.route('/confirm/<token>', methods=('POST'))
-def confirmemail():
-
-    db = database.get_db()
-    db.execute(
-        'INSERT INTO users (email, username, password, distance) VALUES (?, ?, ?, 0)',
-        (email, username, generate_password_hash(password))
-    )
-    db.commit()
+def confirmemail(token):
+    try:
+        email = confirm.authenticate_confirm_token(token)
+        db = database.get_db()
+        confirmed = db.execute(
+            'SELECT confirmed FROM users WHERE email=?', (email,)
+        )
+        if not confirmed:
+            db.execute(
+                'UPDATE users SET confirmed=? WHERE email=?', (1, email)
+            )
+            db.commit()
+            return redirect(url_for('userinfo.login'))
+        else:
+            error = 'This email is already authenticated.'
+    except:
+        error = 'Authentication failed. Sign up again.'
+    
     return redirect(url_for('userinfo.login'))
 
 @bp.route('/login', methods=('GET', 'POST'))
