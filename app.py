@@ -1,12 +1,11 @@
 from flask import Flask
 from flask_login import LoginManager
-from oauthlib.oauth2 import WebApplicationClient
+
+app = Flask(__name__)
 
 import secrets
 from models import *
 from controllers import index, userinfo
-
-app = Flask(__name__)
 
 # Configurations
 app.config['SECRET_KEY'] = secrets.secret_key
@@ -14,6 +13,8 @@ app.config['SECURITY_PASSWORD_SALT'] = secrets.security_password_salt
 app.config['DB'] = 'models/db.sqlite'
 app.config['GOOGLE_CLIENT_ID'] = secrets.google_client_id
 app.config['GOOGLE_CLIENT_SECRET'] = secrets.google_client_secret
+app.config['GOOGLE_DISCOVERY_URL'] = "https://accounts.google.com/.well-known/openid-configuration"
+
 
 # Create database and set up automatic database closing for requests
 database.init_app(app)
@@ -21,8 +22,6 @@ database.init_app(app)
 # Set up login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-client = WebApplicationClient(secrets.google_client_secret)
 
 # Route / to main page
 app.register_blueprint(index.bp)

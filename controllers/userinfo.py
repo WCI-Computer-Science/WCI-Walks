@@ -1,7 +1,7 @@
-import functools, sys, datetime #sys for debugging
+import functools, sys, datetime, json
 
-from flask import abort, Blueprint, url_for, redirect, render_template, request, session
-from flask_login import current_user, login_user, logout_user
+from flask import abort, Blueprint, current_app, url_for, redirect, render_template, request, requests, session
+from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
 from itsdangerous import URLSafeTimedSerializer
 
@@ -33,6 +33,7 @@ class LoginForm(Form):
     submit = SubmitField()
 
 @bp.route('/', methods=('GET', 'POST'))
+@login_required
 def info():
     if 'userid' not in session:
         return redirect(url_for('userinfo.login'))
@@ -135,8 +136,18 @@ def login():
         error="Please check that you have filled out all fields correctly!"
     return render_template('userlogin.html', userform=userform, error=error)
 
+@bp.route('/authorize', methods=('GET', 'POST'))
+def authorize():
+    auth_endpoint = requests.get(current_app.config['GOOGLE_DISCOVERY_URL']).json()['authorization_endpoint']
+
+    request_uri = oauth.get_client().prepare_request_uri(
+        auth_endpoint,
+        redirect_uri=request.base_url + '/confirmlogin',
+        scope=['openid', 'email', 'profile']
+    )
+
 @bp.route('/confirmlogin', methods=('GET', 'POST'))
-def signup():
+def confirmlogin():
     userform = SignupForm(request.form)
 
     if request.method == 'GET':
@@ -184,8 +195,8 @@ def signup():
     
     return render_template('usersignup.html', userform=userform, error=error)
 
-
 @bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('index.home'))
