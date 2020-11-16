@@ -1,4 +1,5 @@
 from flask import Flask
+from oauthlib.oauth2 import WebApplicationClient
 
 import secrets
 from models import *
@@ -10,9 +11,13 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = secrets.secret_key
 app.config['SECURITY_PASSWORD_SALT'] = secrets.security_password_salt
 app.config['DB'] = 'models/db.sqlite'
+app.config['GOOGLE_CLIENT_ID'] = secrets.google_client_id
+app.config['GOOGLE_CLIENT_SECRET'] = secrets.google_client_secret
 
 # Create database and set up automatic database closing for requests
 database.init_app(app)
+
+client = WebApplicationClient(secrets.google_client_secret)
 
 # Route / to main page
 app.register_blueprint(index.bp)
