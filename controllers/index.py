@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, session
+from flask import Blueprint, url_for, redirect, render_template, request, session
 from templates.utils import get_all_time_leaderboard, get_day_leaderboard
 from models import database
 import datetime
@@ -6,7 +6,6 @@ bp = Blueprint('index', __name__, url_prefix='/')
 
 @bp.route('/', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def home():
-    # might need database for the display
     db = database.get_db()
     total = db.execute(
         'SELECT * FROM total'
