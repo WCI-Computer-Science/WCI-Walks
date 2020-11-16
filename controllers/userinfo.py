@@ -138,62 +138,51 @@ def login():
 
 @bp.route('/authorize', methods=('GET', 'POST'))
 def authorize():
-    auth_endpoint = requests.get(current_app.config['GOOGLE_DISCOVERY_URL']).json()['authorization_endpoint']
+    auth_endpoint = oauth.get_google_configs()['authorization_endpoint']
 
     request_uri = oauth.get_client().prepare_request_uri(
         auth_endpoint,
         redirect_uri=request.base_url + '/confirmlogin',
         scope=['openid', 'email', 'profile']
     )
+    return redirect(request_uri)
 
 @bp.route('/confirmlogin', methods=('GET', 'POST'))
 def confirmlogin():
-    userform = SignupForm(request.form)
-
-    if request.method == 'GET':
-        return render_template('usersignup.html', userform=userform)
-
-    if userform.validate():
-        username = userform.username.data
-        email = userform.email.data
-        password = userform.password.data
-
-        print(username, file=sys.stderr)
-
-        error = None
-        db = database.get_db()
-        user = db.execute(
-            'SELECT id FROM users WHERE email=?', (email,)
-        ).fetchone()
-        if not username or not email or not password:
-            error = 'Please fill out all values.'
-        elif email[-9:] != "@wrdsb.ca":
-            error = "Please use a WRDSB email."
-        elif not validate_email(email_address=email, check_mx=True, smtp_timeout=10, dns_timeout=10, debug=True):
-            error = "Please use a real email."
-        elif user is not None and user['confirmed']:
-            error = 'This email is already taken.'
-
-        if error is None:
-            db.execute(
-                'REPLACE INTO users (email, username, password, distance) VALUES (?, ?, ?, 0)',
-                (email, username, generate_password_hash(password))
-            )
-            db.commit()
-            print('user replaced into users', file=sys.stderr)
-            token = mail.get_confirm_token(email)
-            confirm_url = url_for('users.confirmemail', token=token, _external=True)
-            mail.email_confirm_token(email, confirm_url)
-            session['userid'] = db.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()[0]
-            # redirect to view telling user to confirm email
-            redirect(url_for('userinfo.login'))
-
-        #in the future, alert front end of error with http response
-        print(error, file=sys.stderr)
-    else:
-        error="Please check that all fields are filled out correctly!"
+    code = request.args.get('code')
+    client = oauth.get_client()
+    token_url, headers, body = client.prepare_token_request(
+        oauth.get_google_configs()['token_endpoint'],
+        authorization_response=request.url,
+        redirect_url=request.base_url,
+        code=code
+    )
+    token_response = requests.post(
+        token_url,
+        headers=headers,
+        data=body,
+        auth=(current_app.config['GOOGLE_CLIENT_ID'], current_app.config['GOOGLE_CLIENT_SECRET']),
+    )
+    client.parse_request_body_response(json.dumps(token_response.json()))
     
-    return render_template('usersignup.html', userform=userform, error=error)
+    uri, headers, body = client.add_token(oauth.get_google_configs()["userinfo_endpoint"])
+    userinfo_response = requests.get(uri, headers=headers, data=body).json()
+    if userinfo_response.get("email_verified"):
+        userid = userinfo_response["sub"]
+        email = userinfo_response["email"]
+        username = userinfo_response["name"]
+    else:
+        return "Email unavailable or not unverified.", 400
+    
+    if not user.User.exists(userid):
+        current_user = user.User(userid=userid, email=email, username=username)
+        current_user.write_db()
+    else:
+        current_user = user.User(userid=userid)
+        current_user.read_db()
+    
+    login_user(current_user)
+    return redirect(url_for('userinfo.info'))
 
 @bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 @login_required

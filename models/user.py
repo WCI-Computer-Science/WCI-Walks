@@ -3,19 +3,36 @@ import flask_login
 import models.database
 
 class User:
-    def __init__(self, userid=None, email=None, username=None, distance=0, authenticated=0, active=1):
+    def __init__(self, userid=None, email=None, username=None, distance=0, active=1):
         self.id = userid
         self.email = email
         self.username = username
         self.distance = distance
-        self.authenticated = authenticated
         self.active = active
     
     def add_distance(self, distance):
         self.distance += distance
+    
+    def write_db(self):
+        db = database.get_db()
+        db.execute(
+            'INSERT INTO users (id, email, username, distance, active)\
+                VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE',
+            (self.id, self.email, self.username, self.distance, self.active)
+        )
+    
+    def read_db(self):
+        db = database.get_db()
+        user = db.execute(
+            'SELECT id FROM users WHERE id=? LIMIT 1', (self.id,)
+        ).fetchone()
+        self.email = user['email']
+        self.username = user['username']
+        self.distance = user['distance']
+        self.active = user['active']
         
     def is_authenticated(self):
-        return self.authenticated
+        return True
     
     def is_active(self):
         return self.active
@@ -24,14 +41,15 @@ class User:
         return False
     
     def get_id(self):
-        if self.id is not None:
-            return self.id 
-        else:
-            db = database.get_db()
-            self.id = str(db.execute(
-                'SELECT id FROM users WHERE email=?', (self.email,)
-            )[0])
-            return self.id
+        return self.id
+    
+    # Static methods
+    @staticmethod
+    def exists(userid):
+        db = database.get_db()
+        return db.execute(
+            'SELECT id FROM users WHERE id=? LIMIT 1', (userid,)
+        ).fetchone()
 
 @login_manager.user_loader
 def load_user(userid):
@@ -44,7 +62,6 @@ def load_user(userid):
         user['email'],
         user['username'],
         user['distance'],
-        user['authenticated'],
         user['active']
     )
 

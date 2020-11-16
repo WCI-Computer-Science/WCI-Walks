@@ -12,12 +12,11 @@ CREATE TABLE IF NOT EXISTS total (
     distance: student's total distance
  */
 CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
     username TEXT NOT NULL,
     distance INTEGER NOT NULL,
-    authenticated INTEGER DEFAULT 0,
-    active INTEGER DEFAULT 1
+    active TINYINT DEFAULT 1
 );
 
 /* Info stored for each walk (one walk stored per day):
