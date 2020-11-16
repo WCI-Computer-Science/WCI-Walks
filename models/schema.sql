@@ -13,10 +13,9 @@ CREATE TABLE IF NOT EXISTS total (
  */
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
+    authenticated INTEGER DEFAULT 0,
     email TEXT UNIQUE NOT NULL,
     username TEXT NOT NULL,
-    password TEXT NOT NULL,
-    confirmed INTEGER DEFAULT 0,
     distance INTEGER NOT NULL
 );
 

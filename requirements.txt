@@ -1,4 +1,5 @@
 flask
 wtforms
 email_validator
+flask-login
 oauthlib
