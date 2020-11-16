@@ -6,10 +6,8 @@ from itsdangerous import URLSafeTimedSerializer
 
 from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField, validators
 from wtforms.fields.html5 import EmailField, IntegerField
-from validate_email import validate_email
 
-from models import database
-from .utils import confirm
+from models import *
 
 bp = Blueprint('userinfo', __name__, url_prefix='/users')
 
@@ -95,80 +93,6 @@ def info():
 
     return render_template('users.html', form=form, error=error, message=message)
 
-@bp.route('/signup', methods=('GET', 'POST'))
-def signup():
-    userform = SignupForm(request.form)
-
-    if request.method == 'GET':
-        return render_template('usersignup.html', userform=userform)
-
-    if userform.validate():
-        username = userform.username.data
-        email = userform.email.data
-        password = userform.password.data
-
-        print(username, file=sys.stderr)
-
-        error = None
-        db = database.get_db()
-        if email[-9:] != "@wrdsb.ca":
-            error = "Please use a WRDSB email."
-        if not validate_email(email_address=email, check_mx=True, debug=True):
-            error = "Please use a real email."
-        if not username or not email or not password:
-            error = 'Please fill out all values.'
-        user = db.execute(
-            'SELECT id FROM users WHERE email=?', (email,)
-        ).fetchone()
-        if user is not None and user['confirmed']:
-            error = 'This email is already taken.'
-
-        if error is None:
-            db.execute(
-                'REPLACE INTO users (email, username, password, distance) VALUES (?, ?, ?, 0)',
-                (email, username, generate_password_hash(password))
-            )
-            db.commit()
-            token = confirm.get_confirm_token(email)
-            confirm_url = url_for('users.confirmemail', token=token, _external=True)
-            confirm.email_confirm_token(email, confirm_url)
-            session['userid'] = db.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()[0]
-            # redirect to view telling user to confirm email
-            redirect(url_for('userinfo.login'))
-
-        #in the future, alert front end of error with http response
-        print(error, file=sys.stderr)
-    else:
-        error="Please check that all fields are filled out correctly!"
-    
-    return render_template('usersignup.html', userform=userform, error=error)
-
-@bp.route('/confirm/<token>', methods=('POST'))
-def confirmemail(token):
-    if 'userid' not in session:
-        return redirect(url_for('userinfo.signup'))
-    db = database.get_db()
-    if db.execute('SELECT confirmed FROM users WHERE id=?', (session['userid'],)).fetchone()[0]:
-        return redirect(url_for('userinfo.info'))
-    
-    try:
-        email = confirm.authenticate_confirm_token(token)
-        confirmed = db.execute(
-            'SELECT confirmed FROM users WHERE email=?', (email,)
-        )
-        if not confirmed:
-            db.execute(
-                'UPDATE users SET confirmed=? WHERE email=?', (1, email)
-            )
-            db.commit()
-            return redirect(url_for('userinfo.login'))
-        else:
-            error = 'This email is already authenticated.'
-    except:
-        error = 'Authentication failed. Sign up again.'
-    
-    return redirect(url_for('userinfo.login'))
-
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     userform = LoginForm(request.form)
@@ -209,6 +133,56 @@ def login():
     else:
         error="Please check that you have filled out all fields correctly!"
     return render_template('userlogin.html', userform=userform, error=error)
+
+@bp.route('/confirmlogin', methods=('GET', 'POST'))
+def signup():
+    userform = SignupForm(request.form)
+
+    if request.method == 'GET':
+        return render_template('usersignup.html', userform=userform)
+
+    if userform.validate():
+        username = userform.username.data
+        email = userform.email.data
+        password = userform.password.data
+
+        print(username, file=sys.stderr)
+
+        error = None
+        db = database.get_db()
+        user = db.execute(
+            'SELECT id FROM users WHERE email=?', (email,)
+        ).fetchone()
+        if not username or not email or not password:
+            error = 'Please fill out all values.'
+        elif email[-9:] != "@wrdsb.ca":
+            error = "Please use a WRDSB email."
+        elif not validate_email(email_address=email, check_mx=True, smtp_timeout=10, dns_timeout=10, debug=True):
+            error = "Please use a real email."
+        elif user is not None and user['confirmed']:
+            error = 'This email is already taken.'
+
+        if error is None:
+            db.execute(
+                'REPLACE INTO users (email, username, password, distance) VALUES (?, ?, ?, 0)',
+                (email, username, generate_password_hash(password))
+            )
+            db.commit()
+            print('user replaced into users', file=sys.stderr)
+            token = mail.get_confirm_token(email)
+            confirm_url = url_for('users.confirmemail', token=token, _external=True)
+            mail.email_confirm_token(email, confirm_url)
+            session['userid'] = db.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()[0]
+            # redirect to view telling user to confirm email
+            redirect(url_for('userinfo.login'))
+
+        #in the future, alert front end of error with http response
+        print(error, file=sys.stderr)
+    else:
+        error="Please check that all fields are filled out correctly!"
+    
+    return render_template('usersignup.html', userform=userform, error=error)
+
 
 @bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def logout():

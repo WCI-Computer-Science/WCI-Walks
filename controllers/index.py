@@ -7,7 +7,7 @@ from models import database
 
 bp = Blueprint('index', __name__, url_prefix='/')
 
-@bp.route('/', methods=('GET'))
+@bp.route('/', methods=('GET',))
 def home():
     db = database.get_db()
     total = db.execute(
