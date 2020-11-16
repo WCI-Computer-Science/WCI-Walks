@@ -1,28 +1,5 @@
 {% extends "utils/layout.html" %}
 {% block body %}
-<!--<h1>WCI Walks</h1>
-<p>Testing version 0.0.1.</p>
-<div id='alltimeleaderboard'>
-    {% if alltimeleaderboard|length > 0 %}
-        <h1>All Time Leaderboard:</h1>
-        {% for i in range([alltimeleaderboard|length, 20] | min) %}
-            {{i}} - {{alltimeleaderboard[i][0]}}: {{alltimeleaderboard[i][1]}}
-        {% endfor %}
-    {% else %}
-        <h1>No users so far</h1>
-    {% endif %}
-</div>
-<div id='yesterdayleaderboard'>
-    {% if yesterdayleaderboard|length >0 %}
-        <h1>Yesterday's Leaderboard:</h1>
-        {% for i in range([yesterdayleaderboard|length, 20] | min) %}
-            {{i}} - {{yesterdayleaderboard[i][0]}}: {{yesterdayleaderboard[i][1]}}</div>
-        {% endfor %}
-    {% else %}
-        <h1>No one did anything yesterday. :(</h1>
-    {% endif %}
-</div>
--->
     <!--columns div is to prevent float height collapsing-->
     <div class='columns'>
         <div class="column appinfo">
