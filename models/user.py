@@ -67,4 +67,4 @@ def load_user(userid):
 
 @login_manager.unauthorized
 def unauthorized():
-    redirect(url_for('userinfo.login'))
+    redirect(url_for('users.login'))

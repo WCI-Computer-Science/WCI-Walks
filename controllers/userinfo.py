@@ -10,7 +10,7 @@ from wtforms.fields.html5 import EmailField, IntegerField
 
 from models import *
 
-bp = Blueprint('userinfo', __name__, url_prefix='/users')
+bp = Blueprint('users', __name__, url_prefix='/users')
 
 class SubmitDistanceForm(Form):
     distance = DecimalField(
@@ -36,7 +36,7 @@ class LoginForm(Form):
 @login_required
 def info():
     if 'userid' not in session:
-        return redirect(url_for('userinfo.login'))
+        return redirect(url_for('users.login'))
     
     db = database.get_db()
     user = db.execute(
@@ -128,7 +128,7 @@ def login():
             session['userid'] = user['id']
             session['email'] = user['email']
             print('Store a cookie', file=sys.stderr)
-            return redirect(url_for('userinfo.info'))
+            return redirect(url_for('users.info'))
 
         #in the future, alert front end of error with http response
         print(error, file=sys.stderr)
@@ -182,7 +182,7 @@ def confirmlogin():
         current_user.read_db()
     
     login_user(current_user)
-    return redirect(url_for('userinfo.info'))
+    return redirect(url_for('users.info'))
 
 @bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 @login_required
