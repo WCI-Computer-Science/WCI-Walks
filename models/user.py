@@ -1,14 +1,19 @@
+from flask import redirect, url_for
 import flask_login
 import models.database
 
 class User:
-    def __init__(self, email, username=None, authenticated=False, active=True):
+    def __init__(self, userid=None, email=None, username=None, distance=0, authenticated=0, active=1):
+        self.id = userid
         self.email = email
         self.username = username
-        self.distance = 0
+        self.distance = distance
         self.authenticated = authenticated
         self.active = active
     
+    def add_distance(self, distance):
+        self.distance += distance
+        
     def is_authenticated(self):
         return self.authenticated
     
@@ -19,9 +24,9 @@ class User:
         return False
     
     def get_id(self):
-        try:
+        if self.id is not None:
             return self.id 
-        except:
+        else:
             db = database.get_db()
             self.id = str(db.execute(
                 'SELECT id FROM users WHERE email=?', (self.email,)
@@ -31,6 +36,18 @@ class User:
 @login_manager.user_loader
 def load_user(userid):
     db = database.get_db()
-    return db.execute(
+    user = db.execute(
         'SELECT * FROM users WHERE id=?', (userid,)
     ).fetchone()
+    return User(
+        user['id'],
+        user['email'],
+        user['username'],
+        user['distance'],
+        user['authenticated'],
+        user['active']
+    )
+
+@login_manager.unauthorized
+def unauthorized():
+    redirect(url_for('userinfo.login'))

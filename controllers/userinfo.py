@@ -1,6 +1,7 @@
 import functools, sys, datetime #sys for debugging
 
 from flask import abort, Blueprint, url_for, redirect, render_template, request, session
+from flask_login import current_user, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from itsdangerous import URLSafeTimedSerializer
 
@@ -186,5 +187,5 @@ def signup():
 
 @bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
 def logout():
-    session.clear()
+    logout_user()
     return redirect(url_for('index.home'))
