@@ -119,7 +119,8 @@ def confirmlogin():
     else:
         current_user = user.User(userid=userid)
         current_user.read_db()
-    
+    database.get_db().commit()
+
     login_user(current_user)
     return redirect(url_for('users.info'))
 

@@ -1,3 +1,4 @@
+import sys
 from flask import current_app, redirect, url_for
 import flask_login
 from . import database, loginmanager
@@ -58,6 +59,10 @@ def load_user(userid):
     user = db.execute(
         'SELECT * FROM users WHERE id=?', (userid,)
     ).fetchone()
+
+    if not user:
+        return None
+
     return User(
         user['id'],
         user['email'],
