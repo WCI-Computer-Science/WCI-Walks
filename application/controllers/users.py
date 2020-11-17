@@ -8,7 +8,7 @@ from itsdangerous import URLSafeTimedSerializer
 from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField, validators
 from wtforms.fields.html5 import EmailField, IntegerField
 
-from models import *
+from application.models import *
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 

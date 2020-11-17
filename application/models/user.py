@@ -1,6 +1,6 @@
 from flask import current_app, redirect, url_for
 import flask_login
-from models import database, loginmanager
+from . import database, loginmanager
 
 login_manager = loginmanager.get_login_manager()
 

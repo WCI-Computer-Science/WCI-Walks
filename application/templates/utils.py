@@ -1,5 +1,5 @@
 import sys
-from models import database
+from application.models import database
 
 # note 1: hopefully in the future we could have an "online" ranking
 # already in sorted order and add users with a log2 n binary search
