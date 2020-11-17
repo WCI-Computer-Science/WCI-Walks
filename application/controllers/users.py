@@ -82,8 +82,7 @@ def info():
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
-    userform = LoginForm(request.form)
-    return render_template('userlogin.html', userform=userform, error=error)
+    return render_template('userlogin.html')
 
 @bp.route('/authorize', methods=('GET', 'POST'))
 def authorize():
@@ -96,12 +95,12 @@ def authorize():
     )
     return redirect(request_uri)
 
-@bp.route('/confirmlogin', methods=('GET', 'POST'))
+@bp.route('/authorize/confirmlogin', methods=('GET', 'POST'))
 def confirmlogin():
     code = request.args.get('code')
     #client = oauth.get_client()
-    access_token = oauth.get_access_token(code)
-    idinfo = oauth.verify_access_token(access_token)
+    id_token = oauth.get_id_token(code)
+    idinfo = oauth.verify_id_token(id_token)
     #client.parse_request_body_response(json.dumps(token_response)
     #uri, headers, body = client.add_token(oauth.get_google_configs()["userinfo_endpoint"])
     #idinfo = requests.get(uri, headers=headers, data=body).json()
@@ -111,6 +110,8 @@ def confirmlogin():
         username = idinfo["name"]
     else:
         return "Email unavailable or not unverified.", 400
+    
+    print(idinfo, file=sys.stderr)
     
     if not user.User.exists(userid):
         current_user = user.User(userid=userid, email=email, username=username)

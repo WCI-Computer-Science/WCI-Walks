@@ -18,8 +18,7 @@ class User:
     def write_db(self):
         db = database.get_db()
         db.execute(
-            'INSERT INTO users (id, email, username, distance, active)\
-                VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE',
+            'REPLACE INTO users (id, email, username, distance, active) VALUES (?, ?, ?, ?, ?)',
             (self.id, self.email, self.username, self.distance, self.active)
         )
     

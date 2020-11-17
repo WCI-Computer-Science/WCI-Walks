@@ -4,7 +4,7 @@ from flask import g, current_app, request
 import requests
 from oauthlib.oauth2 import WebApplicationClient
 from google.oauth2 import id_token
-from google.auth.transport import requests
+import google.auth.transport.requests
 
 def get_google_configs():
     return requests.get(current_app.config['GOOGLE_DISCOVERY_URL']).json()
@@ -14,7 +14,7 @@ def get_client():
         g.client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
     return g.client
 
-def get_access_token(auth_code):
+def get_id_token(auth_code):
     client = get_client()
     token_url, headers, body = client.prepare_token_request(
         get_google_configs()['token_endpoint'],
@@ -27,11 +27,11 @@ def get_access_token(auth_code):
         headers=headers,
         data=body,
         auth=(current_app.config['GOOGLE_CLIENT_ID'], current_app.config['GOOGLE_CLIENT_SECRET']),
-    ).json()['access_token']
+    ).json()['id_token']
 
-def verify_access_token(access_token):
+def verify_id_token(token):
     return id_token.verify_oauth2_token(
-        access_token,
-        requests.Request(),
+        token,
+        google.auth.transport.requests.Request(),
         current_app.config['GOOGLE_CLIENT_ID']
     )

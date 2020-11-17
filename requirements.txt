@@ -5,3 +5,4 @@ flask-login
 oauthlib
 google-auth
 requests
+pyopenssl
