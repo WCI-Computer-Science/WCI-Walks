@@ -64,10 +64,16 @@ def info():
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('users.info'))
+    
     return render_template('userlogin.html')
 
 @bp.route('/authorize', methods=('GET', 'POST'))
 def authorize():
+    if current_user.is_authenticated:
+        return redirect(url_for('users.info'))
+    
     auth_endpoint = oauth.get_google_configs()['authorization_endpoint']
 
     request_uri = oauth.get_client().prepare_request_uri(
@@ -110,4 +116,5 @@ def confirmlogin():
 @login_required
 def logout():
     logout_user()
+    # add a log out view in the future
     return redirect(url_for('index.home'))

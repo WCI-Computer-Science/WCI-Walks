@@ -6,13 +6,13 @@
         <li>
             <a href="/users">Profile</a>
         </li>
-        {% if "userid" not in session %}
+        {% if current_user is defined and current_user.is_authenticated %}
         <li>
-            <a href="/users/login">Log In</a>
+            <a href="/users/logout">Log Out</a>
         </li>
         {% else %}
         <li>
-            <a href="/users/logout">Log out</a>
+            <a href="/users/login">Log In</a>
         </li>
         {% endif %}
     </ul>

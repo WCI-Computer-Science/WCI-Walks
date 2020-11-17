@@ -6,12 +6,14 @@ from . import database, loginmanager
 login_manager = loginmanager.get_login_manager()
 
 class User:
-    def __init__(self, userid=None, email=None, username=None, distance=0, active=1):
+    def __init__(self, userid=None, email=None, username=None, distance=0, authenticated=1, active=1):
         self.id = userid
         self.email = email
         self.username = username
         self.distance = distance
-        self.active = active
+        self.is_authenticated = authenticated
+        self.is_active = active
+        self.is_anonymous = False
     
     def add_distance(self, distance):
         self.distance = round(self.distance + distance, 1)
@@ -19,7 +21,7 @@ class User:
     def write_db(self):
         database.get_db().execute(
             'INSERT INTO users (id, email, username, distance, active) VALUES (?, ?, ?, ?, ?)',
-            (self.id, self.email, self.username, self.distance, self.active)
+            (self.id, self.email, self.username, self.distance, self.is_active)
         )
     
     def update_distance_db(self):
@@ -34,7 +36,7 @@ class User:
         self.email = user['email']
         self.username = user['username']
         self.distance = user['distance']
-        self.active = user['active']
+        self.is_active = user['active']
     
     def get_walk(self, date):
         return database.get_db().execute(
@@ -52,16 +54,7 @@ class User:
             'UPDATE walks SET distance=? WHERE id=? AND walkdate=?',
             (round(walk['distance'] + distance, 1), self.id, date)
         )
-        
-    def is_authenticated(self):
-        return True
-    
-    def is_active(self):
-        return self.active
-    
-    def is_anonymous(self):
-        return False
-    
+            
     def get_id(self):
         return self.id
     
