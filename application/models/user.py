@@ -1,4 +1,4 @@
-from flask import redirect, url_for
+from flask import current_app, redirect, url_for
 import flask_login
 from models import database, loginmanager
 
