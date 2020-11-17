@@ -14,7 +14,7 @@ class User:
         self.active = active
     
     def add_distance(self, distance):
-        self.distance += distance
+        self.distance = round(self.distance + distance, 1)
     
     def write_db(self):
         db = database.get_db()

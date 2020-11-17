@@ -22,22 +22,13 @@ class SubmitDistanceForm(Form):
 @bp.route('/', methods=('GET', 'POST'))
 @login_required
 def info():
-    
-    db = database.get_db()
-    user = db.execute(
-        'SELECT * FROM users WHERE id=?', (session['userid'],)
-    ).fetchone()
-
-    if not user['confirmed']:
-        # Tell user to authenticate email
-        return render_template()
-
     form = SubmitDistanceForm(request.form)
     message = None
 
     if request.method == 'GET':
         return render_template('users.html', form=form)
 
+    db = database.get_db()
     date = str(datetime.date.today())
     error = None
     if form.validate():
@@ -52,12 +43,12 @@ def info():
         if walk is None:
             db.execute(
                 'INSERT INTO walks (id, username, distance, walkdate) VALUES (?, ?, ?, ?)',
-                (session['userid'], user['username'], distance, date)
+                (current_user.id, current_user.username, distance, date)
             )
         else:
             db.execute(
                 'UPDATE walks SET distance=? WHERE id=? AND walkdate=?',
-                (round(walk['distance'] + distance, 1), session['userid'], date)
+                (round(walk['distance'] + distance, 1), current_user.id, date)
             )
         
         if total is None:
@@ -69,9 +60,8 @@ def info():
                 'UPDATE total SET distance=?', (round(total['distance'] + distance, 1),)
             )
         
-        db.execute(
-            'UPDATE users SET distance=? WHERE id=?', (round(user['distance'] + distance, 1), session['userid'])
-        )
+        current_user.add_distance(distance)
+        current_user.write_db()
 
         db.commit()
         message = "You've successfully updated the distance!"
