@@ -33,23 +33,15 @@ def info():
     error = None
     if form.validate():
         distance = float(form.distance.data)
-        walk = db.execute(
-            'SELECT * FROM walks WHERE id=? AND walkdate=?', (session['userid'], date)
-        ).fetchone()
+        walk = current_user.get_walk(date)
         total = db.execute(
             'SELECT * FROM total'
         ).fetchone()
         
         if walk is None:
-            db.execute(
-                'INSERT INTO walks (id, username, distance, walkdate) VALUES (?, ?, ?, ?)',
-                (current_user.id, current_user.username, distance, date)
-            )
+            current_user.insert_walk(distance, date)
         else:
-            db.execute(
-                'UPDATE walks SET distance=? WHERE id=? AND walkdate=?',
-                (round(walk['distance'] + distance, 1), current_user.id, date)
-            )
+            current_user.update_walk(distance, date, walk)
         
         if total is None:
             db.execute(
@@ -61,7 +53,7 @@ def info():
             )
         
         current_user.add_distance(distance)
-        current_user.write_db()
+        current_user.update_distance_db()
 
         db.commit()
         message = "You've successfully updated the distance!"
@@ -106,10 +98,10 @@ def confirmlogin():
     if not user.User.exists(userid):
         current_user = user.User(userid=userid, email=email, username=username)
         current_user.write_db()
+        database.get_db().commit()
     else:
         current_user = user.User(userid=userid)
         current_user.read_db()
-    database.get_db().commit()
 
     login_user(current_user)
     return redirect(url_for('users.info'))
