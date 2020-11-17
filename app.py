@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 import secrets
 from models import *
-from controllers import index, userinfo
+from controllers import index, users
 
 # Configurations
 app.config['SECRET_KEY'] = secrets.secret_key
@@ -27,7 +27,7 @@ login_manager.init_app(app)
 app.register_blueprint(index.bp)
 
 # Route /users to login and user statistics page
-app.register_blueprint(userinfo.bp)
+app.register_blueprint(users.bp)
 
 # Test app for startup
 if (__name__ == '__main__'):

@@ -98,42 +98,6 @@ def info():
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     userform = LoginForm(request.form)
-
-    if request.method == 'GET':
-        return render_template('userlogin.html', userform=userform)
-
-    if userform.validate():
-        email = userform.email.data
-        password = userform.password.data
-
-        print(email, file=sys.stderr)
-
-        error = None
-        db = database.get_db()
-
-        if not email or not password:
-            error = 'Please fill out all values.'
-        else:
-            user = db.execute(
-                'SELECT * FROM users WHERE email=?', (email,)
-            ).fetchone()
-            if user is None or not check_password_hash(user['password'], password):
-                error = 'Login credentials failed. Have you signed up yet?'
-            elif not user['confirmed']:
-                error = 'This account hasn\'t been confirmed. Check your email or sign up again.'
-            else:
-                print(user["username"], file=sys.stderr)
-        if error is None:
-            session.clear()
-            session['userid'] = user['id']
-            session['email'] = user['email']
-            print('Store a cookie', file=sys.stderr)
-            return redirect(url_for('users.info'))
-
-        #in the future, alert front end of error with http response
-        print(error, file=sys.stderr)
-    else:
-        error="Please check that you have filled out all fields correctly!"
     return render_template('userlogin.html', userform=userform, error=error)
 
 @bp.route('/authorize', methods=('GET', 'POST'))
@@ -150,27 +114,16 @@ def authorize():
 @bp.route('/confirmlogin', methods=('GET', 'POST'))
 def confirmlogin():
     code = request.args.get('code')
-    client = oauth.get_client()
-    token_url, headers, body = client.prepare_token_request(
-        oauth.get_google_configs()['token_endpoint'],
-        authorization_response=request.url,
-        redirect_url=request.base_url,
-        code=code
-    )
-    token_response = requests.post(
-        token_url,
-        headers=headers,
-        data=body,
-        auth=(current_app.config['GOOGLE_CLIENT_ID'], current_app.config['GOOGLE_CLIENT_SECRET']),
-    )
-    client.parse_request_body_response(json.dumps(token_response.json()))
-    
-    uri, headers, body = client.add_token(oauth.get_google_configs()["userinfo_endpoint"])
-    userinfo_response = requests.get(uri, headers=headers, data=body).json()
-    if userinfo_response.get("email_verified"):
-        userid = userinfo_response["sub"]
-        email = userinfo_response["email"]
-        username = userinfo_response["name"]
+    #client = oauth.get_client()
+    access_token = oauth.get_access_token(code)
+    idinfo = oauth.verify_access_token(access_token)
+    #client.parse_request_body_response(json.dumps(token_response)
+    #uri, headers, body = client.add_token(oauth.get_google_configs()["userinfo_endpoint"])
+    #idinfo = requests.get(uri, headers=headers, data=body).json()
+    if idinfo.get("email_verified"):
+        userid = idinfo["sub"]
+        email = idinfo["email"]
+        username = idinfo["name"]
     else:
         return "Email unavailable or not unverified.", 400
     

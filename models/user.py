@@ -1,6 +1,6 @@
 from flask import redirect, url_for
 import flask_login
-import models.database
+from models import database
 
 class User:
     def __init__(self, userid=None, email=None, username=None, distance=0, active=1):
