@@ -4,3 +4,4 @@ email_validator
 flask-login
 oauthlib
 google-auth
+requests

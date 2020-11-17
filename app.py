@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_login import LoginManager
 
 app = Flask(__name__)
 
@@ -18,10 +17,6 @@ app.config['GOOGLE_DISCOVERY_URL'] = "https://accounts.google.com/.well-known/op
 
 # Create database and set up automatic database closing for requests
 database.init_app(app)
-
-# Set up login manager
-login_manager = LoginManager()
-login_manager.init_app(app)
 
 # Route / to main page
 app.register_blueprint(index.bp)

@@ -1,6 +1,6 @@
 import functools, sys, datetime, json
 
-from flask import abort, Blueprint, current_app, url_for, redirect, render_template, request, requests, session
+from flask import abort, Blueprint, current_app, url_for, redirect, render_template, request, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
 from itsdangerous import URLSafeTimedSerializer
@@ -19,24 +19,9 @@ class SubmitDistanceForm(Form):
         places=2)
     submit = SubmitField()
 
-class SignupForm(Form):
-    username = StringField("First and last name", [validators.InputRequired()])
-    email = EmailField("WRDSB email address", [validators.InputRequired(), validators.Email()])
-    password = PasswordField("Password", [validators.InputRequired()])
-    confirmpassword = PasswordField("Confirm password",
-        [validators.InputRequired(), validators.EqualTo('password', message='Passwords must match')])
-    submit = SubmitField()
-
-class LoginForm(Form):
-    email = EmailField("Email address", [validators.InputRequired(), validators.Email()])
-    password = PasswordField("Password", [validators.InputRequired()])
-    submit = SubmitField()
-
 @bp.route('/', methods=('GET', 'POST'))
 @login_required
 def info():
-    if 'userid' not in session:
-        return redirect(url_for('users.login'))
     
     db = database.get_db()
     user = db.execute(

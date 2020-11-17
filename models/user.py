@@ -1,6 +1,8 @@
 from flask import redirect, url_for
 import flask_login
-from models import database
+from models import database, loginmanager
+
+login_manager = loginmanager.get_login_manager()
 
 class User:
     def __init__(self, userid=None, email=None, username=None, distance=0, active=1):
@@ -64,7 +66,3 @@ def load_user(userid):
         user['distance'],
         user['active']
     )
-
-@login_manager.unauthorized
-def unauthorized():
-    redirect(url_for('users.login'))
