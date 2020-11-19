@@ -1,4 +1,4 @@
-import sys
+import sys, json
 from flask import current_app, redirect, url_for
 import flask_login
 from . import database, loginmanager
@@ -31,7 +31,7 @@ class User:
 
     def read_db(self):
         user = database.get_db().execute(
-            'SELECT id FROM users WHERE id=? LIMIT 1', (self.id,)
+            'SELECT * FROM users WHERE id=? LIMIT 1', (self.id,)
         ).fetchone()
         self.email = user['email']
         self.username = user['username']
@@ -40,7 +40,7 @@ class User:
     
     def get_walk(self, date):
         return database.get_db().execute(
-            'SELECT * FROM walks WHERE id=? AND walkdate=?', (self.id, date)
+            'SELECT * FROM walks WHERE id=? AND walkdate=? LIMIT 1', (self.id, date)
         ).fetchone()
     
     def insert_walk(self, distance, date):
