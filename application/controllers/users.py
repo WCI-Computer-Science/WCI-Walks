@@ -26,7 +26,11 @@ def info():
     message = None
 
     if request.method == 'GET':
-        return render_template('users.html', form=form)
+        return render_template(
+            'users.html',
+            username=current_user.username,
+            form=form
+        )
 
     db = database.get_db()
     date = str(datetime.date.today())
@@ -60,7 +64,13 @@ def info():
     else:
         error = "Please enter a number between 0 and 42."
 
-    return render_template('users.html', form=form, error=error, message=message)
+    return render_template(
+        'users.html',
+        username=current_user.username,
+        form=form,
+        error=error,
+        message=message
+    )
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
@@ -86,12 +96,8 @@ def authorize():
 @bp.route('/authorize/confirmlogin', methods=('GET', 'POST'))
 def confirmlogin():
     code = request.args.get('code')
-    #client = oauth.get_client()
     id_token = oauth.get_id_token(code)
     idinfo = oauth.verify_id_token(id_token)
-    #client.parse_request_body_response(json.dumps(token_response)
-    #uri, headers, body = client.add_token(oauth.get_google_configs()["userinfo_endpoint"])
-    #idinfo = requests.get(uri, headers=headers, data=body).json()
     if idinfo.get("email_verified"):
         userid = idinfo["sub"]
         email = idinfo["email"]

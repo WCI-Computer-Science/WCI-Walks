@@ -1,5 +1,6 @@
 {% extends "utils/layout.html" %}
 {% block body %}
+    <h1>Welcome back, {{ username }}.</h1>
     <p>Testing: User page should only load up if cookie is connected</p>
     {% if message is not none %}
         <div id='submitdistancesuccess'><p>{{ message }}</p></div>
