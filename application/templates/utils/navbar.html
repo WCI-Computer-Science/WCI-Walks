@@ -6,14 +6,12 @@
         <li>
             <a href="/users">Profile</a>
         </li>
-        {% if current_user is defined and current_user.is_authenticated %}
-        <li>
-            <a href="/users/logout">Log Out</a>
+        <li class="right">
+            {% if current_user is defined and current_user.is_authenticated %}
+                <a href="/users/logout">Log Out</a>
+            {% else %}
+                <a href="/users/login">Log In</a>
+            {% endif %}
         </li>
-        {% else %}
-        <li>
-            <a href="/users/login">Log In</a>
-        </li>
-        {% endif %}
     </ul>
 </nav>
