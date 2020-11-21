@@ -1,6 +1,7 @@
 # Connects to database
 
-import sqlite3
+import os
+import psycopg2
 import click
 
 from flask import current_app, g

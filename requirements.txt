@@ -7,3 +7,4 @@ oauthlib
 google-auth
 requests
 pyopenssl
+psycopg2-binary
