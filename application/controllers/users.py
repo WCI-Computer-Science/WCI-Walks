@@ -1,6 +1,6 @@
 import functools, sys, datetime, json
 
-from flask import abort, Blueprint, current_app, url_for, redirect, render_template, request, session
+from flask import abort, Blueprint, current_app, url_for, flash, redirect, render_template, request, session
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
 from itsdangerous import URLSafeTimedSerializer
@@ -23,7 +23,6 @@ class SubmitDistanceForm(Form):
 @login_required
 def info():
     form = SubmitDistanceForm(request.form)
-    message = None
 
     if request.method == 'GET':
         return render_template(
@@ -34,7 +33,6 @@ def info():
 
     db = database.get_db()
     date = str(datetime.date.today())
-    error = None
     if form.validate():
         distance = float(form.distance.data)
         walk = current_user.get_walk(date)
@@ -60,16 +58,14 @@ def info():
         current_user.update_distance_db()
 
         db.commit()
-        message = "You've successfully updated the distance!"
+        flash("You've successfully updated the distance!")
     else:
-        error = "Please enter a number between 0 and 42."
+        flash("Please enter a number between 0 and 42.")
 
     return render_template(
         'users.html',
         username=current_user.username,
         form=form,
-        error=error,
-        message=message
     )
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -98,12 +94,15 @@ def confirmlogin():
     code = request.args.get('code')
     id_token = oauth.get_id_token(code)
     idinfo = oauth.verify_id_token(id_token)
-    if idinfo.get("email_verified"):
+
+
+    if idinfo.get("email_verified") and idinfo.get("hd"):
         userid = idinfo["sub"]
         email = idinfo["email"]
         username = idinfo["name"]
     else:
-        return "Email unavailable or not unverified.", 400
+        flash("Email invalid. Are you using your WRDSB email?")
+        return redirect(url_for('users.login'))
     
     print(idinfo, file=sys.stderr)
     

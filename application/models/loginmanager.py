@@ -5,6 +5,7 @@ def init_login_manager():
     login_manager = LoginManager()
     login_manager.init_app(current_app)
     login_manager.login_view = 'users.login'
+    login_manager.login_message = 'Please log in first.'
     return login_manager
 
 def get_login_manager():

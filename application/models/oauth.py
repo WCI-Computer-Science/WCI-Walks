@@ -20,7 +20,8 @@ def get_id_token(auth_code):
         get_google_configs()['token_endpoint'],
         authorization_response=request.url,
         redirect_url=request.base_url,
-        code=auth_code
+        code=auth_code,
+        hd='wrdsb.ca'
     )
     return requests.post(
         token_url,

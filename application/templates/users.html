@@ -2,15 +2,12 @@
 {% block body %}
     <h1>Welcome back, {{ username }}.</h1>
     <p>Testing: User page should only load up if cookie is connected</p>
-    {% if message is not none %}
-        <div id='submitdistancesuccess'><p>{{ message }}</p></div>
-    {% endif %}
+    {% for message in get_flashed_messages() %}
+        <div class='message'><p>{{ message }}</p></div>
+    {% endfor %}
     <div id='submitdistance'>
         <h1>Submit distance:</h1>
         <form id='submitdistanceform'  method="post">
-            {% if error is not none %}
-                <p>{{ error }}</p>
-            {% endif %}
             <div>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</div>
             {{ form.submit() }}
         </form>
