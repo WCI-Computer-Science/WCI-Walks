@@ -6,7 +6,7 @@
     <h1>Login page</h1>
     {% for error in get_flashed_messages() %}
         <div class='error'><h2>{{ error }}</h2></div>
-    {% endif %}
+    {% endfor %}
     <div class="signinlen">
         <a href="/users/authorize" class="googlebtn">
             <i class="fa fa-google fa-fw"></i> 
