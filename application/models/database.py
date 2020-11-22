@@ -49,7 +49,7 @@ def get_total(cur):
 # Insert total into database
 def insert_total(distance, cur):
     cur.execute(
-        'INSERT INTO total (distance) VALUES (%s)', (round(distance, 1))
+        'INSERT INTO total (distance) VALUES (%s)', (round(distance, 1),)
     )
 
 # Update total in database

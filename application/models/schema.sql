@@ -2,7 +2,7 @@
 
 /* Total distance travelled as a school */
 CREATE TABLE IF NOT EXISTS total (
-    distance INTEGER
+    distance REAL
 );
 
 /* Info stored for each user:
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
     username TEXT NOT NULL,
-    distance INTEGER NOT NULL,
+    distance REAL NOT NULL,
     active SMALLINT DEFAULT 1
 );
 
