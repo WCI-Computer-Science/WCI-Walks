@@ -1,7 +1,7 @@
 # WCI-Walks
 Walkathon web app  
 Backend: Flask  
-Frontend: HTML/CSS/JS?  
+Frontend: HTML with Jinja2/CSS/JS  
 
 Pattern: MVC
 
@@ -16,4 +16,4 @@ Run locally for testing:
 8. set up a local postgres database (export DATABASE_URL=_your database here_)
 9. run (flask run)
 
-Version 0.0.1
+Version 1.0.0

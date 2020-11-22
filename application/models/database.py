@@ -47,11 +47,11 @@ def get_total(cur):
 # Insert total into database
 def insert_total(distance, cur):
     cur.execute(
-        'INSERT INTO total (distance) VALUES (?)', (distance,)
+        'INSERT INTO total (distance) VALUES (%s)', (distance,)
     )
 
 # Update total in database
 def update_total(total, distance, cur):
     cur.execute(
-        'UPDATE total SET distance=?', (round(total['distance'] + distance, 1),)
+        'UPDATE total SET distance=%s', (round(total['distance'] + distance, 1),)
     )

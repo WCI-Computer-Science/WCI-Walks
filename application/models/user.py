@@ -20,18 +20,18 @@ class User:
     
     def write_db(self, cur):
         cur.execute(
-            'INSERT INTO users (id, email, username, distance, active) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO users (id, email, username, distance, active) VALUES (%s, %s, %s, %s, %s)',
             (self.id, self.email, self.username, self.distance, self.is_active)
         )
     
     def update_distance_db(self, cur):
         cur.execute(
-            'UPDATE users SET distance=? WHERE id=?', (self.distance, self.id)
+            'UPDATE users SET distance=%s WHERE id=%s', (self.distance, self.id)
         )
 
     def read_db(self, cur):
         user = cur.execute(
-            'SELECT * FROM users WHERE id=? LIMIT 1', (self.id,)
+            'SELECT * FROM users WHERE id=%s LIMIT 1', (self.id,)
         ).fetchone()
         self.email = user['email']
         self.username = user['username']
@@ -40,18 +40,18 @@ class User:
     
     def get_walk(self, date, cur):
         return cur.execute(
-            'SELECT * FROM walks WHERE id=? AND walkdate=? LIMIT 1', (self.id, date)
+            'SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1', (self.id, date)
         ).fetchone()
     
     def insert_walk(self, distance, date, cur):
         cur.execute(
-            'INSERT INTO walks (id, username, distance, walkdate) VALUES (?, ?, ?, ?)',
+            'INSERT INTO walks (id, username, distance, walkdate) VALUES (%s, %s, %s, %s)',
             (self.id, self.username, distance, date)
         )
     
     def update_walk(self, distance, date, walk, cur):
         cur.execute(
-            'UPDATE walks SET distance=? WHERE id=? AND walkdate=?',
+            'UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s',
             (round(walk['distance'] + distance, 1), self.id, date)
         )
             
@@ -62,7 +62,7 @@ class User:
     @staticmethod
     def exists(userid, cur):
         return cur.execute(
-            'SELECT id FROM users WHERE id=? LIMIT 1', (userid,)
+            'SELECT id FROM users WHERE id=%s LIMIT 1', (userid,)
         ).fetchone()
 
 @login_manager.user_loader
@@ -70,7 +70,7 @@ def load_user(userid):
     db = database.get_db()
     with db.cursor() as cur:
         user = cur.execute(
-            'SELECT * FROM users WHERE id=?', (userid,)
+            'SELECT * FROM users WHERE id=%s', (userid,)
         ).fetchone()
 
     if not user:

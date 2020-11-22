@@ -24,7 +24,7 @@ def get_day_leaderboard(date):
     db = database.get_db()
     with db.cursor() as cur:
         userdistances = db.execute(
-            "SELECT username, distance FROM walks WHERE walkdate=?;", (date,)
+            "SELECT username, distance FROM walks WHERE walkdate=%s;", (date,)
         ).fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
 
