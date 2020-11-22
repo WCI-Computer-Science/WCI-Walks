@@ -14,14 +14,15 @@ class SubmitDistanceForm(Form):
     distance = DecimalField(
         "Log your distance",
         [validators.InputRequired(), validators.NumberRange(min=0.01, max=42, message="Invalid distance")],
-        places=2)
+        places=2
+    )
     submit = SubmitField()
 
 @bp.route('/', methods=('GET', 'POST'))
 @login_required
 def info():
     db = database.get_db()
-    date = str(datetime.date.today())
+    date = datetime.date.today()
     form = SubmitDistanceForm(request.form)
 
     if request.method == 'GET':
@@ -47,7 +48,7 @@ def info():
             else:
                 database.update_total(total, distance, cur)
             
-            current_user.add_distance(distance, cur)
+            current_user.add_distance(distance)
             current_user.update_distance_db(cur)
 
         db.commit()
@@ -101,7 +102,7 @@ def confirmlogin():
     
     db = database.get_db()
     with db.cursor() as cur:
-        if not user.User.exists(userid):
+        if not user.User.exists(userid, cur):
             current_user = user.User(userid=userid, email=email, username=username)
             current_user.write_db(cur)
             db.commit()

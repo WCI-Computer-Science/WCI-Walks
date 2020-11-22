@@ -30,18 +30,20 @@ class User:
         )
 
     def read_db(self, cur):
-        user = cur.execute(
+        cur.execute(
             'SELECT * FROM users WHERE id=%s LIMIT 1', (self.id,)
-        ).fetchone()
+        )
+        user = cur.fetchone()
         self.email = user['email']
         self.username = user['username']
         self.distance = user['distance']
         self.is_active = user['active']
     
     def get_walk(self, date, cur):
-        return cur.execute(
+        cur.execute(
             'SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1', (self.id, date)
-        ).fetchone()
+        )
+        return cur.fetchone()
     
     def insert_walk(self, distance, date, cur):
         cur.execute(
@@ -61,17 +63,19 @@ class User:
     # Static methods
     @staticmethod
     def exists(userid, cur):
-        return cur.execute(
+        cur.execute(
             'SELECT id FROM users WHERE id=%s LIMIT 1', (userid,)
-        ).fetchone()
+        )
+        return cur.fetchone()
 
 @login_manager.user_loader
 def load_user(userid):
     db = database.get_db()
     with db.cursor() as cur:
-        user = cur.execute(
+        cur.execute(
             'SELECT * FROM users WHERE id=%s', (userid,)
-        ).fetchone()
+        )
+        user = cur.fetchone()
 
     if not user:
         return None

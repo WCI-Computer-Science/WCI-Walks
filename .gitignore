@@ -135,3 +135,4 @@ __pycache__
 secrets.py
 .vs_code
 secrets.pyc
+logfile

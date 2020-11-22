@@ -1,6 +1,7 @@
 # Connects to database
 
 import psycopg2
+import psycopg2.extras
 import click
 
 from flask import current_app, g
@@ -40,9 +41,10 @@ def init_app(app):
 
 # Get total from database
 def get_total(cur):
-    return cur.execute(
+    cur.execute(
         'SELECT * FROM total'
-    ).fetchone()
+    )
+    return cur.fetchone()
 
 # Insert total into database
 def insert_total(distance, cur):

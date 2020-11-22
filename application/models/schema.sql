@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS users (
     walkdate: date of walk stored as YYYY-MM-DD
 */
 CREATE TABLE IF NOT EXISTS walks (
-    id INTEGER NOT NULL,
+    id TEXT NOT NULL,
     username TEXT NOT NULL,
     distance REAL NOT NULL,
-    walkdate TEXT NOT NULL
+    walkdate DATE NOT NULL
 );
