@@ -3,14 +3,16 @@
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 {% endblock %}
 {% block body %}
-    <h1>Login page</h1>
-    {% for error in get_flashed_messages() %}
-        <div class='error'><h2>{{ error }}</h2></div>
-    {% endfor %}
-    <div class="signinlen">
-        <a href="/users/authorize" class="googlebtn">
-            <i class="fa fa-google fa-fw"></i> 
-            Login with Google
-        </a>
+    <div class="content">
+        <h1>Login page</h1>
+        {% for error in get_flashed_messages() %}
+            <div class='error'><h2>{{ error }}</h2></div>
+        {% endfor %}
+        <div class="signinlen">
+            <a href="/users/authorize" class="googlebtn">
+                <i class="fa fa-google fa-fw"></i> 
+                Login with Google
+            </a>
+        </div>
     </div>
 {% endblock %}

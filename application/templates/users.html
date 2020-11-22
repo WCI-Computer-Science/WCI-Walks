@@ -1,15 +1,17 @@
 {% extends "utils/layout.html" %}
 {% block body %}
-    <h1>Welcome back, {{ username }}.</h1>
-    <p>Testing: User page should only load up if cookie is connected</p>
-    {% for message in get_flashed_messages() %}
-        <div class='message'><p>{{ message }}</p></div>
-    {% endfor %}
-    <div id='submitdistance'>
-        <h1>Submit distance:</h1>
-        <form id='submitdistanceform'  method="post">
-            <div>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</div>
-            {{ form.submit() }}
-        </form>
+    <div class="content">
+        <h1>Welcome back, {{ username }}.</h1>
+        <p>Testing: User page should only load up if cookie is connected</p>
+        {% for message in get_flashed_messages() %}
+            <div class='message'><p>{{ message }}</p></div>
+        {% endfor %}
+        <div id='submitdistance'>
+            <h1>Submit distance:</h1>
+            <form id='submitdistanceform'  method="post">
+                <div>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</div>
+                {{ form.submit() }}
+            </form>
+        </div>
     </div>
 {% endblock %}

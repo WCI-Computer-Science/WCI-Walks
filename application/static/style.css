@@ -1,8 +1,9 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: black;
-  color: white;
+  background-color: rgb(71, 131, 174);
+  color: rgb(55, 55, 67);
+  font-family: 'Trebuchet MS', sans-serif;
 }
 
 h2 {
@@ -14,11 +15,15 @@ li {
 }
 
 nav {
+  margin: 0;
+  padding: 10px 0;
   width: 100%;
+  height: 50px;
+  background-color: rgb(18, 18, 22);
 }
 
 nav ul {
-  margin: 30px 0 15px 0;
+  margin: 10px 0;
   padding: 0 4% 0 4%;
   width: 92%;
 }
@@ -26,16 +31,30 @@ nav ul {
 nav li {
   margin: 0;
   padding: 0;
-  width: 100px;
-  display: inline-block;
+  width: 6em;
   text-align: center;
+  float: right;
+  font-size: 16pt;
 }
 
-.right {
-  float: right;
+#nav-main {
+  float: none;
+  display: inline-block;
+  font-size: 20pt;
+}
+
+nav a {
+  text-decoration: none;
+  color: whitesmoke;
+}
+
+.content {
+  background-color: whitesmoke;
 }
 
 .columns {
+  margin: 50px 0;
+  padding: 200px 5%;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-auto-flow: column;
@@ -96,6 +115,10 @@ nav li {
 }
 
 @media (max-width: 600px) {
+  .columns {
+    padding: 0 30px;
+  }
+
   #appinfo {
     grid-column-start: 1;
     grid-column-end: 11;
@@ -132,12 +155,16 @@ nav li {
   font-size: 17px;
   line-height: 20px;
   text-decoration: none;
-  background-color: rgb(51, 76, 223);
+  background-color: rgb(164, 48, 63);
   color: white;
 }
 
 .googlebtn:hover {
-  background-color: rgb(75, 97, 223);
+  background-color: rgb(179, 58, 74);
+}
+
+.googlebtn:active {
+  background-color: rgb(155, 40, 55);
 }
 
 .signinlen {
