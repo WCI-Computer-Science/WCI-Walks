@@ -2,10 +2,10 @@ body {
   margin: 0;
   padding: 0;
   background-color: black;
-  color: white; /*create default text color, can adjust individual ones later*/
+  color: white;
 }
 
-h2 { /*Shouldn't be adjusting margin/padding in text selector, use specific selectors or divs instead*/
+h2 {
   font-size: 1.75em;
 }
 
@@ -36,52 +36,108 @@ nav li {
 }
 
 .columns {
-  margin: 20px 0;
-  overflow: auto;
-  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-auto-flow: column;
+  row-gap: 10px;
+  column-gap: 2%;
 }
 
 .column {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 2%;
-  float: left;
+  padding: 5px;
   text-align: center;
 }
 
-.appinfo {
-  width: 40%;
-  min-width: 200px;
+.column ul {
+  padding-left: 0;
 }
 
-.leaderboard {
-  width: 30%;
-  min-width: 200px;
+#appinfo {
+  grid-column-start: 1;
+  grid-column-end: 5;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+#alltimeleaderboard {
+  grid-column-start: 5;
+  grid-column-end: 8;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+#yesterdayleaderboard {
+  grid-column-start: 8;
+  grid-column-end: 11;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+@media (max-width: 992px) {
+  #appinfo {
+    grid-column-start: 1;
+    grid-column-end: 11;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+
+  #alltimeleaderboard {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  #yesterdayleaderboard {
+    grid-column-start: 6;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+}
+
+@media (max-width: 600px) {
+  #appinfo {
+    grid-column-start: 1;
+    grid-column-end: 11;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+
+  #alltimeleaderboard {
+    grid-column-start: 1;
+    grid-column-end: 11;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  #yesterdayleaderboard {
+    grid-column-start: 1;
+    grid-column-end: 11;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
 }
 
 .errors {
     color: white;
 }
 
-.bold {font-weight: bold;}
-.d {float: right;}
 .googlebtn {
   width: 100%;
   padding: 12px;
   border: none;
   border-radius: 4px;
   margin: 5px 0;
-  opacity: 0.85;
   display: inline-block;
   font-size: 17px;
   line-height: 20px;
   text-decoration: none;
-  background-color: #dd4b39;
+  background-color: rgb(51, 76, 223);
   color: white;
 }
 
 .googlebtn:hover {
-  opacity: 1;
+  background-color: rgb(75, 97, 223);
 }
 
 .signinlen {
