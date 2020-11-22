@@ -13,6 +13,7 @@ Run locally for testing:
 5. set up flask env (export FLASK_ENV=development)
 6. set up flask app (export FLASK_APP=wsgi.py)
 7. set up flask cert (for testing) (export FLASK_RUN_CERT=adhoc)
-8. run (flask run)
+8. set up a local postgres database (export DATABASE_URL=_your database here_)
+9. run (flask run)
 
 Version 0.0.1

@@ -2,8 +2,6 @@ import functools, sys, datetime, json
 
 from flask import abort, Blueprint, current_app, url_for, flash, redirect, render_template, request, session
 from flask_login import current_user, login_user, logout_user, login_required
-from werkzeug.security import check_password_hash, generate_password_hash
-from itsdangerous import URLSafeTimedSerializer
 
 from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField, validators
 from wtforms.fields.html5 import EmailField, IntegerField
@@ -22,6 +20,8 @@ class SubmitDistanceForm(Form):
 @bp.route('/', methods=('GET', 'POST'))
 @login_required
 def info():
+    db = database.get_db()
+    date = str(datetime.date.today())
     form = SubmitDistanceForm(request.form)
 
     if request.method == 'GET':
@@ -31,31 +31,24 @@ def info():
             form=form
         )
 
-    db = database.get_db()
-    date = str(datetime.date.today())
     if form.validate():
-        distance = float(form.distance.data)
-        walk = current_user.get_walk(date)
-        total = db.execute(
-            'SELECT * FROM total'
-        ).fetchone()
+        with db.cursor() as cur:
+            distance = float(form.distance.data)
+            walk = current_user.get_walk(date, cur)
+            total = database.get_total(cur)
+            
+            if walk is None:
+                current_user.insert_walk(distance, date, cur)
+            else:
+                current_user.update_walk(distance, date, walk, cur)
         
-        if walk is None:
-            current_user.insert_walk(distance, date)
-        else:
-            current_user.update_walk(distance, date, walk)
-        
-        if total is None:
-            db.execute(
-                'INSERT INTO total (distance) VALUES (?)', (distance,)
-            )
-        else:
-            db.execute(
-                'UPDATE total SET distance=?', (round(total['distance'] + distance, 1),)
-            )
-        
-        current_user.add_distance(distance)
-        current_user.update_distance_db()
+            if total is None:
+                database.insert_total(distance, cur)
+            else:
+                database.update_total(total, distance, cur)
+            
+            current_user.add_distance(distance, cur)
+            current_user.update_distance_db(cur)
 
         db.commit()
         flash("You've successfully updated the distance!")
@@ -106,13 +99,15 @@ def confirmlogin():
     
     print(idinfo, file=sys.stderr)
     
-    if not user.User.exists(userid):
-        current_user = user.User(userid=userid, email=email, username=username)
-        current_user.write_db()
-        database.get_db().commit()
-    else:
-        current_user = user.User(userid=userid)
-        current_user.read_db()
+    db = database.get_db()
+    with db.cursor() as cur:
+        if not user.User.exists(userid):
+            current_user = user.User(userid=userid, email=email, username=username)
+            current_user.write_db(cur)
+            db.commit()
+        else:
+            current_user = user.User(userid=userid)
+            current_user.read_db(cur)
 
     login_user(current_user)
     return redirect(url_for('users.info'))

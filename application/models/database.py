@@ -1,6 +1,5 @@
 # Connects to database
 
-import os
 import psycopg2
 import click
 
@@ -10,10 +9,11 @@ from flask.cli import with_appcontext
 # Get database from sqlite connect method
 def get_db():
     if 'db' not in g:
-        g.db = sqlite3.connect(
-            current_app.config['DB'], detect_types=sqlite3.PARSE_DECLTYPES
+        g.db = psycopg2.connect(
+            current_app.config['DB'],
+            sslmode='require',
+            cursor_factory=psycopg2.extras.DictCursor
         )
-        g.db.row_factory = sqlite3.Row
 
     return g.db
 
@@ -26,18 +26,32 @@ def teardown_db(err=None):
 # Initialize the database (first time use only)
 def init_db():
     db = get_db()
-
-    with current_app.open_resource('models/schema.sql') as schema:
-        db.executescript(schema.read().decode('utf8'))
-
-# Create command line command to initialize database
-@click.command('initdb')
-@with_appcontext
-def init_db_command():
-    init_db()
-    click.echo('initialized db')
+    with open('schema.sql', 'r') as schema:
+        with db.cursor() as cur:
+            cur.execute(schema.read().decode('utf8'))
+    
+    db.commit()
 
 # Close database after every request, register command line command
 def init_app(app):
     app.teardown_appcontext(teardown_db)
-    app.cli.add_command(init_db_command)
+
+
+
+# Get total from database
+def get_total(cur):
+    return cur.execute(
+        'SELECT * FROM total'
+    ).fetchone()
+
+# Insert total into database
+def insert_total(distance, cur):
+    cur.execute(
+        'INSERT INTO total (distance) VALUES (?)', (distance,)
+    )
+
+# Update total in database
+def update_total(total, distance, cur):
+    cur.execute(
+        'UPDATE total SET distance=?', (round(total['distance'] + distance, 1),)
+    )

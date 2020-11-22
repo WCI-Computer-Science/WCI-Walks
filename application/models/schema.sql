@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT UNIQUE NOT NULL,
     username TEXT NOT NULL,
     distance INTEGER NOT NULL,
-    active TINYINT DEFAULT 1
+    active SMALLINT DEFAULT 1
 );
 
 /* Info stored for each walk (one walk stored per day):

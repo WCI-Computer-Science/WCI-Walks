@@ -10,9 +10,8 @@ bp = Blueprint('index', __name__, url_prefix='/')
 @bp.route('/', methods=('GET',))
 def home():
     db = database.get_db()
-    total = db.execute(
-        'SELECT * FROM total'
-    ).fetchone()
+    with db.cursor() as cur:
+        total = database.get_total(cur)
     
     return render_template(
         'index.html',

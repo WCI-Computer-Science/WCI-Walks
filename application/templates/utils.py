@@ -12,22 +12,20 @@ from application.models import database
 
 def get_all_time_leaderboard():
     db = database.get_db()
-    # 3 things
-    # .fetchall already returns a list of Row objects (kind of like tuples)
-    # builtin .sort method uses Timsort for O(nlogn), while bubble sort is pretty bad even among other O(n^2) functions
-    userdistances = db.execute(
-        "SELECT username, distance FROM users;"
-    ).fetchall()
+    with db.cursor() as cur:
+        userdistances = db.execute(
+            "SELECT username, distance FROM users;"
+        ).fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
     
     return userdistances[:15]
 
 def get_day_leaderboard(date):
     db = database.get_db()
-
-    userdistances = db.execute(
-        "SELECT username, distance FROM walks WHERE walkdate=?;", (date,)
-    ).fetchall()
+    with db.cursor() as cur:
+        userdistances = db.execute(
+            "SELECT username, distance FROM walks WHERE walkdate=?;", (date,)
+        ).fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
 
     return userdistances[:10]
