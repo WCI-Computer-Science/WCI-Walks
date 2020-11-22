@@ -89,7 +89,6 @@ def confirmlogin():
     id_token = oauth.get_id_token(code)
     idinfo = oauth.verify_id_token(id_token)
 
-
     if idinfo.get("email_verified") and idinfo.get("hd"):
         userid = idinfo["sub"]
         email = idinfo["email"]
