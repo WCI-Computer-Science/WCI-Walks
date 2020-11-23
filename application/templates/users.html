@@ -1,6 +1,44 @@
 {% extends "utils/layout.html" %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script>
+function genchart() {
+{% if labels|length==0 %}
+<!--
+{% endif %}
+var ctx = document.getElementById('myChart');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [{% for i in labels %}"{{i[0]}}",{%endfor%}],
+        datasets: [{
+            label: "{{ username }}",
+            data: [{% for i in data %}{{i[1]}},{%endfor%}],
+            borderColor: 'rgba(164, 47, 63, 1)',
+            backgroundColor: 'rgba(164, 47, 63, 0.2)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+}
+{% if labels|length==0 %}
+-->
+{% endif %}
+</script>
+{% endblock %}
+{% block onload %}genchart(){% endblock %}
 {% block body %}
-    <div class="welcome contentw">
+<div class="profilediv contentw">
+    <div class="welcome">
         <h1>Welcome back, {{ username }}.</h1>
         {% for message in get_flashed_messages() %}
             <div class='message'><p>{{ message }}</p></div>
@@ -13,4 +51,9 @@
             </form>
         </div>
     </div>
+    <div class="chart">
+        <h1>How far you've gone in the past:</h1>
+        <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+</div>
 {% endblock %}

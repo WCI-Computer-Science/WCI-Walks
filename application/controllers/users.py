@@ -24,12 +24,15 @@ def info():
     db = database.get_db()
     date = datetime.date.today()
     form = SubmitDistanceForm(request.form)
-
+    labels = current_user.get_walk_chart_labels(db.cursor())
+    data = current_user.get_walk_chart_data(db.cursor())
     if request.method == 'GET':
         return render_template(
             'users.html',
             username=current_user.username,
-            form=form
+            form=form,
+            labels=labels,
+            data=data
         )
 
     if form.validate():
@@ -60,6 +63,8 @@ def info():
         'users.html',
         username=current_user.username,
         form=form,
+        labels=labels,
+        data=data
     )
 
 @bp.route('/login', methods=('GET', 'POST'))
