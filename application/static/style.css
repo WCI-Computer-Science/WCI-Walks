@@ -108,6 +108,10 @@ nav a {
   padding-left: 0;
 }
 
+.column li {
+  text-align: left;
+}
+
 #appinfo {
   grid-column-start: 1;
   grid-column-end: 11;
