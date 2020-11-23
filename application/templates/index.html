@@ -1,25 +1,27 @@
 {% extends "utils/layout.html" %}
 {% block body %}
-    <!--columns div is to prevent float height collapsing-->
-    <div class='columns'>
+    <div id='logo' class='contentw'>
+        <img src="{{ url_for('static', filename='walk4hopelogo.png') }}" loading="lazy" alt="logo">
+    </div>
+
+    <div class='columns contentw'>
         <div id='appinfo' class="column">
-            <h2>App Info here</h2>
-            <h3>In total, we have walked: {{ total['distance'] }}km!</h3>
-            <p>Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit,
-                sed do eiusmod tempor incididunt
-                ut labore et dolore magna aliqua.
-                Ut enim ad minim veniam, quis
-                nostrud exercitation ullamco
-                laboris nisi ut aliquip ex ea
-                commodo consequat. Duis aute irure
-                dolor in reprehenderit in
-                voluptate velit esse cillum dolore
-                eu fugiat nulla pariatur.
-                Excepteur sint occaecat cupidatat
-                non proident, sunt in culpa qui
-                officia deserunt mollit anim id
-                est laborum.</p>
+            <h2>Our Walk For Hope</h2>
+            {% if total['distance'] %}
+                <h3>In total, we've walked {{ total['distance'] }}km!</h3>
+            {% else %}
+                <h3>Let's get walking!</h3>
+            {% endif %}
+            <p>
+                Welcome to WCI Walks, a web app
+                helping you track your daily walks.
+                Log your distance each day and
+                compare with friends on the
+                leaderboards. You can also check out your
+                walking statistics from your profile!</br>
+                To get started, please login from the menu.
+                You must use your WRDSB account.
+            </p>
         </div>
 
         <div  id='alltimeleaderboard' class="column">
@@ -32,7 +34,7 @@
                         {% endif %}
                     {% endfor %}
                 {% else %}
-                    <li><h3>No one walked yesterday.</h3></li>
+                    <li><p>No one's walked yet.</p></li>
                 {% endif %}
             </ul>
         </div>
@@ -47,10 +49,9 @@
                         {% endif %}
                     {% endfor %}
                 {% else %}
-                    <li><h3>No one's walked yet.</h3></li>
+                    <li><p>No one walked yesterday.</p></li>
                 {% endif %}
             </ul>
         </div>
     </div>
-
 {% endblock %}
