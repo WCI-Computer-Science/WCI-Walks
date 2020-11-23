@@ -2,7 +2,6 @@
 {% block body %}
     <div class="welcome contentw">
         <h1>Welcome back, {{ username }}.</h1>
-        <p>Testing: User page should only load up if cookie is connected</p>
         {% for message in get_flashed_messages() %}
             <div class='message'><p>{{ message }}</p></div>
         {% endfor %}
