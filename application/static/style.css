@@ -1,9 +1,16 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: rgb(71, 131, 174);
+  background-color: rgb(164, 48, 63);
   color: rgb(55, 55, 67);
   font-family: 'Trebuchet MS', sans-serif;
+  font-size: 1em;
+}
+
+@media (min-width: 600px) {
+  body {
+    font-size: 1.5em;
+  }
 }
 
 h2 {
@@ -48,13 +55,43 @@ nav a {
   color: whitesmoke;
 }
 
-.content {
-  background-color: whitesmoke;
+.contentw {
+  background-color: white;
+}
+
+.contentr {
+  background-color: rgb(164, 48, 63);
+}
+
+.contentb {
+  background-color: rgb(71, 131, 174);
+}
+
+#logo {
+  position: relative;
+  width: 50%;
+  margin: 50px auto;
+  padding-top: 50%;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+#logo img {
+  width: 90%;
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 5%;
+}
+
+@media (min-width: 900px) {
+  #logo {
+    width: 450px;
+    padding-top: 450px;
+  }
 }
 
 .columns {
   margin: 50px 0;
-  padding: 200px 5%;
+  padding: 0 30px;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-auto-flow: column;
@@ -73,26 +110,34 @@ nav a {
 
 #appinfo {
   grid-column-start: 1;
-  grid-column-end: 5;
-  grid-row-start: 1;
-  grid-row-end: 2;
-}
-
-#alltimeleaderboard {
-  grid-column-start: 5;
-  grid-column-end: 8;
-  grid-row-start: 1;
-  grid-row-end: 2;
-}
-
-#yesterdayleaderboard {
-  grid-column-start: 8;
   grid-column-end: 11;
   grid-row-start: 1;
   grid-row-end: 2;
 }
 
-@media (max-width: 992px) {
+#appinfo p {
+  text-align: left;
+}
+
+#alltimeleaderboard {
+  grid-column-start: 1;
+  grid-column-end: 11;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+
+#yesterdayleaderboard {
+  grid-column-start: 1;
+  grid-column-end: 11;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+@media (min-width: 600px) {
+  .columns {
+    padding: 10% 5%;
+  }
+
   #appinfo {
     grid-column-start: 1;
     grid-column-end: 11;
@@ -114,30 +159,44 @@ nav a {
   }
 }
 
-@media (max-width: 600px) {
-  .columns {
-    padding: 0 30px;
-  }
-
+@media (min-width: 992px) {
   #appinfo {
     grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  
+  #alltimeleaderboard {
+    grid-column-start: 5;
+    grid-column-end: 8;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  
+  #yesterdayleaderboard {
+    grid-column-start: 8;
     grid-column-end: 11;
     grid-row-start: 1;
     grid-row-end: 2;
   }
+}
 
-  #alltimeleaderboard {
-    grid-column-start: 1;
-    grid-column-end: 11;
-    grid-row-start: 2;
-    grid-row-end: 3;
+.login {
+  padding: 30px;
+}
+
+.welcome {
+  padding: 30px;
+}
+
+@media (min-width: 600px) {
+  .login {
+    padding: 10% 5%;
   }
 
-  #yesterdayleaderboard {
-    grid-column-start: 1;
-    grid-column-end: 11;
-    grid-row-start: 3;
-    grid-row-end: 4;
+  .welcome {
+    padding: 10% 5%;
   }
 }
 
@@ -146,31 +205,18 @@ nav a {
 }
 
 .googlebtn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 4px;
-  margin: 5px 0;
+  width: 191px;
+  height: 46px;
+  text-indent: -9999px;
+  background-image: url(btn_google_signin_light_normal.png);
+  background-size: 191px 46px;
   display: inline-block;
-  font-size: 17px;
-  line-height: 20px;
-  text-decoration: none;
-  background-color: rgb(164, 48, 63);
-  color: white;
 }
 
 .googlebtn:hover {
-  background-color: rgb(179, 58, 74);
+  background-image: url(btn_google_signin_light_focus.png);
 }
 
 .googlebtn:active {
-  background-color: rgb(155, 40, 55);
-}
-
-.signinlen {
-  float: left;
-  width: 200px;
-  margin: auto;
-  padding: 0 50px;
-  margin-top: 6px;
+  background-image: url(btn_google_signin_light_pressed.png);
 }
