@@ -226,11 +226,7 @@ nav a {
 }
 
 .profilediv {
-  margin: 50px 0;
-  padding: 0 30px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-flow: column;
-  row-gap: 10px;
-  column-gap: 2%;
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
 }
