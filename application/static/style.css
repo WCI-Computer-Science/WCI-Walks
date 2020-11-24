@@ -224,3 +224,9 @@ nav a {
 .googlebtn:active {
   background-image: url(btn_google_signin_light_pressed.png);
 }
+
+.profilediv {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+}

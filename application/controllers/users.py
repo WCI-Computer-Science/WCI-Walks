@@ -24,12 +24,15 @@ def info():
     db = database.get_db()
     date = datetime.date.today()
     form = SubmitDistanceForm(request.form)
-
     if request.method == 'GET':
+        labels = current_user.get_walk_chart_labels(db.cursor())
+        data = current_user.get_walk_chart_data(db.cursor())
         return render_template(
             'users.html',
             username=current_user.username,
-            form=form
+            form=form,
+            labels=labels,
+            data=data
         )
 
     if form.validate():
@@ -55,11 +58,15 @@ def info():
         flash("You've successfully updated the distance!")
     else:
         flash("Please enter a number between 0 and 42.")
+    labels = current_user.get_walk_chart_labels(db.cursor())
+    data = current_user.get_walk_chart_data(db.cursor())
 
     return render_template(
         'users.html',
         username=current_user.username,
         form=form,
+        labels=labels,
+        data=data
     )
 
 @bp.route('/login', methods=('GET', 'POST'))
