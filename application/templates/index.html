@@ -30,7 +30,7 @@
                 {% if alltimeleaderboard|length > 0 and alltimeleaderboard[0][1] > 0 %}
                     {% for i in range(0, [alltimeleaderboard|length, 21] | min) %}
                         {% if alltimeleaderboard[i][1]>0 %} 
-                            <li>{{i+1}} - {{alltimeleaderboard[i][0]}} {{alltimeleaderboard[i][1]}}km</li>
+                            <li>{% if is 0 %}<b>{% endif %}{{i+1}} - {{alltimeleaderboard[i][0]}} {{alltimeleaderboard[i][1]}}km{% if i is 0 %}</b>{% endif %}</li>
                         {% endif %}
                     {% endfor %}
                 {% else %}
@@ -45,7 +45,7 @@
                 {% if yesterdayleaderboard|length > 0 and yesterdayleaderboard[0][1] > 0 %}
                     {% for i in range(0, [yesterdayleaderboard|length, 21] | min) %}
                         {% if yesterdayleaderboard[i][1]>0 %}
-                            <li>{{i+1}} - {{yesterdayleaderboard[i][0]}} {{yesterdayleaderboard[i][1]}}km</li>
+                            <li>{% if i is 0 %}<b>{% endif %}{{i+1}} - {{yesterdayleaderboard[i][0]}} {{yesterdayleaderboard[i][1]}}km{% if i is 0 %}</b>{% endif %}</li>
                         {% endif %}
                     {% endfor %}
                 {% else %}
