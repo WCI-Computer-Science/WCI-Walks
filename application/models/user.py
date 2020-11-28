@@ -2,6 +2,8 @@ import sys, json
 from flask import current_app, redirect, url_for
 import flask_login
 from . import database, loginmanager
+from datetime import date, timedelta
+
 
 login_manager = loginmanager.get_login_manager()
 
@@ -56,23 +58,36 @@ class User:
             'UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s',
             (round(walk['distance'] + distance, 1), self.id, date)
         )
+    
     def get_walk_chart_labels(self, cur):
         cur.execute(
             'SELECT walkdate FROM walks WHERE id=%s', (self.id,)
         )
-        allwalks = cur.fetchall()
-        allwalks.sort(key=lambda walkdate: walkdate[0])
-        return allwalks
+        allwalks = list(cur.fetchall())
+        for i in range((allwalks[-1][0]-allwalks[0][0]).days + 1):
+            allwalks.append([allwalks[0][0]+timedelta(days=i)])
+        retwalks = []
+        [retwalks.append(i) for i in allwalks if i not in retwalks]
+        retwalks.sort(key=lambda walkdate: walkdate[0])
+        return retwalks
     
     def get_walk_chart_data(self, cur):
         cur.execute(
             'SELECT walkdate, distance FROM walks WHERE id=%s', (self.id,)
         )
-        allwalks = cur.fetchall()
-        allwalks.sort(key=lambda walkdate: walkdate[0])
-        return allwalks
+        allwalks = list(cur.fetchall())
+        retwalksdict = {}
+        for i in range((allwalks[-1][0]-allwalks[0][0]).days + 1):
+            retwalksdict[allwalks[0][0]+timedelta(days=i)] =  0
+        for i in allwalks:
+            retwalksdict[i[0]] = i[1]
+        retwalks = []
+        for i in retwalksdict:
+             retwalks.append([i, retwalksdict[i]])
+        retwalks.sort(key=lambda walkdate: walkdate[0])
+        return retwalks
 
-            
+    
     def get_id(self):
         return self.id
     
