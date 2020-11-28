@@ -55,6 +55,21 @@ nav a {
   color: whitesmoke;
 }
 
+footer {
+  padding: 10px;
+  width: 100%;
+  height: 50px;
+  background-color: rgb(18, 18, 22);
+  font-size: 10pt;
+}
+
+footer li {
+  margin: 0;
+  padding: 0;
+  width: 12em;
+  float: right;
+}
+
 .contentw {
   background-color: white;
 }
@@ -89,8 +104,13 @@ nav a {
   }
 }
 
-.columns {
+#maininfo {
   margin: 50px 0;
+  padding: 20px;
+}
+
+.columns {
+  margin: 0;
   padding: 0 30px;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
@@ -160,8 +180,6 @@ nav a {
     grid-column-start: 6;
     grid-row-start: 2;
     grid-row-end: 3;
-    border-left: 2px;
-    border-left-style: double;
   }
 }
 
@@ -178,8 +196,6 @@ nav a {
     grid-column-end: 8;
     grid-row-start: 1;
     grid-row-end: 2;
-    border-left: 2px;
-    border-left-style: double;
   }
   
   #yesterdayleaderboard {
@@ -187,8 +203,6 @@ nav a {
     grid-column-end: 11;
     grid-row-start: 1;
     grid-row-end: 2;
-    border-left: 2px;
-    border-left-style: double;
   }
 }
 
