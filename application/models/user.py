@@ -76,10 +76,14 @@ class User:
             'SELECT walkdate, distance FROM walks WHERE id=%s', (self.id,)
         )
         allwalks = list(cur.fetchall())
+        retwalksdict = {}
         for i in range((allwalks[-1][0]-allwalks[0][0]).days + 1):
-            allwalks.append([allwalks[0][0]+timedelta(days=i), 0])
+            retwalksdict[allwalks[0][0]+timedelta(days=i)] =  0
+        for i in allwalks:
+            retwalksdict[i[0]] = i[1]
         retwalks = []
-        [retwalks.append(i) for i in allwalks if i not in retwalks]
+        for i in retwalksdict:
+             retwalks.append([i, retwalksdict[i]])
         retwalks.sort(key=lambda walkdate: walkdate[0])
         return retwalks
 
