@@ -160,6 +160,8 @@ nav a {
     grid-column-start: 6;
     grid-row-start: 2;
     grid-row-end: 3;
+    border-left: 2px;
+    border-left-style: double;
   }
 }
 
@@ -176,6 +178,8 @@ nav a {
     grid-column-end: 8;
     grid-row-start: 1;
     grid-row-end: 2;
+    border-left: 2px;
+    border-left-style: double;
   }
   
   #yesterdayleaderboard {
@@ -183,6 +187,8 @@ nav a {
     grid-column-end: 11;
     grid-row-start: 1;
     grid-row-end: 2;
+    border-left: 2px;
+    border-left-style: double;
   }
 }
 
