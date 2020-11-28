@@ -3,15 +3,17 @@
         <li id="nav-main">
             <a href="/">WCI Walks</a>
         </li>
-        <li>
-            {% if current_user is defined and current_user.is_authenticated %}
+        {% if current_user is defined and current_user.is_authenticated %}
+            <li>
                 <a href="/users/logout">Log Out</a>
-            {% else %}
+            </li>
+            <li>
+                <a href="/users">Profile</a>
+            </li>
+        {% else %}
+            <li>
                 <a href="/users/login">Log In</a>
-            {% endif %}
-        </li>
-        <li>
-            <a href="/users">Profile</a>
-        </li>
+            </li>
+        {% endif %}
     </ul>
 </nav>

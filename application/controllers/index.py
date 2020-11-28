@@ -19,3 +19,11 @@ def home():
         yesterdayleaderboard=get_day_leaderboard(datetime.date.today()-datetime.timedelta(days=1)),
         total=total
     )
+
+@bp.route('/privacypolicy', methods=('GET',))
+def privacypolicy():
+    return render_template('privacypolicy.html')
+
+@bp.route('/termsofservice', methods=('GET',))
+def privacypolicy():
+    return render_template('termsofservice.html')

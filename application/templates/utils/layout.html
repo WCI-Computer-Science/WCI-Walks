@@ -12,9 +12,10 @@
         {% block scripts %}
         {% endblock %}
     </head>
-    <body>
+    <body onload="{% block onload %}{% endblock %}">
         {% include "utils/navbar.html" %}
         {% block body %}
         {% endblock %}
+        {% include "utils/footer.html" %}
     </body>
 </html>

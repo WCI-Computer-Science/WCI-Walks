@@ -56,6 +56,22 @@ class User:
             'UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s',
             (round(walk['distance'] + distance, 1), self.id, date)
         )
+    def get_walk_chart_labels(self, cur):
+        cur.execute(
+            'SELECT walkdate FROM walks WHERE id=%s', (self.id,)
+        )
+        allwalks = cur.fetchall()
+        allwalks.sort(key=lambda walkdate: walkdate[0])
+        return allwalks
+    
+    def get_walk_chart_data(self, cur):
+        cur.execute(
+            'SELECT walkdate, distance FROM walks WHERE id=%s', (self.id,)
+        )
+        allwalks = cur.fetchall()
+        allwalks.sort(key=lambda walkdate: walkdate[0])
+        return allwalks
+
             
     def get_id(self):
         return self.id
