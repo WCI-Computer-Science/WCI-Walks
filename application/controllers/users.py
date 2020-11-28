@@ -60,7 +60,6 @@ def info():
         flash("Please enter a number between 0 and 42.")
     labels = current_user.get_walk_chart_labels(db.cursor())
     data = current_user.get_walk_chart_data(db.cursor())
-
     return render_template(
         'users.html',
         username=current_user.username,
