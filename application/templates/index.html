@@ -4,14 +4,17 @@
         <img src="{{ url_for('static', filename='walk4hopelogo.png') }}" loading="lazy" alt="logo">
     </div>
 
+    <div id='maininfo' class='contentb'>
+        <h1>Our Walk For Hope</h1>
+            {% if total['distance'] %}
+                <h2>In total, we've walked {{ total['distance'] }}km!</h2>
+            {% else %}
+                <h2>Let's get walking!</h2>
+            {% endif %}
+    </div>
+
     <div class='columns contentw'>
         <div id='appinfo' class="column">
-            <h2>Our Walk For Hope</h2>
-            {% if total['distance'] %}
-                <h3>In total, we've walked {{ total['distance'] }}km!</h3>
-            {% else %}
-                <h3>Let's get walking!</h3>
-            {% endif %}
             <p>
                 Welcome to WCI Walks, a web app
                 helping you track your daily walks.
