@@ -14,8 +14,10 @@
     </head>
     <body onload="{% block onload %}{% endblock %}">
         {% include "utils/navbar.html" %}
-        {% block body %}
-        {% endblock %}
+        <div class="content">
+            {% block body %}
+            {% endblock %}
+        </div>
         {% include "utils/footer.html" %}
     </body>
 </html>

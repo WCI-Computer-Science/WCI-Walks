@@ -1,10 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
 body {
+  min-height: 100%;
+  position: relative;
   margin: 0;
-  padding: 0;
-  background-color: rgb(164, 48, 63);
+  padding: 0 0 70px 0;
+  background-color: rgb(18, 18, 22);
   color: rgb(55, 55, 67);
   font-family: 'Trebuchet MS', sans-serif;
   font-size: 1em;
+}
+
+.content {
+  min-height: calc(100vh - 70px);
+  background-color: rgb(164, 48, 63);
 }
 
 @media (min-width: 600px) {
@@ -25,7 +40,7 @@ nav {
   margin: 0;
   padding: 10px 0;
   width: 100%;
-  height: 50px;
+  height: 70px;
   background-color: rgb(18, 18, 22);
 }
 
@@ -56,18 +71,27 @@ nav a {
 }
 
 footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  margin: 0;
   padding: 10px;
-  width: 100%;
-  height: 50px;
+  height: 70px;
   background-color: rgb(18, 18, 22);
   font-size: 10pt;
+  color: whitesmoke;
 }
 
 footer li {
   margin: 0;
   padding: 0;
+  height: 50px;
   width: 12em;
   float: right;
+}
+
+footer a {
+  text-decoration: none;
+  color: whitesmoke;
 }
 
 .contentw {
@@ -83,6 +107,7 @@ footer li {
 }
 
 #logo {
+  box-sizing: content-box;
   position: relative;
   width: 50%;
   margin: 50px auto;
@@ -105,8 +130,10 @@ footer li {
 }
 
 #maininfo {
-  margin: 50px 0;
+  margin: 50px 0 0 0;
   padding: 20px;
+  text-align: center;
+  color: whitesmoke;
 }
 
 .columns {
@@ -206,20 +233,12 @@ footer li {
   }
 }
 
-.login {
-  padding: 30px;
-}
-
-.welcome {
+.login, .welcome {
   padding: 30px;
 }
 
 @media (min-width: 600px) {
-  .login {
-    padding: 10% 5%;
-  }
-
-  .welcome {
+  .login, .welcome {
     padding: 10% 5%;
   }
 }
