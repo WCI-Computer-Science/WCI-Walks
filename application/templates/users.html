@@ -44,7 +44,7 @@ var myChart = new Chart(ctx, {
             <div class='message'><p>{{ message }}</p></div>
         {% endfor %}
         <div id='submitdistance'>
-            <h1>Submit distance:</h1>
+            <h2>Submit distance:</h2>
             <form id='submitdistanceform'  method="post">
                 <div>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</div>
                 {{ form.submit() }}
@@ -52,7 +52,7 @@ var myChart = new Chart(ctx, {
         </div>
     </div>
     <div class="chart">
-        <h1>How far you've gone in the past:</h1>
+        <h1>Your Progress:</h1>
         <canvas id="myChart" width="400" height="400"></canvas>
     </div>
 </div>
