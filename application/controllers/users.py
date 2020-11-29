@@ -66,8 +66,8 @@ def info():
 @login_required
 def viewprofile(username):
     db = database.get_db()
-    date = datetime.date.today()
     userid = get_id_from_wrdsbusername(username)
+
     with db.cursor() as cur:
         labels, data = current_user.get_walk_chart_data(cur, id=userid)
 
@@ -75,7 +75,6 @@ def viewprofile(username):
 
     return render_template(
         'otherusers.html',
-        username=current_user.username,
         labels=labels,
         data=data,
         name=name

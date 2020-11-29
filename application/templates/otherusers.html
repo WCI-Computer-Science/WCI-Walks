@@ -11,7 +11,7 @@
                 data: {
                     labels: [{% for i in labels %}"{{ i }}",{% endfor %}],
                     datasets: [{
-                        label: "{{ username }}",
+                        label: "{{ name }}",
                         data: [{% for i in data %}{{ i }},{% endfor %}],
                         borderColor: 'rgba(164, 47, 63, 1)',
                         backgroundColor: 'rgba(164, 47, 63, 0.2)',
