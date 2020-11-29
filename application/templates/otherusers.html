@@ -1,0 +1,46 @@
+{% extends "utils/layout.html" %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script>
+    function genchart() {
+        var ctx = document.getElementById('myChart');
+        {% if labels|length > 0 %}
+            console.log("ok");
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [{% for i in labels %}"{{ i }}",{% endfor %}],
+                    datasets: [{
+                        label: "{{ name }}",
+                        data: [{% for i in data %}{{ i }},{% endfor %}],
+                        borderColor: 'rgba(164, 47, 63, 1)',
+                        backgroundColor: 'rgba(164, 47, 63, 0.2)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        {% endif %}
+        ctx.style.width = 0.9 * window.screen.width;
+    }
+</script>
+{% endblock %}
+
+{% block onload %}genchart(){% endblock %}
+
+{% block body %}
+<div class="contentw">
+    <div class="chart">
+        <h1>{{ name }}'s distances:</h1>
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+{% endblock %}

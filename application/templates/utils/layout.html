@@ -13,8 +13,8 @@
             function toggleMenu() {
                 document.getElementById("menu").classList.toggle("hide");
             }
-
-            window.addEventListener("click", (e) => {
+            var touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click';
+            window.addEventListener(touchEvent, (e) => {
                 if (
                     !e.target.closest("#menubutton") && 
                     !e.target.closest("#menu") && 

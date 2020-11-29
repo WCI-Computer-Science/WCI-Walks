@@ -7,6 +7,7 @@ from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField,
 from wtforms.fields.html5 import EmailField, IntegerField
 
 from application.models import *
+from application.templates.utils import get_name_from_wrdsbusername, get_id_from_wrdsbusername
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 
@@ -60,6 +61,25 @@ def info():
         labels=labels,
         data=data
     )
+
+@bp.route('/viewprofile/<username>', methods=('GET', 'POST'))
+@login_required
+def viewprofile(username):
+    db = database.get_db()
+    userid = get_id_from_wrdsbusername(username)
+
+    with db.cursor() as cur:
+        labels, data = current_user.get_walk_chart_data(cur, id=userid)
+
+    name = get_name_from_wrdsbusername(username)
+
+    return render_template(
+        'otherusers.html',
+        labels=labels,
+        data=data,
+        name=name
+    )
+
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():

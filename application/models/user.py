@@ -16,16 +16,17 @@ class User:
         self.is_authenticated = authenticated
         self.is_active = active
         self.is_anonymous = False
+        self.wrdsbusername = email.split("@")[0] if email!=None else None
     
     def add_distance(self, distance):
         self.distance = round(self.distance + distance, 1)
     
     def write_db(self, cur):
         cur.execute(
-            'INSERT INTO users (id, email, username, distance, active) VALUES (%s, %s, %s, %s, %s)',
-            (self.id, self.email, self.username, self.distance, self.is_active)
+            'INSERT INTO users (id, email, username, distance, active, wrdsbusername) VALUES (%s, %s, %s, %s, %s, %s)',
+            (self.id, self.email, self.username, self.distance, self.is_active, self.wrdsbusername)
         )
-    
+
     def update_distance_db(self, cur):
         cur.execute(
             'UPDATE users SET distance=%s WHERE id=%s', (self.distance, self.id)
@@ -40,48 +41,46 @@ class User:
         self.username = user['username']
         self.distance = user['distance']
         self.is_active = user['active']
-    
+
     def get_walk(self, date, cur):
         cur.execute(
             'SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1', (self.id, date)
         )
         return cur.fetchone()
-    
+
     def insert_walk(self, distance, date, cur):
         cur.execute(
             'INSERT INTO walks (id, username, distance, walkdate) VALUES (%s, %s, %s, %s)',
             (self.id, self.username, distance, date)
         )
-    
+
     def update_walk(self, distance, date, walk, cur):
         cur.execute(
             'UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s',
             (round(walk['distance'] + distance, 1), self.id, date)
         )
-    
-    # def get_walk_chart_labels(self, cur): 
-    # I got rid of this function to minimize the amount of times we need to fetch from the database
-    
-    # I simplified the second function a little
-    def get_walk_chart_data(self, cur):
+
+    def get_walk_chart_data(self, cur, id=None):
+        if id == None: useid=self.id
+        else: useid = id
         cur.execute(
-            'SELECT walkdate, distance FROM walks WHERE id=%s', (self.id,)
+            'SELECT walkdate, distance FROM walks WHERE id=%s', (useid,)
         )
         allwalks = cur.fetchall() # fetchall returns a list of rows, so no need for list()
         allwalks.sort(key=lambda row: row['walkdate']) # in case rows aren't in order of dates, although they should be
-        
+
         walks = {}
         if len(allwalks) > 0:
             for i in range((allwalks[-1][0] - allwalks[0][0]).days + 1):
                 walks[allwalks[0][0] + timedelta(days=i)] = 0
             for walkdate, walkdistance in allwalks:
                 walks[walkdate] = walkdistance
-        
+
         return walks.keys(), walks.values()
-    
+
     def get_id(self):
         return self.id
-    
+
     # Static methods
     @staticmethod
     def exists(userid, cur):
