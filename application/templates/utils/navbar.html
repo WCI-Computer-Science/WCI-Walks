@@ -8,25 +8,31 @@
         </li>
             <div id="menulist" class="hide">
                 {% if current_user is defined and current_user.is_authenticated %}
-                <li>
-                    <a href="/users/logout">Log Out</a>
-                </li>
-                <li>
-                    <a href="/users">Profile</a>
-                </li>
-            {% else %}
-                <li>
-                    <a href="/users/login">Log In</a>
-                </li>
-            {% endif %}
+                    <li>
+                        <a href="/users/logout">Log Out</a>
+                    </li>
+                    <li>
+                        <a href="/users">Profile</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="/users/login">Log In</a>
+                    </li>
+                {% endif %}
         </div>
     </ul>
     <ul id="menu" class="hide">
-        <li>
-            <a href="/users/logout">Log Out</a>
-        </li>
-        <li>
-            <a href="/users">Profile</a>
-        </li>
+        {% if current_user is defined and current_user.is_authenticated %}
+            <li>
+                <a href="/users/logout">Log Out</a>
+            </li>
+            <li>
+                <a href="/users">Profile</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="/users/login">Log In</a>
+            </li>
+        {% endif %}
     </ul>
 </nav>
