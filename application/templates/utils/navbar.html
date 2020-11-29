@@ -6,20 +6,20 @@
         <li>
             <button id="menubutton" onclick="toggleMenu()"><img src="../../static/menu.png" alt="menu"/></button>
         </li>
-        {% if current_user is defined and current_user.is_authenticated %}
             <div id="menulist" class="hide">
+                {% if current_user is defined and current_user.is_authenticated %}
                 <li>
                     <a href="/users/logout">Log Out</a>
                 </li>
                 <li>
                     <a href="/users">Profile</a>
                 </li>
-            </div>
-        {% else %}
-            <li>
-                <a href="/users/login">Log In</a>
-            </li>
-        {% endif %}
+            {% else %}
+                <li>
+                    <a href="/users/login">Log In</a>
+                </li>
+            {% endif %}
+        </div>
     </ul>
     <ul id="menu" class="hide">
         <li>

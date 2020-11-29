@@ -71,10 +71,11 @@ class User:
         allwalks.sort(key=lambda row: row['walkdate']) # in case rows aren't in order of dates, although they should be
         
         walks = {}
-        for i in range((allwalks[-1][0] - allwalks[0][0]).days + 1):
-            walks[allwalks[0][0] + timedelta(days=i)] = 0
-        for walkdate, walkdistance in allwalks:
-            walks[walkdate] = walkdistance
+        if len(allwalks) > 0:
+            for i in range((allwalks[-1][0] - allwalks[0][0]).days + 1):
+                walks[allwalks[0][0] + timedelta(days=i)] = 0
+            for walkdate, walkdistance in allwalks:
+                walks[walkdate] = walkdistance
         
         return walks.keys(), walks.values()
     
