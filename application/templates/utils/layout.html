@@ -9,6 +9,19 @@
         <link rel="icon" href="{{ url_for('static', filename='wcilogo.ico') }}"/>
         {% block head %}
         {% endblock %}
+        <script>
+            function toggleMenu() {
+                document.getElementById("menu").classList.toggle("hide");
+            }
+
+            window.addEventListener("click", (e) => {
+                if (
+                    !e.target.closest("#menubutton") && 
+                    !e.target.closest("#menu") && 
+                    !document.getElementById("menu").classList.contains("hide")
+                ) toggleMenu();
+            });
+        </script>
         {% block scripts %}
         {% endblock %}
     </head>

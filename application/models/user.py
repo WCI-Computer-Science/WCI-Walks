@@ -59,34 +59,24 @@ class User:
             (round(walk['distance'] + distance, 1), self.id, date)
         )
     
-    def get_walk_chart_labels(self, cur):
-        cur.execute(
-            'SELECT walkdate FROM walks WHERE id=%s', (self.id,)
-        )
-        allwalks = list(cur.fetchall())
-        for i in range((allwalks[-1][0]-allwalks[0][0]).days + 1):
-            allwalks.append([allwalks[0][0]+timedelta(days=i)])
-        retwalks = []
-        [retwalks.append(i) for i in allwalks if i not in retwalks]
-        retwalks.sort(key=lambda walkdate: walkdate[0])
-        return retwalks
+    # def get_walk_chart_labels(self, cur): 
+    # I got rid of this function to minimize the amount of times we need to fetch from the database
     
+    # I simplified the second function a little
     def get_walk_chart_data(self, cur):
         cur.execute(
             'SELECT walkdate, distance FROM walks WHERE id=%s', (self.id,)
         )
-        allwalks = list(cur.fetchall())
-        retwalksdict = {}
-        for i in range((allwalks[-1][0]-allwalks[0][0]).days + 1):
-            retwalksdict[allwalks[0][0]+timedelta(days=i)] =  0
-        for i in allwalks:
-            retwalksdict[i[0]] = i[1]
-        retwalks = []
-        for i in retwalksdict:
-             retwalks.append([i, retwalksdict[i]])
-        retwalks.sort(key=lambda walkdate: walkdate[0])
-        return retwalks
-
+        allwalks = cur.fetchall() # fetchall returns a list of rows, so no need for list()
+        allwalks.sort(key=lambda row: row['walkdate']) # in case rows aren't in order of dates, although they should be
+        
+        walks = {}
+        for i in range((allwalks[-1][0] - allwalks[0][0]).days + 1):
+            walks[allwalks[0][0] + timedelta(days=i)] = 0
+        for walkdate, walkdistance in allwalks:
+            walks[walkdate] = walkdistance
+        
+        return walks.keys(), walks.values()
     
     def get_id(self):
         return self.id
