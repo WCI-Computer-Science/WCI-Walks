@@ -29,7 +29,7 @@
                 }
             });
         {% else %}
-            document.getElementById("chart").setAttribute("style", "display: none;");
+            document.getElementsByClassName("chart")[0].setAttribute("style", "display: none;");
         {% endif %}
         ctx.style.width = 0.9 * window.screen.width;
     }
