@@ -53,8 +53,6 @@ def info():
         else:
             flash("Please enter a number between 0 and 42.")
     
-    print(labels, file=sys.stderr)
-    print(data, file=sys.stderr)
     return render_template(
         'users.html',
         username=current_user.username,
