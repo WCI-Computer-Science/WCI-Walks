@@ -132,7 +132,6 @@ dmypy.json
 .DS_Store
 venv
 __pycache__
-secrets.py
 .vs_code
 secrets.pyc
 logfile
