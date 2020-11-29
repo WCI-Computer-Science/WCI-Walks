@@ -41,10 +41,11 @@ li {
 }
 
 nav {
+  z-index: 2;
   margin: 0;
   padding: 10px 0;
   width: 100%;
-  min-height: 70px;
+  height: 70px;
   background-color: rgb(18, 18, 22);
 }
 
@@ -60,6 +61,22 @@ nav li {
   text-align: center;
   float: right;
   font-size: 16pt;
+}
+
+#menu {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  height: 40px;
+  width: 100%;
+  top: 70px;
+  left: 0;
+  background-color: rgb(18, 18, 22);
+  box-shadow: 0 0 0 99999px rgba(0,0,0,.5);
+}
+
+#menu li {
+  font-size: 12pt;
 }
 
 #nav-main {
@@ -86,6 +103,10 @@ nav a {
   color: whitesmoke;
 }
 
+nav a:hover {
+  color: white;
+}
+
 @media (min-width: 600px) {
   #menubutton {
     display: none;
@@ -100,6 +121,7 @@ nav a {
 
 footer {
   position: absolute;
+  z-index: 2;
   bottom: 0; left: 0; right: 0;
   margin: 0;
   padding: 10px;
@@ -119,6 +141,10 @@ footer li {
 footer a {
   text-decoration: none;
   color: whitesmoke;
+}
+
+footer a:hover {
+  color: white;
 }
 
 @media (min-width: 600px) {
