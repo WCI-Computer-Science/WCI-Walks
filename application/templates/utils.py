@@ -32,3 +32,26 @@ def get_day_leaderboard(date):
 
     return userdistances[:10]
 
+def get_name_from_id(userid):
+    db = database.get_db()
+    with db.cursor() as cur:
+         cur.execute(
+             "SELECT username FROM users WHERE id=%s;", (userid,)
+         )
+         return cur.fetchone()[0]
+
+def get_name_from_wrdsbusername(username):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT username FROM users WHERE wrdsbusername=%s;", (username,)
+        )
+        return cur.fetchone()[0]
+
+def get_id_from_wrdsbusername(username):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT id FROM users WHERE wrdsbusername=%s;", (username,)
+        )
+        return cur.fetchone()[0]
