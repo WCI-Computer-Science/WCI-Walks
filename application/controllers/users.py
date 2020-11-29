@@ -24,42 +24,37 @@ def info():
     db = database.get_db()
     date = datetime.date.today()
     form = SubmitDistanceForm(request.form)
-    if request.method == 'GET':
-        labels = current_user.get_walk_chart_labels(db.cursor())
-        data = current_user.get_walk_chart_data(db.cursor())
-        return render_template(
-            'users.html',
-            username=current_user.username,
-            form=form,
-            labels=labels,
-            data=data
-        )
 
-    if form.validate():
-        with db.cursor() as cur:
-            distance = float(form.distance.data)
-            walk = current_user.get_walk(date, cur)
-            total = database.get_total(cur)
-            
-            if walk is None:
-                current_user.insert_walk(distance, date, cur)
-            else:
-                current_user.update_walk(distance, date, walk, cur)
-        
-            if total is None:
-                database.insert_total(distance, cur)
-            else:
-                database.update_total(total, distance, cur)
-            
-            current_user.add_distance(distance)
-            current_user.update_distance_db(cur)
+    with db.cursor() as cur:
+        labels, data = current_user.get_walk_chart_data(cur)
 
-        db.commit()
-        flash("You've successfully updated the distance!")
-    else:
-        flash("Please enter a number between 0 and 42.")
-    labels = current_user.get_walk_chart_labels(db.cursor())
-    data = current_user.get_walk_chart_data(db.cursor())
+    if request.method == 'POST':
+        if form.validate():
+            with db.cursor() as cur:
+                distance = float(form.distance.data)
+                walk = current_user.get_walk(date, cur)
+                total = database.get_total(cur)
+                
+                if walk is None:
+                    current_user.insert_walk(distance, date, cur)
+                else:
+                    current_user.update_walk(distance, date, walk, cur)
+            
+                if total is None:
+                    database.insert_total(distance, cur)
+                else:
+                    database.update_total(total, distance, cur)
+                
+                current_user.add_distance(distance)
+                current_user.update_distance_db(cur)
+
+            db.commit()
+            flash("You've successfully updated the distance!")
+        else:
+            flash("Please enter a number between 0 and 42.")
+    
+    print(labels, file=sys.stderr)
+    print(data, file=sys.stderr)
     return render_template(
         'users.html',
         username=current_user.username,

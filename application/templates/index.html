@@ -1,61 +1,63 @@
 {% extends "utils/layout.html" %}
 {% block body %}
+<div id='logocontainer'>
     <div id='logo' class='contentw'>
         <img src="{{ url_for('static', filename='walk4hopelogo.png') }}" loading="lazy" alt="logo">
     </div>
+</div>
 
-    <div id='maininfo' class='contentb'>
-        <h1>Our Walk For Hope</h1>
-            {% if total['distance'] %}
-                <h2>In total, we've walked {{ total['distance'] }}km!</h2>
+<div id='maininfo' class='contentb'>
+    <h1>Our Walk For Hope</h1>
+        {% if total['distance'] %}
+            <h2>In total, we've walked {{ total['distance'] }}km!</h2>
+        {% else %}
+            <h2>Let's get walking!</h2>
+        {% endif %}
+</div>
+
+<div class='columns contentw'>
+    <div id='appinfo' class="column">
+        <h2>About this app</h2>
+        <p>
+            Welcome to WCI Walks, a web app
+            helping you track your daily walks.
+            Log your distance each day and
+            compare with friends on the
+            leaderboards. You can also check out your
+            walking statistics from your profile!</br>
+            To get started, please login from the menu.
+            You must use your WRDSB account.
+        </p>
+    </div>
+
+    <div  id='alltimeleaderboard' class="column">
+        <h2>All Time Leaderboard</h2>
+        <ul>
+            {% if alltimeleaderboard|length > 0 and alltimeleaderboard[0][1] > 0 %}
+                {% for i in range(0, [alltimeleaderboard|length, 21] | min) %}
+                    {% if alltimeleaderboard[i][1]>0 %} 
+                        <li>{% if i == 0 %}<b>{% endif %}{{i+1}}. {{alltimeleaderboard[i][0]}} {{alltimeleaderboard[i][1]}}km{% if i == 0 %}</b>{% endif %}</li>
+                    {% endif %}
+                {% endfor %}
             {% else %}
-                <h2>Let's get walking!</h2>
+                <li><p>No one's walked yet.</p></li>
             {% endif %}
+        </ul>
     </div>
 
-    <div class='columns contentw'>
-        <div id='appinfo' class="column">
-            <h2>About this app</h2>
-            <p>
-                Welcome to WCI Walks, a web app
-                helping you track your daily walks.
-                Log your distance each day and
-                compare with friends on the
-                leaderboards. You can also check out your
-                walking statistics from your profile!</br>
-                To get started, please login from the menu.
-                You must use your WRDSB account.
-            </p>
-        </div>
-
-        <div  id='alltimeleaderboard' class="column">
-            <h2>All Time Leaderboard</h2>
-            <ul>
-                {% if alltimeleaderboard|length > 0 and alltimeleaderboard[0][1] > 0 %}
-                    {% for i in range(0, [alltimeleaderboard|length, 21] | min) %}
-                        {% if alltimeleaderboard[i][1]>0 %} 
-                            <li>{% if i == 0 %}<b>{% endif %}{{i+1}}. {{alltimeleaderboard[i][0]}} {{alltimeleaderboard[i][1]}}km{% if i == 0 %}</b>{% endif %}</li>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <li><p>No one's walked yet.</p></li>
-                {% endif %}
-            </ul>
-        </div>
-
-        <div id='yesterdayleaderboard' class="column">
-            <h2>Yesterday Leaderboard</h2>
-            <ul>
-                {% if yesterdayleaderboard|length > 0 and yesterdayleaderboard[0][1] > 0 %}
-                    {% for i in range(0, [yesterdayleaderboard|length, 21] | min) %}
-                        {% if yesterdayleaderboard[i][1]>0 %}
-                            <li>{% if i == 0 %}<b>{% endif %}{{i+1}}. {{yesterdayleaderboard[i][0]}} {{yesterdayleaderboard[i][1]}}km{% if i == 0 %}</b>{% endif %}</li>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <li><p>No one walked yesterday.</p></li>
-                {% endif %}
-            </ul>
-        </div>
+    <div id='yesterdayleaderboard' class="column">
+        <h2>Yesterday Leaderboard</h2>
+        <ul>
+            {% if yesterdayleaderboard|length > 0 and yesterdayleaderboard[0][1] > 0 %}
+                {% for i in range(0, [yesterdayleaderboard|length, 21] | min) %}
+                    {% if yesterdayleaderboard[i][1]>0 %}
+                        <li>{% if i == 0 %}<b>{% endif %}{{i+1}}. {{yesterdayleaderboard[i][0]}} {{yesterdayleaderboard[i][1]}}km{% if i == 0 %}</b>{% endif %}</li>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <li><p>No one walked yesterday.</p></li>
+            {% endif %}
+        </ul>
     </div>
+</div>
 {% endblock %}

@@ -3,17 +3,30 @@
         <li id="nav-main">
             <a href="/">WCI Walks</a>
         </li>
+        <li>
+            <button id="menubutton" onclick="toggleMenu()"><img src="../../static/menu.png" alt="menu"/></button>
+        </li>
         {% if current_user is defined and current_user.is_authenticated %}
-            <li>
-                <a href="/users/logout">Log Out</a>
-            </li>
-            <li>
-                <a href="/users">Profile</a>
-            </li>
+            <div id="menulist" class="hide">
+                <li>
+                    <a href="/users/logout">Log Out</a>
+                </li>
+                <li>
+                    <a href="/users">Profile</a>
+                </li>
+            </div>
         {% else %}
             <li>
                 <a href="/users/login">Log In</a>
             </li>
         {% endif %}
+    </ul>
+    <ul id="menu" class="hide">
+        <li>
+            <a href="/users/logout">Log Out</a>
+        </li>
+        <li>
+            <a href="/users">Profile</a>
+        </li>
     </ul>
 </nav>

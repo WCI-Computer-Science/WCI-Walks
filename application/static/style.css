@@ -22,6 +22,10 @@ body {
   background-color: rgb(164, 48, 63);
 }
 
+.hide {
+  display: none;
+}
+
 @media (min-width: 600px) {
   body {
     font-size: 1.5em;
@@ -40,14 +44,13 @@ nav {
   margin: 0;
   padding: 10px 0;
   width: 100%;
-  height: 70px;
+  min-height: 70px;
   background-color: rgb(18, 18, 22);
 }
 
 nav ul {
   margin: 10px 0;
-  padding: 0 4% 0 4%;
-  width: 92%;
+  padding: 0 3% 0 4%;
 }
 
 nav li {
@@ -65,9 +68,34 @@ nav li {
   font-size: 20pt;
 }
 
+#menubutton {
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+  background-color: inherit;
+  float: right;
+}
+
+#menubutton img {
+  width: 30px;
+  height: 30px;
+}
+
 nav a {
   text-decoration: none;
   color: whitesmoke;
+}
+
+@media (min-width: 600px) {
+  #menubutton {
+    display: none;
+  }
+
+  #menulist {
+    margin: 0;
+    padding: 0;
+    display: inline;
+  }
 }
 
 footer {
@@ -86,12 +114,17 @@ footer li {
   padding: 0;
   height: 50px;
   width: 12em;
-  float: right;
 }
 
 footer a {
   text-decoration: none;
   color: whitesmoke;
+}
+
+@media (min-width: 600px) {
+  footer li {
+    float: right;
+  }
 }
 
 .contentw {
@@ -106,11 +139,15 @@ footer a {
   background-color: rgb(71, 131, 174);
 }
 
+#logocontainer {
+  padding: 50px 0;
+}
+
 #logo {
   box-sizing: content-box;
   position: relative;
   width: 50%;
-  margin: 50px auto;
+  margin: 0 auto;
   padding-top: 50%;
   overflow: hidden;
   border-radius: 50%;
@@ -130,7 +167,7 @@ footer a {
 }
 
 #maininfo {
-  margin: 50px 0 0 0;
+  margin: 0;
   padding: 20px;
   text-align: center;
   color: whitesmoke;
@@ -264,8 +301,43 @@ footer a {
   background-image: url(btn_google_signin_light_pressed.png);
 }
 
-.profilediv {
-  display: flex;
-  flex-wrap: wrap;
-  flex: 1 1 auto;
+#profilediv {
+  padding: 0 10%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+#welcome {
+  margin: 25px auto;
+  width: 100%;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.chart {
+  margin: 25px auto;
+  width: 100%;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+@media (min-width: 992px) {
+  #profilediv {
+    padding: 25px 5% 50px 5%;
+  }
+
+  #welcome {
+    margin: 0;
+    width: 100%;
+    grid-column-start: 1;
+    grid-column-end: 2;
+  }
+
+  .chart {
+    margin: 0;
+    width: 100%;
+    grid-column-start: 2;
+    grid-column-end: 3;
+  }
 }
