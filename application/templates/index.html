@@ -20,13 +20,12 @@
         <h2>About this app</h2>
         <p>
             Welcome to WCI Walks, a web app
-            helping you track your daily walks.
+            that helps you track your walk-athon distances.
             Log your distance each day and
-            compare with friends on the
+            compete with other students on the
             leaderboards. You can also check out your
             walking statistics from your profile!</br>
-            To get started, please login from the menu.
-            You must use your WRDSB account.
+            To get started, please login from the menu, using your WRDSB account.
         </p>
     </div>
 
@@ -46,7 +45,7 @@
     </div>
 
     <div id='yesterdayleaderboard' class="column">
-        <h2>Yesterday Leaderboard</h2>
+        <h2>Yesterday's Leaderboard</h2>
         <ul>
             {% if yesterdayleaderboard|length > 0 and yesterdayleaderboard[0][1] > 0 %}
                 {% for i in range(0, [yesterdayleaderboard|length, 21] | min) %}
