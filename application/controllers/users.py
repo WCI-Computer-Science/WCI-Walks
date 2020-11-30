@@ -107,7 +107,7 @@ def confirmlogin():
     id_token = oauth.get_id_token(code)
     idinfo = oauth.verify_id_token(id_token)
 
-    if idinfo.get("email_verified") and idinfo.get("hd"):
+    if idinfo.get("email_verified") and idinfo.get("hd") == "wrdsb.ca":
         userid = idinfo["sub"]
         email = idinfo["email"]
         username = idinfo["name"]
