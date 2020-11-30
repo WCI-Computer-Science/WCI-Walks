@@ -26,9 +26,6 @@ def info():
     date = datetime.date.today()
     form = SubmitDistanceForm(request.form)
 
-    with db.cursor() as cur:
-        labels, data = current_user.get_walk_chart_data(cur)
-
     if request.method == 'POST':
         if form.validate():
             with db.cursor() as cur:
@@ -53,7 +50,9 @@ def info():
             flash("You've successfully updated the distance!")
         else:
             flash("Please enter a number between 0 and 42.")
-    
+    with db.cursor() as cur:
+        labels, data = current_user.get_walk_chart_data(cur)
+
     return render_template(
         'users.html',
         username=current_user.username,
