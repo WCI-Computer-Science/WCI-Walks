@@ -10,7 +10,7 @@ def create_app():
 
     with app.app_context():
         from .models import database, loginmanager, oauth, user
-        from .controllers import index, users
+        from .controllers import index, users, admin
         # Create database and set up automatic database closing for requests
         database.init_app(app)
 
@@ -20,6 +20,7 @@ def create_app():
         # Route /users to login and user statistics page
         app.register_blueprint(users.bp)
 
-    return app
+        # Route /admin to admin pages
+        app.register_blueprint(admin.bp)
 
-        
+    return app
