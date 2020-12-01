@@ -24,37 +24,37 @@ google_client_secret = # Put the Client Secret of your Google Oauth web applicat
 After that, follow the instructions below.
 
 1. clone repo to your device
-2. create a python3 virtual environment
-```bash
+2. have the secrets.py file in the outermost layer of the directory
+3. create a python3 virtual environment
+```
 python3 -m venv _path_to_virtual_env_
 ```
-3. activate the venv
-```bash
+4. activate the venv
+```
 source _path_to_virtual_env_/bin/activate
 ```
-4. download dependencies
-```bash
+5. download dependencies
+```
 pip install -r requirements.txt
 ```
-5. export flask env
-```bash
+6. export flask env
+```
 export FLASK_ENV=development
 ```
-6. export flask app
-```bash
+7. export flask app
+```
 export FLASK_APP=wsgi.py
 ```
-7. export flask cert (this ssl certification is only suitable for testing)
-```bash
+8. export flask cert (this ssl certification is only suitable for testing)
+```
 export FLASK_RUN_CERT=adhoc
 ```
-8. export local postgres database
-```bash
+9. export local postgres database
+```
 export DATABASE_URL=_your_database_here_
 ```
-9. have the secrets.py file in the outermost layer of the directory
 10. run the app
-```bash
+```
 flask run
 ```
 
