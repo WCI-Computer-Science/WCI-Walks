@@ -9,7 +9,7 @@ Once logged in, they can access user-specific information. This includes the dis
 Basic information is displayed on the main page. This includes a leaderboard ranking the people who have walked the most all-time, as well as for the previous day.
 
 ## Run this app
-As of the time of writing, you can access the app on this URL: https://wciwalks.herokuapp.com.
+As of the time of writing, you can access the app on this URL: https://wciwalks.herokuapp.com.  
 Alternatively, you can run the app locally for testing.
 Before testing, you must have a couple things set up.
 
