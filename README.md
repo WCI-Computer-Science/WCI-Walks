@@ -29,7 +29,7 @@ After that, follow the instructions below.
 ```
 python3 -m venv _path_to_virtual_env_
 ```
-4. activate the venv
+4. activate the virtual environment
 ```
 source _path_to_virtual_env_/bin/activate
 ```
