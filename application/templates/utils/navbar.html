@@ -11,12 +11,17 @@
                     <li>
                         <a href="/users/logout">Log Out</a>
                     </li>
-                    <li>
-                        <a href="/users">Profile</a>
-                    </li>
                 {% else %}
                     <li>
                         <a href="/users/login">Log In</a>
+                    </li>
+                {% endif %}
+                    <li>
+                        <a href="/contact">Contact Us</a>
+                    </li>
+                {% if current_user is defined and current_user.is_authenticated %}
+                    <li>
+                        <a href="/users">Profile</a>
                     </li>
                 {% endif %}
         </div>
@@ -26,12 +31,17 @@
             <li>
                 <a href="/users/logout">Log Out</a>
             </li>
-            <li>
-                <a href="/users">Profile</a>
-            </li>
         {% else %}
             <li>
                 <a href="/users/login">Log In</a>
+            </li>
+        {% endif %}
+            <li>
+                <a href="/contact">Contact Us</a>
+            </li>
+        {% if current_user is defined and current_user.is_authenticated %}
+            <li>
+                <a href="/users">Profile</a>
             </li>
         {% endif %}
     </ul>

@@ -20,7 +20,7 @@
         <h2>About this app</h2>
         <p>
             Welcome to WCI Walks, a web app
-            that helps you track your walk-athon distances.
+            that helps you track your walkathon distances.
             Log your distance each day,
             compete with others on the leaderboards,
             or check out your friends' progress!
@@ -30,32 +30,56 @@
         </p>
     </div>
 
-    <div  id='alltimeleaderboard' class="column">
+    <div  id="alltimeleaderboard" class="column">
         <h2>All Time Leaderboard</h2>
-        <ul>
+        <table class="leaderboard">
             {% if alltimeleaderboard|length > 0 and alltimeleaderboard[0][1] > 0 %}
                 {% for i in range(0, [alltimeleaderboard|length, 21] | min) %}
                     {% if alltimeleaderboard[i][1]>0 %} 
-                        <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}" style="text-decoration:none;color:black"><li>{% if i == 0 %}<b>{% endif %}{{i+1}}. {{alltimeleaderboard[i][0]}} {{alltimeleaderboard[i][1]}}km{% if i == 0 %}</b>{% endif %}</li></a>
+                        <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
+                            <tr>
+                                <td>
+                                    {{i+1}}.
+                                </td>
+                                <td>
+                                    {{alltimeleaderboard[i][0]}}
+                                </td>
+                                <td>
+                                    {{alltimeleaderboard[i][1]}} km
+                                </td>
+                            </tr>
+                        </a>
                     {% endif %}
                 {% endfor %}
             {% else %}
-                <li><p>No one's walked yet.</p></li>
+                <tr><td>No one's walked yet.</td></tr>
             {% endif %}
-        </ul>
+        </table>
     </div>
 
     <div id='yesterdayleaderboard' class="column">
         <h2>Yesterday's Leaderboard</h2>
-        <ul>
+        <table class="leaderboard">
             {% if yesterdayleaderboard|length > 0 and yesterdayleaderboard[0][1] > 0 %}
                 {% for i in range(0, [yesterdayleaderboard|length, 21] | min) %}
                     {% if yesterdayleaderboard[i][1]>0 %}
-                        <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}" style="text-decoration:none;color:black"><li>{% if i == 0 %}<b>{% endif %}{{i+1}}. {{yesterdayleaderboard[i][0]}} {{yesterdayleaderboard[i][1]}}km{% if i == 0 %}</b>{% endif %}</li></a>
+                        <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
+                            <tr>
+                                <td>
+                                    {{i+1}}.
+                                </td>
+                                <td>
+                                    {{yesterdayleaderboard[i][0]}}
+                                </td>
+                                <td>
+                                    {{yesterdayleaderboard[i][1]}} km
+                                </td>
+                            </tr>
+                        </a>
                     {% endif %}
                 {% endfor %}
             {% else %}
-                <li><p>No one walked yesterday.</p></li>
+                <tr><td>No one walked yesterday.</td></tr>
             {% endif %}
         </ul>
     </div>

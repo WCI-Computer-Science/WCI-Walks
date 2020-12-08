@@ -5,14 +5,15 @@
     {% for error in get_flashed_messages() %}
         <div class='error'><h2>{{ error }}</h2></div>
     {% endfor %}
-    <a href="/users/authorize" class="googlebtn">Sign in with Google</a>
-    <div class="disclaimer">
-        <p>
-            By clicking the login button you are consenting to our
+    <form action="/users/authorize">
+        <input type="image" src="../static/btn_google_signin_light_normal.png" class="googlebtn" />
+        <label class="consent">
+            <input type="checkbox" name="consent" required="required"/>
+            I agree to the
             <a href="/privacypolicy">Privacy Policy</a>
             and
             <a href="/termsofservice">Terms of Service</a>.
-        </p>
-    </div>
+        </label>
+    </form>
 </div>
 {% endblock %}

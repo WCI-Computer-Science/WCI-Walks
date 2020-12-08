@@ -313,18 +313,15 @@ footer a:hover {
 .googlebtn {
   width: 191px;
   height: 46px;
-  text-indent: -9999px;
-  background-image: url(btn_google_signin_light_normal.png);
-  background-size: 191px 46px;
   display: inline-block;
 }
 
 .googlebtn:hover {
-  background-image: url(btn_google_signin_light_focus.png);
+  content: url(btn_google_signin_light_focus.png);
 }
 
 .googlebtn:active {
-  background-image: url(btn_google_signin_light_pressed.png);
+  content: url(btn_google_signin_light_pressed.png);
 }
 
 #profilediv {
