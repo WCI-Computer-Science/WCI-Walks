@@ -23,6 +23,7 @@ def get_day_leaderboard(date):
     userdistances = list(map(_convert_id_to_wrdsbusername, userdistances))
     return userdistances[:10]
 
+# Do we need this function? If we had access to a user's id we would probably have access to their name too
 def get_name_from_id(userid):
     db = database.get_db()
     with db.cursor() as cur:
@@ -31,21 +32,13 @@ def get_name_from_id(userid):
          )
          return cur.fetchone()[0]
 
-def get_name_from_wrdsbusername(username):
-    db = database.get_db()
-    with db.cursor() as cur:
-        cur.execute(
-            "SELECT username FROM users WHERE wrdsbusername=%s;", (username,)
-        )
-        return cur.fetchone()[0]
-
-def get_id_from_wrdsbusername(username):
-    db = database.get_db()
-    with db.cursor() as cur:
-        cur.execute(
-            "SELECT id FROM users WHERE wrdsbusername=%s;", (username,)
-        )
-        return cur.fetchone()[0]
+# Only one database query if we have only one function
+def get_credentials_from_wrdsbusername(wrdsbusername, cur):
+    cur.execute(
+            "SELECT id, username FROM users WHERE wrdsbusername=%s LIMIT 1;", (wrdsbusername,)
+    )
+    user = cur.fetchone()
+    return user[0], user[1]
 
 def get_wrdsbusername_from_id(userid):
     db = database.get_db()

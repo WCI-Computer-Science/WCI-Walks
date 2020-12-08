@@ -7,7 +7,7 @@ from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField,
 from wtforms.fields.html5 import EmailField, IntegerField
 
 from application.models import *
-from application.templates.utils import get_name_from_wrdsbusername, get_id_from_wrdsbusername
+from application.templates.utils import get_credentials_from_wrdsbusername
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 
@@ -50,6 +50,7 @@ def info():
             flash("You've successfully updated the distance!")
         else:
             flash("Please enter a number between 0 and 42.")
+    
     with db.cursor() as cur:
         labels, data = current_user.get_walk_chart_data(cur)
 
@@ -65,12 +66,9 @@ def info():
 @login_required
 def viewprofile(username):
     db = database.get_db()
-    userid = get_id_from_wrdsbusername(username)
-
     with db.cursor() as cur:
+        userid, name = get_credentials_from_wrdsbusername(username)
         labels, data = current_user.get_walk_chart_data(cur, id=userid)
-
-    name = get_name_from_wrdsbusername(username)
 
     return render_template(
         'otherusers.html',
@@ -78,7 +76,6 @@ def viewprofile(username):
         data=data,
         name=name
     )
-
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():

@@ -21,7 +21,7 @@ def home():
     )
 
 @bp.route('/contact', methods=('GET',))
-def privacypolicy():
+def contact():
     return render_template('contact.html')
 
 @bp.route('/privacypolicy', methods=('GET',))
