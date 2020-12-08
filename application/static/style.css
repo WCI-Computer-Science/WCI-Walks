@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  min-height: 100%;
+  min-height: calc(100% - 70px);
   position: relative;
   margin: 0;
   padding: 0 0 70px 0;
@@ -154,7 +154,7 @@ footer a:hover {
 }
 
 .contentw {
-  background-color: white;
+  background-color: whitesmoke;
 }
 
 .contentr {
@@ -328,7 +328,7 @@ footer a:hover {
 }
 
 #profilediv {
-  padding: 0 10%;
+  padding: 25px 10%;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);

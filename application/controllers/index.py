@@ -20,6 +20,10 @@ def home():
         total=total
     )
 
+@bp.route('/contact', methods=('GET',))
+def privacypolicy():
+    return render_template('contact.html')
+
 @bp.route('/privacypolicy', methods=('GET',))
 def privacypolicy():
     return render_template('privacypolicy.html')

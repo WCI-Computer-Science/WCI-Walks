@@ -1,7 +1,4 @@
 {% extends "utils/layout.html" %}
-{% block scripts %}
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-{% endblock %}
 {% block body %}
 <div class="login contentw">
     <h1>Login here</h1>
@@ -9,5 +6,13 @@
         <div class='error'><h2>{{ error }}</h2></div>
     {% endfor %}
     <a href="/users/authorize" class="googlebtn">Sign in with Google</a>
+    <div class="disclaimer">
+        <p>
+            By clicking the login button you are consenting to our
+            <a href="/privacypolicy">Privacy Policy</a>
+            and
+            <a href="/termsofservice">Terms of Service</a>.
+        </p>
+    </div>
 </div>
 {% endblock %}
