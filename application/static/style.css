@@ -1,3 +1,7 @@
+/* Universal formatting */
+
+
+
 * {
   box-sizing: border-box;
 }
@@ -21,6 +25,12 @@ body {
   background-color: rgb(164, 48, 63);
 }
 
+
+
+/* Navigation bar formatting */
+
+
+
 .hide {
   display: none;
 }
@@ -40,7 +50,6 @@ li {
 }
 
 nav {
-  z-index: 2;
   margin: 0;
   padding: 10px 0;
   width: 100%;
@@ -49,7 +58,7 @@ nav {
 }
 
 nav ul {
-  margin: 10px 0;
+  margin: 0;
   padding: 0 3% 0 4%;
 }
 
@@ -76,12 +85,17 @@ nav li {
 
 #menu li {
   font-size: 12pt;
+  height: 100%;
 }
 
 #nav-main {
   float: none;
   display: inline-block;
   font-size: 20pt;
+}
+
+#menubutton-li {
+  padding-top: 10px;
 }
 
 #menubutton {
@@ -98,16 +112,21 @@ nav li {
 }
 
 nav a {
+  display: block;
+  padding: 10px 0;
+  height: 100%;
+  border-radius: 7px;
   text-decoration: none;
   color: whitesmoke;
 }
 
 nav a:hover {
+  background-color: rgb(36, 36, 37);
   color: white;
 }
 
 @media (min-width: 600px) {
-  #menubutton {
+  #menubutton-li {
     display: none;
   }
 
@@ -117,6 +136,12 @@ nav a:hover {
     display: inline;
   }
 }
+
+
+
+/* Footer formatting */
+
+
 
 footer {
   position: absolute;
@@ -134,7 +159,7 @@ footer li {
   margin: 0;
   padding: 0;
   height: 50px;
-  width: 12em;
+  width: 13em;
 }
 
 footer a {
@@ -151,6 +176,12 @@ footer a:hover {
     float: right;
   }
 }
+
+
+
+/* Index page formatting */
+
+
 
 .contentw {
   background-color: white;
@@ -200,7 +231,7 @@ footer a:hover {
 
 .columns {
   margin: 0;
-  padding: 0 30px;
+  padding: 0 30px 30px 30px;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-auto-flow: column;
@@ -244,6 +275,18 @@ footer a:hover {
   grid-column-end: 11;
   grid-row-start: 3;
   grid-row-end: 4;
+}
+
+.leaderboard {
+  width: 100%;
+}
+
+.leaderboard .name {
+  text-align: left;
+}
+
+.leaderboard .distance {
+  text-align: right;
 }
 
 @media (min-width: 600px) {
@@ -295,14 +338,14 @@ footer a:hover {
   }
 }
 
-.login, .welcome {
-  padding: 30px;
-}
 
-@media (min-width: 600px) {
-  .login, .welcome {
-    padding: 10% 5%;
-  }
+
+/* Login page formatting */
+
+
+
+.login {
+  padding: 25px 5% 50px 5%;
 }
 
 .errors {
@@ -310,6 +353,7 @@ footer a:hover {
 }
 
 .googlebtn {
+  margin: 10px 0;
   width: 191px;
   height: 46px;
   display: inline-block;
@@ -323,18 +367,61 @@ footer a:hover {
   content: url(btn_google_signin_light_pressed.png);
 }
 
-#profilediv {
+@media (min-width: 992px) {
+  .googlebtn {
+    width: 248.3px;
+    height: 59.8px;
+  }
+}
+
+.consent {
+  font-size: 0.6em;
+  color: rgb(71, 71, 82);
+}
+
+.consent a {
+  text-decoration: none;
+  color: rgb(163, 62, 75);
+}
+
+
+
+/* Users page formatting */
+
+
+
+.profilediv {
   padding: 25px 10%;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 }
 
-#welcome {
+.profilediv h1 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  text-align: center;
+}
+
+#distancediv {
   margin: 25px auto;
   width: 100%;
   grid-column-start: 1;
   grid-column-end: 3;
+}
+
+#submit {
+  margin: 25px 0 0 0;
+  width: 7em;
+  height: 2em;
+  border: 1px solid rgb(36, 36, 37);
+  border-radius: 7px;
+  background-color: rgba(164, 48, 63, 0.25);
+}
+
+#submit:hover {
+  background-color: rgb(164, 48, 63);
+  color: white;
 }
 
 .chart {
@@ -345,21 +432,49 @@ footer a:hover {
 }
 
 @media (min-width: 992px) {
-  #profilediv {
+  .profilediv {
     padding: 25px 5% 50px 5%;
   }
 
-  #welcome {
+  #distancediv {
     margin: 0;
     width: 100%;
     grid-column-start: 1;
     grid-column-end: 2;
   }
 
-  .chart {
+  #profile .chart {
     margin: 0;
     width: 100%;
     grid-column-start: 2;
     grid-column-end: 3;
   }
+}
+
+
+
+/* Privacy Policy and Terms of Service formatting */
+
+
+
+.legal {
+  padding: 25px 5% 50px 5%;
+}
+
+.legalheader {
+  padding: 25px;
+  color: whitesmoke;
+}
+
+.legalheader h2 {
+  text-align: center;
+}
+
+.legal h3 {
+  margin-top: 50px;
+}
+
+.legal a {
+  text-decoration: none;
+  color: rgb(164, 48, 63);
 }

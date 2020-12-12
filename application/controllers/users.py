@@ -13,7 +13,7 @@ bp = Blueprint('users', __name__, url_prefix='/users')
 
 class SubmitDistanceForm(Form):
     distance = DecimalField(
-        "Log your distance",
+        "Log your walk distance (in km)",
         [validators.InputRequired(), validators.NumberRange(min=0.01, max=42, message="Invalid distance")],
         places=2
     )
@@ -67,7 +67,7 @@ def info():
 def viewprofile(username):
     db = database.get_db()
     with db.cursor() as cur:
-        userid, name = get_credentials_from_wrdsbusername(username)
+        userid, name = get_credentials_from_wrdsbusername(username, cur)
         labels, data = current_user.get_walk_chart_data(cur, id=userid)
 
     return render_template(

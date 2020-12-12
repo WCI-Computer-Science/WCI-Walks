@@ -7,13 +7,14 @@
     {% endfor %}
     <form action="/users/authorize">
         <input type="image" src="../static/btn_google_signin_light_normal.png" class="googlebtn" />
-        <label class="consent">
-            <input type="checkbox" name="consent" required="required"/>
-            I agree to the
-            <a href="/privacypolicy">Privacy Policy</a>
-            and
-            <a href="/termsofservice">Terms of Service</a>.
-        </label>
+        <div class="consent">
+            <p>
+                By continuing, you agree to the
+                <a href="/privacypolicy">Privacy Policy</a>
+                and
+                <a href="/termsofservice">Terms of Service</a>.
+            </p>
+        </div>
     </form>
 </div>
 {% endblock %}
