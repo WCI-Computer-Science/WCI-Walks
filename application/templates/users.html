@@ -39,14 +39,14 @@
 {% block onload %}genchart(){% endblock %}
 
 {% block body %}
-<div id="profilediv" class="contentw">
-    <div id="welcome">
-        <h1>Welcome back, {{ username }}.</h1>
+<div id="profile" class="profilediv contentw">
+    <h1>Welcome back, {{ username }}.</h1>
+    <div id="distancediv">
         {% for message in get_flashed_messages() %}
             <div class='message'><p>{{ message }}</p></div>
         {% endfor %}
         <div id='submitdistance'>
-            <h2>Submit distance:</h2>
+            <h2>Submit distance</h2>
             <form id='submitdistanceform'  method="post">
                 <div>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</div>
                 {{ form.submit() }}
