@@ -67,19 +67,23 @@
             {% if yesterdayleaderboard|length > 0 and yesterdayleaderboard[0][1] > 0 %}
                 {% for i in range(0, [yesterdayleaderboard|length, 21] | min) %}
                     {% if yesterdayleaderboard[i][1]>0 %}
-                        <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
-                            <tr>
-                                <td>
+                        <tr>
+                            <td class="rank">
+                                <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
                                     {{i+1}}.
-                                </td>
-                                <td>
+                                </a>
+                            </td>
+                            <td class="name">
+                                <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
                                     {{yesterdayleaderboard[i][0]}}
-                                </td>
-                                <td>
+                                </a>
+                            </td>
+                            <td class="distance">
+                                <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
                                     {{yesterdayleaderboard[i][1]}} km
-                                </td>
-                            </tr>
-                        </a>
+                                </a>
+                            </td>
+                        </tr>
                     {% endif %}
                 {% endfor %}
             {% else %}
