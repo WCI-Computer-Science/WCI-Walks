@@ -281,6 +281,12 @@ footer a:hover {
   width: 100%;
 }
 
+.leaderboard a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
 .leaderboard .name {
   text-align: left;
 }
