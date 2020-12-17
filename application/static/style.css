@@ -470,6 +470,12 @@ footer a:hover {
 .legalheader {
   padding: 25px;
   color: whitesmoke;
+<<<<<<< HEAD
+=======
+}
+
+.legalheader h2 {
+>>>>>>> dfd0a2f56e1ef290f1f6a93edf5827f77226bfac
   text-align: center;
 }
 
@@ -480,4 +486,8 @@ footer a:hover {
 .legal a {
   text-decoration: none;
   color: rgb(164, 48, 63);
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> dfd0a2f56e1ef290f1f6a93edf5827f77226bfac
