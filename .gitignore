@@ -134,4 +134,5 @@ venv
 __pycache__
 .vs_code
 secrets.pyc
+secrets.py
 logfile
