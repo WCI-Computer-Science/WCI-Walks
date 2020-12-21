@@ -133,6 +133,6 @@ dmypy.json
 venv
 __pycache__
 .vs_code
-secrets.pyc
 secrets.py
+secrets.pyc
 logfile

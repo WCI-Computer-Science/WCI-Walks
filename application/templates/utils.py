@@ -1,5 +1,7 @@
 import sys
 from application.models import database
+from wtforms.validators import ValidationError
+from datetime import date
 
 def get_all_time_leaderboard():
     db = database.get_db()
@@ -32,7 +34,6 @@ def get_name_from_id(userid):
          )
          return cur.fetchone()[0]
 
-# Only one database query if we have only one function
 def get_credentials_from_wrdsbusername(wrdsbusername, cur):
     cur.execute(
             "SELECT id, username FROM users WHERE wrdsbusername=%s LIMIT 1;", (wrdsbusername,)
@@ -44,7 +45,7 @@ def get_wrdsbusername_from_id(userid):
     db = database.get_db()
     with db.cursor() as cur:
          cur.execute(
-             "SELECT wrdsbusername FROM users WHERE id=%s;", (userid,)
+             "SELECT wrdsbusername FROM users WHERE id=%s LIMIT 1;", (userid,)
          )
          return cur.fetchone()[0]
 
@@ -60,3 +61,26 @@ def isadmin(userid):
         )
         row = cur.fetchone()
     return row[0]==get_wrdsbusername_from_id(userid) and row[1]
+
+def walk_will_max_distance(distance, id):
+    curdistance = _get_walk_distance(id)
+    return (distance + curdistance)>42
+
+def _get_walk_distance(id):
+    db = database.get_db()
+    walkdate = date.today()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT distance FROM walks WHERE walkdate=%s AND id=%s LIMIT 1;", (walkdate, id,)
+        )
+        return int(cur.fetchone()[0])
+
+def walk_is_maxed(id, max=42):
+    def _walk_is_maxed(form, field):
+        if _get_walk_distance(id)>=max:
+            raise ValidationError("You can only walk between 0 and "+str(max)+" per day.")
+    return _walk_is_maxed
+
+def update_total():
+    print("Do some stuff")
+

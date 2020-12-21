@@ -25,7 +25,13 @@ body {
   background-color: rgb(164, 48, 63);
 }
 
+a.button {
+    -moz-appearance: button;
+    appearance: button;
 
+    text-decoration: none;
+    color: initial;
+}
 
 /* Navigation bar formatting */
 
@@ -390,11 +396,27 @@ footer a:hover {
   color: rgb(163, 62, 75);
 }
 
+/* Admin page formatting */
 
+.admindiv {
+  padding: 25px 10%;
+  width: 100%;
+}
+
+#updatetotal {
+  margin: 25px 0 0 0;
+  padding: 5px;
+  border: 1px solid rgb(36, 36, 37);
+  border-radius: 7px;
+  background-color: rgba(164, 48, 63, 0.25);
+}
+
+#updatetotal:hover {
+  background-color: rgb(164, 48, 63);
+  color: white;
+}
 
 /* Users page formatting */
-
-
 
 .profilediv {
   padding: 25px 10%;
@@ -428,6 +450,7 @@ footer a:hover {
 #submit:hover {
   background-color: rgb(164, 48, 63);
   color: white;
+  cursor: pointer;
 }
 
 .chart {
