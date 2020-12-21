@@ -3,6 +3,10 @@ from application.models import database
 from wtforms.validators import ValidationError
 from datetime import date
 
+total = 0
+db_fetch_total()
+block = False
+
 def get_all_time_leaderboard():
     db = database.get_db()
     with db.cursor() as cur:
@@ -84,3 +88,65 @@ def walk_is_maxed(id, max=42):
 def update_total():
     print("Do some stuff")
 
+def get_total():
+    global total
+    return total
+
+def set_total(num):
+    global total
+    total = num
+    db_commit_total()
+    return total
+
+def add_to_total(num):
+    global total
+    total += num
+    db_commit_total()
+    return total
+
+def sub_from_total(num):
+    global total
+    total -= num
+    db_commit_total()
+    return total
+
+def db_get_total():
+    global total
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT * FROM total;"
+        )
+        total = cur.fetchone()
+    return total
+
+def db_commit_total():
+    global total
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT * FROM total;"
+        )
+        if cur.fetchone()==None:
+            cur.execute(
+                "INSERT INTO total (distance) VALUES (%s);", (round(total, 1),)
+            )
+        else:
+            cur.execute(
+                "UPDATE total SET distance=%s", (round(total, 1),)
+            )
+    return total
+
+def is_blocked():
+    global block
+    return block
+
+def stop_blocking():
+    global block
+    block = False
+    return block
+
+def start_blocking():
+    global block
+    block = True
+    return block
