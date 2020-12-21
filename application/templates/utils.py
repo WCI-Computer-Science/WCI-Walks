@@ -3,10 +3,6 @@ from application.models import database
 from wtforms.validators import ValidationError
 from datetime import date
 
-total = 0
-db_fetch_total()
-block = False
-
 def get_all_time_leaderboard():
     db = database.get_db()
     with db.cursor() as cur:
@@ -77,7 +73,11 @@ def _get_walk_distance(id):
         cur.execute(
             "SELECT distance FROM walks WHERE walkdate=%s AND id=%s LIMIT 1;", (walkdate, id,)
         )
-        return int(cur.fetchone()[0])
+        walk = cur.fetchone()
+        if walk!= None:
+            return int(cur.fetchone()[0])
+        else:
+            return 0
 
 def walk_is_maxed(id, max=42):
     def _walk_is_maxed(form, field):
@@ -117,7 +117,7 @@ def db_get_total():
         cur.execute(
             "SELECT * FROM total;"
         )
-        total = cur.fetchone()
+        total = cur.fetchone()[0]
     return total
 
 def db_commit_total():
@@ -150,3 +150,7 @@ def start_blocking():
     global block
     block = True
     return block
+
+total = 0
+db_get_total()
+block = False

@@ -43,10 +43,7 @@ def info():
                 else:
                     current_user.update_walk(distance, date, walk, cur)
 
-                if total is None:
-                    database.insert_total(distance, cur)
-                else:
-                    database.update_total(total, distance, cur)
+                add_to_total(distance)
 
                 current_user.add_distance(distance)
                 current_user.update_distance_db(cur)
