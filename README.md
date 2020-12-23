@@ -58,7 +58,7 @@ export DATABASE_URL=_your_database_here_
 flask run
 ```
 
-## General info
+## Technical info
 This web application is built with a Flask backend using the App Factory and MVC patterns.
 It's deployed to Heroku and uses a Heroku PostgreSQL database.  
 It uses the default Jinja2 templating engine along with HTML and CSS for the frontend.  
