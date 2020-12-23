@@ -26,13 +26,13 @@ def get_day_leaderboard(date):
     return userdistances[:10]
 
 # Do we need this function? If we had access to a user's id we would probably have access to their name too
-def get_name_from_id(userid):
-    db = database.get_db()
-    with db.cursor() as cur:
-         cur.execute(
-             "SELECT username FROM users WHERE id=%s;", (userid,)
-         )
-         return cur.fetchone()[0]
+#def get_name_from_id(userid):
+#    db = database.get_db()
+#    with db.cursor() as cur:
+#         cur.execute(
+#             "SELECT username FROM users WHERE id=%s;", (userid,)
+#         )
+#         return cur.fetchone()[0]
 
 def get_credentials_from_wrdsbusername(wrdsbusername, cur):
     cur.execute(
@@ -85,8 +85,23 @@ def walk_is_maxed(id, max=42):
             raise ValidationError("You can only walk between 0 and "+str(max)+" per day.")
     return _walk_is_maxed
 
+def _get_zeroth_index_of_list(item):
+    return item[0]
+
 def update_total():
-    print("Do some stuff")
+    print("Starting to update user totals.")
+    start_blocking()
+    print("Done updating user totals.\nStarting to update global total")
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT distance FROM users;"
+        )
+        originaltotal = get_total()
+        allusers = cur.fetchall()
+    sub_from_total(originaltotal-sum(map(float, map(_get_zeroth_index_of_list, allusers))))
+    stop_blocking()
+    print("Done updating totals!")
 
 def get_total():
     global total
