@@ -77,5 +77,5 @@ The _templates_ folder contains everything the user sees and related code.
 The _controllers_ folder contains URL routing and form handling.
 
 ## Website structure
-There are two Flask Blueprints for each of the main sections of the website.
+There are three Flask Blueprints for each of the main sections of the website.
 More details of each blueprint are given in the URL section of the wiki.
