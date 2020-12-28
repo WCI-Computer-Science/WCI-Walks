@@ -16,6 +16,6 @@ def adminhome():
 def updatetotal():
   update_total()
   if isadmin(current_user.get_id()):
-    return redirect("/admin/")
+    return render_template("updatetotalsuccess.html")
   else: abort(403)
 
