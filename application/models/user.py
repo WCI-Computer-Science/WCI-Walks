@@ -3,7 +3,7 @@ from flask import current_app, redirect, url_for
 import flask_login
 from . import database, loginmanager
 from datetime import date, timedelta
-
+from application.templates.utils import isadmin
 
 login_manager = loginmanager.get_login_manager()
 
@@ -17,10 +17,10 @@ class User:
         self.is_authenticated = authenticated
         self.is_active = active
         self.is_anonymous = False
-    
+
     def add_distance(self, distance):
         self.distance = round(self.distance + distance, 1)
-    
+
     def write_db(self, cur):
         cur.execute(
             'INSERT INTO users (id, email, username, wrdsbusername, distance, active) VALUES (%s, %s, %s, %s, %s, %s);',
@@ -80,6 +80,9 @@ class User:
 
     def get_id(self):
         return self.id
+
+    def is_admin(self):
+        return isadmin(self.id)
 
     # Static methods
     @staticmethod

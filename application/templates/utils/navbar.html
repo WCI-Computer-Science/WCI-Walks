@@ -23,6 +23,11 @@
                     <li>
                         <a href="/users">Profile</a>
                     </li>
+                    {% if current_user.is_admin() %}
+                        <li>
+                            <a href="/admin">Admin Stuff</a>
+                        </li>
+                    {% endif %}
                 {% endif %}
         </div>
     </ul>
