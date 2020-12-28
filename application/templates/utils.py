@@ -1,4 +1,4 @@
-import sys
+import sys, time
 from application.models import database
 from wtforms.validators import ValidationError
 from datetime import date
@@ -24,15 +24,6 @@ def get_day_leaderboard(date):
     userdistances.sort(key=lambda user: user[1], reverse=True)
     userdistances = list(map(_convert_id_to_wrdsbusername, userdistances))
     return userdistances[:10]
-
-# Do we need this function? If we had access to a user's id we would probably have access to their name too
-#def get_name_from_id(userid):
-#    db = database.get_db()
-#    with db.cursor() as cur:
-#         cur.execute(
-#             "SELECT username FROM users WHERE id=%s;", (userid,)
-#         )
-#         return cur.fetchone()[0]
 
 def get_credentials_from_wrdsbusername(wrdsbusername, cur):
     cur.execute(
@@ -85,22 +76,45 @@ def walk_is_maxed(id, max=42):
             raise ValidationError("You can only walk between 0 and "+str(max)+" per day.")
     return _walk_is_maxed
 
-def _get_zeroth_index_of_list(item):
+def _get_index_zero_of_list(item):
     return item[0]
 
 def update_total():
     print("Starting to update user totals.")
-    start_blocking()
-    print("Done updating user totals.\nStarting to update global total")
     db = database.get_db()
-    with db.cursor() as cur:
-        cur.execute(
-            "SELECT distance FROM users;"
-        )
-        originaltotal = get_total()
-        allusers = cur.fetchall()
-    sub_from_total(originaltotal-sum(map(float, map(_get_zeroth_index_of_list, allusers))))
-    stop_blocking()
+    if not is_blocked():
+        start_blocking()
+    else:
+        raise Exception("Already Blocked") # Need to figure out what to do here
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT id, distance FROM walks;"
+            )
+            distances = {}
+            for i in cur.fetchall():
+                if i[0] in distances.keys():
+                    distances[i[0]] += float(i[1])
+                else:
+                    distances[i[0]] = float(i[1])
+            for i in distances.keys():
+                cur.execute(
+                    "UPDATE users SET distance=%s WHERE id=%s;", (distances[i], i,)
+                )
+                cur.execute(
+                    "SELECT * FROM users WHERE id=%s;", (i,)
+                )
+        print("Done updating user totals.\nStarting to update global total!")
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT distance FROM users;"
+            )
+            originaltotal = get_total()
+            allusers = cur.fetchall()
+        sub_from_total(originaltotal-sum(map(float, map(_get_index_zero_of_list, allusers))))
+        db.commit()
+    finally:
+        stop_blocking()
     print("Done updating totals!")
 
 def get_total():
