@@ -1,0 +1,28 @@
+{% extends "utils/layout.html" %}
+{% block scripts %}
+<script>
+    function changeIFrame(textObject) {
+         var text = encodeURIComponent(textObject.value);
+         document.getElementById('userlistiframe').src = "/admin/getuserlist/?text=".concat(text);
+    }
+
+    function resizeIFrameToFitContent(iFrame) {
+        iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
+    }
+
+    function getTextObject(id) {
+        return document.getElementById(id)
+    }
+</script>
+{% endblock %}
+{% block body %}
+<div class="contentw admindiv">
+  <h1>Search For User</h1>
+  <hr />
+  <label for="name">Enter a name:</label>
+  <input id="name" name="name" type="text" onchange="changeIFrame(this)"><br />
+  <button onclick="changeIFrame(getTextObject('name'))" id="adminbutton">Search</button><br />
+  <iframe width="333px" onload="resizeIFrameToFitContent(this)" frameBorder="0" id="userlistiframe" src="/admin/getuserlist/"></iframe>
+</div>
+{% endblock %}
+
