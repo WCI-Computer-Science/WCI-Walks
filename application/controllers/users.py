@@ -1,4 +1,4 @@
-import functools, sys, datetime, json
+import functools, sys, datetime, json, time
 
 from flask import abort, Blueprint, current_app, url_for, flash, redirect, render_template, request, session
 from flask_login import current_user, login_user, logout_user, login_required
@@ -7,7 +7,7 @@ from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField,
 from wtforms.fields.html5 import EmailField, IntegerField
 
 from application.models import *
-from application.templates.utils import get_credentials_from_wrdsbusername, walk_will_max_distance, walk_is_maxed
+from application.templates.utils import get_credentials_from_wrdsbusername, walk_will_max_distance, walk_is_maxed, is_blocked
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 
@@ -33,6 +33,8 @@ def info():
                                    ]
         if form.validate():
             with db.cursor() as cur:
+                while is_blocked():
+                    time.sleep(100)
                 walk = current_user.get_walk(date, cur)
                 walkwillmaxdistance = walk_will_max_distance(float(form.distance.data), current_user.get_id())
                 distance = round((float(form.distance.data) if not(walkwillmaxdistance) else 42-walk["distance"]), 1)
