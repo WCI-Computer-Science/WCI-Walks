@@ -164,6 +164,7 @@ def db_commit_total():
             cur.execute(
                 "UPDATE total SET distance=%s", (round(total, 1),)
             )
+    db.commit()
     return total
 
 def is_blocked():
