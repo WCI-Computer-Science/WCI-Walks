@@ -82,7 +82,7 @@ def viewprofile(username):
         labels=labels,
         data=data,
         name=name,
-        username=username
+        wrdsbusername=username
     )
 
 @bp.route('/login', methods=('GET', 'POST'))
