@@ -143,7 +143,9 @@ def sub_from_total(num):
 
 def db_get_total():
     global total
-    total = database.get_total() # database get_total already exists
+    db = database.get_db()
+    with db.cursor() as cur:
+        total = database.get_total(cur) # database get_total already exists
     return total
 
 def db_commit_total():
