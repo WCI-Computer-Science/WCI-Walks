@@ -58,7 +58,7 @@ export DATABASE_URL=_your_database_here_
 flask run
 ```
 
-## General info
+## Technical info
 This web application is built with a Flask backend using the App Factory and MVC patterns.
 It's deployed to Heroku and uses a Heroku PostgreSQL database.  
 It uses the default Jinja2 templating engine along with HTML and CSS for the frontend.  
@@ -77,5 +77,5 @@ The _templates_ folder contains everything the user sees and related code.
 The _controllers_ folder contains URL routing and form handling.
 
 ## Website structure
-There are two Flask Blueprints for each of the main sections of the website.
+There are three Flask Blueprints for each of the main sections of the website.
 More details of each blueprint are given in the URL section of the wiki.

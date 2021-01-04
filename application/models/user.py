@@ -3,7 +3,7 @@ from flask import current_app, redirect, url_for
 import flask_login
 from . import database, loginmanager
 from datetime import date, timedelta
-
+from application.templates.utils import isadmin
 
 login_manager = loginmanager.get_login_manager()
 
@@ -17,10 +17,10 @@ class User:
         self.is_authenticated = authenticated
         self.is_active = active
         self.is_anonymous = False
-    
+
     def add_distance(self, distance):
         self.distance = round(self.distance + distance, 1)
-    
+
     def write_db(self, cur):
         cur.execute(
             'INSERT INTO users (id, email, username, wrdsbusername, distance, active) VALUES (%s, %s, %s, %s, %s, %s);',
@@ -54,11 +54,14 @@ class User:
             (self.id, self.username, distance, date)
         )
 
-    def update_walk(self, distance, date, walk, cur):
-        cur.execute(
-            'UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;',
-            (round(walk['distance'] + distance, 1), self.id, date)
-        )
+    def update_walk(self, distance, date, walk, cur, replace=False):
+        if self.get_walk(date, cur)!=None:
+            cur.execute(
+                'UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;',
+                (round((distance if replace else walk['distance'] + distance), 1), self.id, date)
+            )
+        else:
+            self.insert_walk(distance, date, cur)
 
     def get_walk_chart_data(self, cur, id=None):
         if id is None: useid = self.id
@@ -76,10 +79,13 @@ class User:
             for walkdate, walkdistance in allwalks:
                 walks[walkdate] = walkdistance
 
-        return walks.keys(), walks.values()
+        return list(walks.keys()), list(walks.values())
 
     def get_id(self):
         return self.id
+
+    def is_admin(self):
+        return isadmin(self.id)
 
     # Static methods
     @staticmethod

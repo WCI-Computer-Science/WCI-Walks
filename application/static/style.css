@@ -1,7 +1,5 @@
 /* Universal formatting */
 
-
-
 * {
   box-sizing: border-box;
 }
@@ -25,11 +23,37 @@ body {
   background-color: rgb(164, 48, 63);
 }
 
+a.button {
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+}
+
+input[type="text"], input[type="number"] {
+    font-size: 1em;
+    border-radius: 10px;
+    padding: 3px;
+}
+
+input[type="submit"] {
+  margin: 25px 0 0 0;
+  width: 7em;
+  height: 2em;
+  border: 1px solid rgb(36, 36, 37);
+  border-radius: 7px;
+  background-color: rgba(164, 48, 63, 0.25);
+}
+
+input[type="submit"]:hover {
+  background-color: rgb(164, 48, 63);
+  color: white;
+  cursor: pointer;
+}
 
 
 /* Navigation bar formatting */
-
-
 
 .hide {
   display: none;
@@ -137,11 +161,7 @@ nav a:hover {
   }
 }
 
-
-
 /* Footer formatting */
-
-
 
 footer {
   position: absolute;
@@ -177,11 +197,7 @@ footer a:hover {
   }
 }
 
-
-
 /* Index page formatting */
-
-
 
 .contentw {
   background-color: white;
@@ -344,11 +360,7 @@ footer a:hover {
   }
 }
 
-
-
 /* Login page formatting */
-
-
 
 .login {
   padding: 25px 5% 50px 5%;
@@ -390,11 +402,45 @@ footer a:hover {
   color: rgb(163, 62, 75);
 }
 
+/* Admin page formatting */
 
+.admindiv {
+  padding: 25px 10%;
+  width: 100%;
+}
+
+#adminbutton {
+  margin: 10px 0 0 0;
+  padding: 5px;
+  border: 1px solid rgb(36, 36, 37);
+  border-radius: 7px;
+  background-color: rgba(164, 48, 63, 0.25);
+}
+
+#adminbutton:hover {
+  background-color: rgb(164, 48, 63);
+  color: white;
+}
+
+.usersearchlist {
+  width: 300px;
+}
+
+.usersearchlist a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.usersearchlist .name {
+  text-align: left;
+}
+
+.usersearchlist .distance {
+  text-align: right;
+}
 
 /* Users page formatting */
-
-
 
 .profilediv {
   padding: 25px 10%;
@@ -414,20 +460,6 @@ footer a:hover {
   width: 100%;
   grid-column-start: 1;
   grid-column-end: 3;
-}
-
-#submit {
-  margin: 25px 0 0 0;
-  width: 7em;
-  height: 2em;
-  border: 1px solid rgb(36, 36, 37);
-  border-radius: 7px;
-  background-color: rgba(164, 48, 63, 0.25);
-}
-
-#submit:hover {
-  background-color: rgb(164, 48, 63);
-  color: white;
 }
 
 .chart {

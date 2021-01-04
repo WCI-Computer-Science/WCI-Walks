@@ -39,7 +39,7 @@
 {% block body %}
 <div id="otherprofile" class="profilediv contentw">
     <div class="chart">
-        <h1>{{ name }}'s distances:</h1>
+        <h1>{{ name }}'s distances:</h1>{% if current_user is defined and current_user.is_authenticated and current_user.is_admin() %}<span style="float:right"><a class="button" href="/admin/edituserdistances/{{current_user.wrdsbusername}}" id="adminbutton">Edit distances</a></span>{% endif %}
         <canvas id="myChart"></canvas>
     </div>
 </div>

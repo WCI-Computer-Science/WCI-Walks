@@ -1,4 +1,4 @@
-import functools, sys, datetime, json
+import functools, sys, datetime, json, time
 
 from flask import abort, Blueprint, current_app, url_for, flash, redirect, render_template, request, session
 from flask_login import current_user, login_user, logout_user, login_required
@@ -7,14 +7,13 @@ from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField,
 from wtforms.fields.html5 import EmailField, IntegerField
 
 from application.models import *
-from application.templates.utils import get_credentials_from_wrdsbusername
+from application.templates.utils import get_credentials_from_wrdsbusername, walk_will_max_distance, walk_is_maxed, is_blocked, add_to_total
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 
 class SubmitDistanceForm(Form):
     distance = DecimalField(
         "Log your walk distance (in km)",
-        [validators.InputRequired(), validators.NumberRange(min=0.01, max=42, message="Invalid distance")],
         places=2
     )
     submit = SubmitField()
@@ -27,29 +26,37 @@ def info():
     form = SubmitDistanceForm(request.form)
 
     if request.method == 'POST':
+        form.distance.validators = [
+                                        validators.InputRequired(),
+                                        validators.NumberRange(min=0.01, max=42, message="Invalid distance"),
+                                        walk_is_maxed(current_user.get_id(), max=42),
+                                   ]
         if form.validate():
             with db.cursor() as cur:
-                distance = float(form.distance.data)
+                while is_blocked():
+                    time.sleep(100)
                 walk = current_user.get_walk(date, cur)
+                walkwillmaxdistance = walk_will_max_distance(float(form.distance.data), current_user.get_id())
+                distance = round((float(form.distance.data) if not(walkwillmaxdistance) else 42-walk["distance"]), 1)
                 total = database.get_total(cur)
-                
+
                 if walk is None:
                     current_user.insert_walk(distance, date, cur)
                 else:
                     current_user.update_walk(distance, date, walk, cur)
-            
-                if total is None:
-                    database.insert_total(distance, cur)
-                else:
-                    database.update_total(total, distance, cur)
-                
+
+                add_to_total(distance)
+
                 current_user.add_distance(distance)
                 current_user.update_distance_db(cur)
 
             db.commit()
-            flash("You've successfully updated the distance!")
+            if walkwillmaxdistance:
+                flash("Your walk was partly recorded. You can't go more than 42 km per day.")
+            else:
+                flash("You've successfully updated the distance!")
         else:
-            flash("Please enter a number between 0 and 42.")
+            flash("You can only go between 0 and 42 km per day!")
     
     with db.cursor() as cur:
         labels, data = current_user.get_walk_chart_data(cur)
