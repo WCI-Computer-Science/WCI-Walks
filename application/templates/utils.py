@@ -12,7 +12,7 @@ def get_all_time_leaderboard():
         userdistances = cur.fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
 
-    return userdistances[:15]
+    return userdistances
 
 def get_day_leaderboard(date):
     db = database.get_db()
@@ -23,13 +23,20 @@ def get_day_leaderboard(date):
         userdistances = cur.fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
     userdistances = list(map(_convert_id_to_wrdsbusername, userdistances))
-    return userdistances[:10]
+    return userdistances
 
-def get_credentials_from_wrdsbusername(wrdsbusername, cur):
+def get_credentials_from_wrdsbusername(wrdsbusername, cur=None):
+    if cur == None:
+        closecur = True
+        db = database.get_db()
+        cur = db.cursor()
+    else:
+        closecur = False
     cur.execute(
             "SELECT id, username FROM users WHERE wrdsbusername=%s LIMIT 1;", (wrdsbusername,)
     )
     user = cur.fetchone()
+    if closecur: cur.close()
     return user[0], user[1]
 
 def get_wrdsbusername_from_id(userid):
@@ -180,6 +187,12 @@ def start_blocking():
     global block
     block = True
     return block
+
+def fancy_float(n):
+    n = float(n)
+    if n%1==0:
+        return int(n)
+    return float(n)
 
 total = 0
 db_get_total()

@@ -1,6 +1,8 @@
 from flask import abort, Blueprint, render_template, redirect, request
-from application.templates.utils import isadmin, update_total, get_all_time_leaderboard
+from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float
 from flask_login import current_user, login_required
+from application.models import database
+from datetime import datetime
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -32,5 +34,29 @@ def getuserlist():
   return render_template("userlist.html", userlist=returnlist)
 
 @bp.route("/searchforuser/")
-def editdistances():
+def searchforuser():
   return render_template("searchforuser.html")
+
+@bp.route("/edituserdistances/<wrdsbusername>", methods=("GET", "POST"))
+@login_required
+def editdistancespage(wrdsbusername):
+  if not current_user.is_admin(): abort(403)
+  if request.method == "POST":
+    datetimedates = list()
+    distances = list()
+    dates = list()
+    alldates = eval(request.form.get("alldates"))
+    for i in alldates:
+        distances.append(fancy_float(request.form.get(str(i))))
+        datetimedates.append(i)
+        dates.append(datetime.strptime(i, "%Y-%m-%d").strftime("%A, %B %d, %Y"))
+  else:
+    db = database.get_db()
+    with db.cursor() as cur:
+      datetimedates, distances = current_user.get_walk_chart_data(cur)
+    dates = list()
+    distances = list(map(fancy_float, distances))
+    for i in datetimedates:
+      dates.append(i.strftime("%A, %B %d, %Y"))
+  datetimedates = list(map(str, datetimedates))
+  return render_template("editdistance.html", distances=distances, dates=dates, datetimedates=datetimedates, user=current_user.username)

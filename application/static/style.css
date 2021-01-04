@@ -31,6 +31,28 @@ a.button {
     color: initial;
 }
 
+input[type="text"], input[type="number"] {
+    font-size: 1em;
+    border-radius: 10px;
+    padding: 3px;
+}
+
+input[type="submit"] {
+  margin: 25px 0 0 0;
+  width: 7em;
+  height: 2em;
+  border: 1px solid rgb(36, 36, 37);
+  border-radius: 7px;
+  background-color: rgba(164, 48, 63, 0.25);
+}
+
+input[type="submit"]:hover {
+  background-color: rgb(164, 48, 63);
+  color: white;
+  cursor: pointer;
+}
+
+
 /* Navigation bar formatting */
 
 .hide {
@@ -438,21 +460,6 @@ footer a:hover {
   width: 100%;
   grid-column-start: 1;
   grid-column-end: 3;
-}
-
-#submit {
-  margin: 25px 0 0 0;
-  width: 7em;
-  height: 2em;
-  border: 1px solid rgb(36, 36, 37);
-  border-radius: 7px;
-  background-color: rgba(164, 48, 63, 0.25);
-}
-
-#submit:hover {
-  background-color: rgb(164, 48, 63);
-  color: white;
-  cursor: pointer;
 }
 
 .chart {

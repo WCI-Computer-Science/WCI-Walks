@@ -19,8 +19,6 @@ def get_db():
 
     return g.db
 
-from application.templates.utils import set_total, add_to_total # Down here so that we define get_db() first
-
 # Close the database
 def teardown_db(err=None):
     db = g.pop('db', None)
@@ -45,11 +43,3 @@ def get_total(cur):
         'SELECT * FROM total'
     )
     return cur.fetchone()
-
-# Insert total into database
-#def insert_total(distance, cur):
-#    set_total(distance)
-
-# Update total in database
-#def update_total(total, distance, cur):
-#    add_to_total(distance)

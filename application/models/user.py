@@ -76,7 +76,7 @@ class User:
             for walkdate, walkdistance in allwalks:
                 walks[walkdate] = walkdistance
 
-        return walks.keys(), walks.values()
+        return list(walks.keys()), list(walks.values())
 
     def get_id(self):
         return self.id

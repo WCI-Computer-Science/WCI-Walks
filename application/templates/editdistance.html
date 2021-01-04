@@ -1,0 +1,19 @@
+{% extends "utils/layout.html" %}
+{% block body %}
+<div class="contentw admindiv">
+  <h1>Edit {{user}}'s Distances</h1>
+  <hr />
+  <form method="post">
+  <input type="hidden" value="{{datetimedates}}" name="alldates"></input>
+  <input type="submit" value="Save"></input>
+  <table>
+    {% for i in range(dates | length) %}
+      <tr>
+        <td>{{dates[i]}}:</td><td><input type="number" value="{{distances[i]}}" name="{{datetimedates[i]}}" step="0.1"></input></td>
+      </tr>
+    {% endfor %}
+  </table>
+  <input type="submit" value="Save"></input>
+  </form>
+</div>
+{% endblock %}
