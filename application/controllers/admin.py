@@ -1,5 +1,8 @@
+import sys
+import json
+
 from flask import abort, Blueprint, render_template, redirect, request
-from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances, get_credentials_from_wrdsbusername
+from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances, get_credentials_from_wrdsbusername, user_exists
 from flask_login import current_user, login_required
 from application.models import database
 from datetime import datetime
@@ -9,30 +12,29 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 @bp.route("/")
 @login_required
 def adminhome():
-  if isadmin(current_user.get_id()):
-    return render_template("adminpage.html")
-  else: abort(403)
+  if not current_user.is_admin(): abort(403)
+  return render_template("adminpage.html")
 
-@bp.route("/updatetotal/")
+@bp.route("/updatetotal")
 @login_required
 def updatetotal():
-  if isadmin(current_user.get_id()):
-    update_total()
-    return render_template("updatetotalsuccess.html")
-  else: abort(403)
+  if not current_user.is_admin(): abort(403)
+  update_total()
+  return render_template("updatetotalsuccess.html")
 
-@bp.route("/getuserlist/")
+@bp.route("/getuserlist")
 def getuserlist():
-  search = request.args.get("text", "")
+  if not current_user.is_admin(): abort(403)
+  search = request.args.get("text", "").lower() # remove case sensitive matching
   userlist = get_all_time_leaderboard()
-  # Trying list comprehension instead
   if search != "":
-    userlist = [i for i in userlist if search in i]
+    userlist = [i for i in userlist if search in i[0].lower()]
   userlist.sort(key=lambda user:user[0])
   return render_template("userlist.html", userlist=userlist)
 
-@bp.route("/searchforuser/")
+@bp.route("/searchforuser")
 def searchforuser():
+  if not current_user.is_admin(): abort(403)
   return render_template("searchforuser.html")
 
 @bp.route("/edituserdistances/<wrdsbusername>", methods=("GET", "POST"))
@@ -43,8 +45,10 @@ def editdistancespage(wrdsbusername):
     datetimedates = list()
     distances = list()
     dates = list()
-    olddistances = eval(request.form.get("alldistances"))
-    alldates = eval(request.form.get("alldates"))
+    olddistances = json.loads(request.form.get("alldistances"))
+    alldates = json.loads(request.form.get("alldates"))
+    print(olddistances, file=sys.stderr)
+    print(alldates, file=sys.stderr)
     for i in alldates:
         distances.append(fancy_float(request.form.get(str(i))))
         datetimedates.append(i)
@@ -61,4 +65,21 @@ def editdistancespage(wrdsbusername):
     for i in datetimedates:
       dates.append(i.strftime("%A, %B %d, %Y"))
   datetimedates = list(map(str, datetimedates))
-  return render_template("editdistance.html", distances=distances, dates=dates, datetimedates=datetimedates, user=get_credentials_from_wrdsbusername(wrdsbusername)[1])
+  return render_template(
+    "editdistance.html",
+    distances=distances,
+    dates=dates,
+    datetimedates=datetimedates,
+    user=get_credentials_from_wrdsbusername(wrdsbusername)[1])
+
+@bp.route("/deleteuser/<wrdsbusername>", methods=("GET", "POST"))
+def deleteuser(wrdsbusername):
+  if not current_user.is_admin(): abort(403)
+  if not user_exists(wrdsbusername): abort(404)
+  if request.method=="POST":
+    pass # Will fill this in later
+  else:
+    return render_template(
+      "deleteuser.html",
+      wrdsbusername=wrdsbusername
+    )

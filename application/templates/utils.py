@@ -195,6 +195,14 @@ def replace_walk_distances(distances, dates, olddistances, user, id):
                 print("Updated", user.id, "walk on", dates[i], "to be", distances[i]) # No spaces here, the default seperator is a space
     db.commit()
 
+def user_exists(wrdsbusername):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT COUNT(*) FROM users WHERE wrdsbusername=%s", (wrdsbusername,)
+        )
+        return cur.fetchone()[0]>0
+
 total = 0
 db_get_total()
 block = False

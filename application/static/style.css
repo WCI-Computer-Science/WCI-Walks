@@ -23,7 +23,7 @@ body {
   background-color: rgb(164, 48, 63);
 }
 
-a.button {
+.button {
     -moz-appearance: button;
     appearance: button;
 
@@ -37,7 +37,8 @@ input[type="text"], input[type="number"] {
     padding: 3px;
 }
 
-input[type="submit"] {
+input[type="submit"], #fakesubmit {
+  font-size: 1em;
   margin: 25px 0 0 0;
   width: 7em;
   height: 2em;
@@ -46,7 +47,7 @@ input[type="submit"] {
   background-color: rgba(164, 48, 63, 0.25);
 }
 
-input[type="submit"]:hover {
+input[type="submit"]:hover, #fakesubmit:hover {
   background-color: rgb(164, 48, 63);
   color: white;
   cursor: pointer;

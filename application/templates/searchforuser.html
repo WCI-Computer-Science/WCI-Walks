@@ -3,7 +3,7 @@
 <script>
     function changeIFrame(textObject) {
          var text = encodeURIComponent(textObject.value);
-         document.getElementById('userlistiframe').src = "/admin/getuserlist/?text=".concat(text);
+         document.getElementById('userlistiframe').src = "/admin/getuserlist?text=".concat(text);
     }
 
     function resizeIFrameToFitContent(iFrame) {
@@ -22,7 +22,7 @@
   <label for="name">Enter a name:</label>
   <input id="name" name="name" type="text" onchange="changeIFrame(this)"><br />
   <button onclick="changeIFrame(getTextObject('name'))" id="adminbutton">Search</button><br />
-  <iframe width="333px" onload="resizeIFrameToFitContent(this)" frameBorder="0" id="userlistiframe" src="/admin/getuserlist/"></iframe>
+  <iframe width="333px" onload="resizeIFrameToFitContent(this)" frameBorder="0" id="userlistiframe" src="/admin/getuserlist?text="></iframe>
 </div>
 {% endblock %}
 
