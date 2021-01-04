@@ -81,7 +81,8 @@ def viewprofile(username):
         'otherusers.html',
         labels=labels,
         data=data,
-        name=name
+        name=name,
+        wrdsbusername=username
     )
 
 @bp.route('/login', methods=('GET', 'POST'))

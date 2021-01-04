@@ -58,7 +58,7 @@ def isadmin(userid):
             "SELECT wrdsbusername, adminvalid FROM admins WHERE id=%s;", (userid,)
         )
         row = cur.fetchone()
-    return row[0]==get_wrdsbusername_from_id(userid) and row[1]
+    return (row[0]==get_wrdsbusername_from_id(userid) and row[1] if row!=None else False)
 
 def walk_will_max_distance(distance, id):
     curdistance = _get_walk_distance(id)
