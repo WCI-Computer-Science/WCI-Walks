@@ -16,8 +16,8 @@ def adminhome():
 @bp.route("/updatetotal/")
 @login_required
 def updatetotal():
-  update_total()
   if isadmin(current_user.get_id()):
+    update_total()
     return render_template("updatetotalsuccess.html")
   else: abort(403)
 
