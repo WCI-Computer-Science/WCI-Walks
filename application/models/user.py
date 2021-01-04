@@ -54,11 +54,14 @@ class User:
             (self.id, self.username, distance, date)
         )
 
-    def update_walk(self, distance, date, walk, cur):
-        cur.execute(
-            'UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;',
-            (round(walk['distance'] + distance, 1), self.id, date)
-        )
+    def update_walk(self, distance, date, walk, cur, replace=False):
+        if self.get_walk(date, cur)!=None:
+            cur.execute(
+                'UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;',
+                (round((distance if replace else walk['distance'] + distance), 1), self.id, date)
+            )
+        else:
+            self.insert_walk(distance, date, cur)
 
     def get_walk_chart_data(self, cur, id=None):
         if id is None: useid = self.id

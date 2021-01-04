@@ -1,5 +1,5 @@
 from flask import abort, Blueprint, render_template, redirect, request
-from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float
+from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances
 from flask_login import current_user, login_required
 from application.models import database
 from datetime import datetime
@@ -45,11 +45,15 @@ def editdistancespage(wrdsbusername):
     datetimedates = list()
     distances = list()
     dates = list()
+    olddistances = eval(request.form.get("alldistances"))
     alldates = eval(request.form.get("alldates"))
     for i in alldates:
         distances.append(fancy_float(request.form.get(str(i))))
         datetimedates.append(i)
         dates.append(datetime.strptime(i, "%Y-%m-%d").strftime("%A, %B %d, %Y"))
+    replace_walk_distances(distances, datetimedates, olddistances, current_user)
+    if olddistances!=distances:
+        update_total()
   else:
     db = database.get_db()
     with db.cursor() as cur:
