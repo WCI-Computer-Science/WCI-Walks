@@ -1,5 +1,5 @@
 import sys
-import json
+import ast
 
 from flask import abort, Blueprint, render_template, redirect, request
 from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances, get_credentials_from_wrdsbusername, user_exists
@@ -45,10 +45,8 @@ def editdistancespage(wrdsbusername):
     datetimedates = list()
     distances = list()
     dates = list()
-    olddistances = json.loads(request.form.get("alldistances"))
-    alldates = json.loads(request.form.get("alldates"))
-    print(olddistances, file=sys.stderr)
-    print(alldates, file=sys.stderr)
+    olddistances = ast.literal_eval(request.form.get("alldistances"))
+    alldates = ast.literal_eval(request.form.get("alldates"))
     for i in alldates:
         distances.append(fancy_float(request.form.get(str(i))))
         datetimedates.append(i)
