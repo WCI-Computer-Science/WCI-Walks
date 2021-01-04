@@ -73,7 +73,7 @@ def _get_walk_distance(id):
         )
         walk = cur.fetchone()
         if walk!= None:
-            return int(cur.fetchone()[0])
+            return int(walk[0])
         else:
             return 0
 

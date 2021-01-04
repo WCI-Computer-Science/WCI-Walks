@@ -7,7 +7,7 @@ from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField,
 from wtforms.fields.html5 import EmailField, IntegerField
 
 from application.models import *
-from application.templates.utils import get_credentials_from_wrdsbusername, walk_will_max_distance, walk_is_maxed, is_blocked
+from application.templates.utils import get_credentials_from_wrdsbusername, walk_will_max_distance, walk_is_maxed, is_blocked, add_to_total
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 
