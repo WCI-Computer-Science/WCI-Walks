@@ -3,7 +3,7 @@ from flask import current_app, redirect, url_for
 import flask_login
 from . import database, loginmanager
 from datetime import date, timedelta
-from application.templates.utils import isadmin
+from application.templates.utils import isadmin, get_wrdsbusername_from_id, get_credentials_from_wrdsbusername
 
 login_manager = loginmanager.get_login_manager()
 
@@ -42,26 +42,33 @@ class User:
         self.distance = user['distance']
         self.is_active = user['active']
 
-    def get_walk(self, date, cur):
+    def get_walk(self, date, cur, id=None):
+        if id!=None: useid=id
+        else: useid=self.id
         cur.execute(
-            'SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1', (self.id, date)
+            'SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1', (useid, date)
         )
         return cur.fetchone()
 
-    def insert_walk(self, distance, date, cur):
+    def insert_walk(self, distance, date, cur, id=None):
+        if id!=None: useid=id
+        else: useid=self.id
+        username = get_credentials_from_wrdsbusername(get_wrdsbusername_from_id(useid))[1]
         cur.execute(
             'INSERT INTO walks (id, username, distance, walkdate) VALUES (%s, %s, %s, %s);',
-            (self.id, self.username, distance, date)
+            (useid, username, distance, date)
         )
 
-    def update_walk(self, distance, date, walk, cur, replace=False):
-        if self.get_walk(date, cur)!=None:
+    def update_walk(self, distance, date, walk, cur, replace=False, id=None):
+        if id!=None: useid=id
+        else: useid=self.id
+        if self.get_walk(date, cur, id=useid)!=None:
             cur.execute(
                 'UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;',
-                (round((distance if replace else walk['distance'] + distance), 1), self.id, date)
+                (round((distance if replace else walk['distance'] + distance), 1), useid, date)
             )
         else:
-            self.insert_walk(distance, date, cur)
+            self.insert_walk(distance, date, cur, id=useid)
 
     def get_walk_chart_data(self, cur, id=None):
         if id is None: useid = self.id

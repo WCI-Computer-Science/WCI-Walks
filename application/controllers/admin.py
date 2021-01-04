@@ -1,5 +1,5 @@
 from flask import abort, Blueprint, render_template, redirect, request
-from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances
+from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances, get_credentials_from_wrdsbusername
 from flask_login import current_user, login_required
 from application.models import database
 from datetime import datetime
@@ -51,16 +51,16 @@ def editdistancespage(wrdsbusername):
         distances.append(fancy_float(request.form.get(str(i))))
         datetimedates.append(i)
         dates.append(datetime.strptime(i, "%Y-%m-%d").strftime("%A, %B %d, %Y"))
-    replace_walk_distances(distances, datetimedates, olddistances, current_user)
+    replace_walk_distances(distances, datetimedates, olddistances, current_user, id=get_credentials_from_wrdsbusername(wrdsbusername)[0])
     if olddistances!=distances:
         update_total()
   else:
     db = database.get_db()
     with db.cursor() as cur:
-      datetimedates, distances = current_user.get_walk_chart_data(cur)
+      datetimedates, distances = current_user.get_walk_chart_data(cur, id=get_credentials_from_wrdsbusername(wrdsbusername)[0])
     dates = list()
     distances = list(map(fancy_float, distances))
     for i in datetimedates:
       dates.append(i.strftime("%A, %B %d, %Y"))
   datetimedates = list(map(str, datetimedates))
-  return render_template("editdistance.html", distances=distances, dates=dates, datetimedates=datetimedates, user=current_user.username)
+  return render_template("editdistance.html", distances=distances, dates=dates, datetimedates=datetimedates, user=get_credentials_from_wrdsbusername(wrdsbusername)[1])

@@ -194,14 +194,15 @@ def fancy_float(n):
         return int(n)
     return float(n)
 
-def replace_walk_distances(distances, dates, olddistances, user):
+def replace_walk_distances(distances, dates, olddistances, user, id):
     db = database.get_db()
     with db.cursor() as cur:
         for i in range(len(dates)):
             if distances[i]!=olddistances[i]:
-                user.update_walk(distances[i], dates[i], None, cur, replace=True)
+                user.update_walk(distances[i], dates[i], None, cur, replace=True, id=id)
                 print("Updated", user.id, "walk on", dates[i], "to be", distances[i])
     db.commit()
+
 total = 0
 db_get_total()
 block = False
