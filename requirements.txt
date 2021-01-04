@@ -5,6 +5,7 @@ email_validator
 flask-login
 oauthlib
 google-auth
+idna==2.9
 requests
 pyopenssl
 psycopg2-binary
