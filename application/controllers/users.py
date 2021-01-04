@@ -27,10 +27,10 @@ def info():
 
     if request.method == 'POST':
         form.distance.validators = [
-                                        validators.InputRequired(),
-                                        validators.NumberRange(min=0.01, max=42, message="Invalid distance"),
-                                        walk_is_maxed(current_user.get_id(), max=42),
-                                   ]
+            validators.InputRequired(),
+            validators.NumberRange(min=0.01, max=42, message="Invalid distance"),
+            walk_is_maxed(current_user.get_id(), max=42),
+        ]
         if form.validate():
             with db.cursor() as cur:
                 while is_blocked():

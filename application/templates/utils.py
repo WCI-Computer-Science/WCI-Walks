@@ -83,9 +83,6 @@ def walk_is_maxed(id, max=42):
             raise ValidationError("You can only walk between 0 and "+str(max)+" per day.")
     return _walk_is_maxed
 
-def _get_index_zero_of_list(item):
-    return item[0]
-
 def update_total():
     print("Starting to update user totals.")
     db = database.get_db()
@@ -101,29 +98,39 @@ def update_total():
             distances = {}
             for i in cur.fetchall():
                 if i[0] in distances.keys():
-                    distances[i[0]] += float(i[1])
+                    distances[i[0]] += i[1]
                 else:
-                    distances[i[0]] = float(i[1])
+                    distances[i[0]] = i[1]
             for i in distances.keys():
                 cur.execute(
                     "UPDATE users SET distance=%s WHERE id=%s;", (distances[i], i,)
-                )
-                cur.execute(
-                    "SELECT * FROM users WHERE id=%s;", (i,)
                 )
         print("Done updating user totals.\nStarting to update global total!")
         with db.cursor() as cur:
             cur.execute(
                 "SELECT distance FROM users;"
             )
-            originaltotal = get_total()
-            allusers = cur.fetchall()
-        sub_from_total(originaltotal-sum(map(float, map(_get_index_zero_of_list, allusers))))
+            newtotal = sum(i[0] for i in cur.fetchall()) # user distances already saved as float
+            # i don't think we need a global total variable, since i wasn't able to find any reference
+            # to it outside of this function, but we could just directly set the new total anyway
+            cur.execute(
+                "SELECT * FROM total;"
+            )
+            if cur.fetchone()==None:
+                cur.execute(
+                    "INSERT INTO total (distance) VALUES (%s);", (round(newtotal, 1),)
+                )
+            else:
+                cur.execute(
+                    "UPDATE total SET distance=%s", (round(newtotal, 1),)
+                )
         db.commit()
     finally:
         stop_blocking()
     print("Done updating totals!")
 
+# The total stuff below may not be necessary
+"""
 def get_total():
     global total
     return total
@@ -173,6 +180,7 @@ def db_commit_total():
             )
     db.commit()
     return total
+"""
 
 def is_blocked():
     global block
@@ -192,7 +200,7 @@ def fancy_float(n):
     n = float(n)
     if n%1==0:
         return int(n)
-    return float(n)
+    return n
 
 def replace_walk_distances(distances, dates, olddistances, user):
     db = database.get_db()
@@ -200,8 +208,8 @@ def replace_walk_distances(distances, dates, olddistances, user):
         for i in range(len(dates)):
             if distances[i]!=olddistances[i]:
                 user.update_walk(distances[i], dates[i], None, cur, replace=True)
-                print("Updated", user.id, "walk on", dates[i], "to be", distances[i])
+                print("Updated ", user.id, " walk on ", dates[i], " to be ", distances[i])
     db.commit()
-total = 0
-db_get_total()
+#total = 0
+#db_get_total()
 block = False
