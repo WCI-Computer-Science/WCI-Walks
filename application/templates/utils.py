@@ -89,7 +89,7 @@ def update_total():
     if not is_blocked():
         start_blocking()
     else:
-        raise Exception("Already Blocked") # Need to figure out what to do here
+        return False # We could return a success variable
     try:
         with db.cursor() as cur:
             cur.execute(
@@ -105,32 +105,20 @@ def update_total():
                 cur.execute(
                     "UPDATE users SET distance=%s WHERE id=%s;", (distances[i], i,)
                 )
+        db.commit()
         print("Done updating user totals.\nStarting to update global total!")
         with db.cursor() as cur:
             cur.execute(
                 "SELECT distance FROM users;"
             )
             newtotal = sum(i[0] for i in cur.fetchall())
-            sub_from_total(get_total()-newtotal)
-            # The total variable is used in models/user.py
-            # Using a global total variable ensures that if two people submit distances simultaneously, both get counted and added to the total
-            cur.execute(
-                "SELECT * FROM total;"
-            )
-            if cur.fetchone()==None:
-                cur.execute(
-                    "INSERT INTO total (distance) VALUES (%s);", (round(newtotal, 1),)
-                )
-            else:
-                cur.execute(
-                    "UPDATE total SET distance=%s", (round(newtotal, 1),)
-                )
-        db.commit()
+            set_total(newtotal) # just use set_total here
+        db_commit_total()
     finally:
         stop_blocking()
     print("Done updating totals!")
+    return True
 
-# Total stuff below is used in models/user.py
 def get_total():
     global total
     return total
@@ -155,12 +143,7 @@ def sub_from_total(num):
 
 def db_get_total():
     global total
-    db = database.get_db()
-    with db.cursor() as cur:
-        cur.execute(
-            "SELECT * FROM total;"
-        )
-        total = cur.fetchone()[0]
+    total = database.get_total() # database get_total already exists
     return total
 
 def db_commit_total():

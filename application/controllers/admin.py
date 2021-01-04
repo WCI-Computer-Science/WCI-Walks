@@ -25,13 +25,11 @@ def updatetotal():
 def getuserlist():
   search = request.args.get("text", "")
   userlist = get_all_time_leaderboard()
-  returnlist = list(userlist) # Using list() to seperate from userlist, otherwise returnlist would be tied to userlist
+  # Trying list comprehension instead
   if search != "":
-    for i in userlist:
-      if search not in i[0]:
-        returnlist.remove(i)
-    returnlist.sort(key=lambda user:user[0])
-  return render_template("userlist.html", userlist=returnlist)
+    userlist = [i for i in userlist if search in i]
+  userlist.sort(key=lambda user:user[0])
+  return render_template("userlist.html", userlist=userlist)
 
 @bp.route("/searchforuser/")
 def searchforuser():
