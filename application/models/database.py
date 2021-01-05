@@ -3,13 +3,16 @@
 import psycopg2
 import psycopg2.extras
 import click
+import time
 
 from flask import current_app, g
 from flask.cli import with_appcontext
-
+from application.templates.utils import is_blocked
 
 # Get database from sqlite connect method
 def get_db():
+    while is_blocked():
+        time.sleep(2)
     if 'db' not in g:
         g.db = psycopg2.connect(
             current_app.config['DB'],

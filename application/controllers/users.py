@@ -33,8 +33,6 @@ def info():
         ]
         if form.validate():
             with db.cursor() as cur:
-                while is_blocked():
-                    time.sleep(100)
                 walk = current_user.get_walk(date, cur)
                 walkwillmaxdistance = walk_will_max_distance(float(form.distance.data), current_user.get_id())
                 distance = round((float(form.distance.data) if not(walkwillmaxdistance) else 42-walk["distance"]), 1)

@@ -2,7 +2,7 @@ import sys
 import ast
 import json
 
-from flask import abort, Blueprint, render_template, redirect, request
+from flask import abort, Blueprint, render_template, redirect, request, flash
 from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances, get_credentials_from_wrdsbusername, user_exists
 from flask_login import current_user, login_required
 from application.models import database
@@ -75,10 +75,12 @@ def editdistancespage(wrdsbusername):
 def deleteuser(wrdsbusername):
   if not current_user.is_admin(): abort(403)
   if not user_exists(wrdsbusername): abort(404)
-  if request.method=="POST":
-    pass # Will fill this in later
-  else:
-    return render_template(
-      "deleteuser.html",
-      wrdsbusername=wrdsbusername
-    )
+  if request.method == "POST":
+    if request.form.get("confirm") == wrdsbusername:
+      pass
+    else:
+      flash("You did not type the correct name!")
+  return render_template(
+    "deleteuser.html",
+    wrdsbusername=wrdsbusername
+  )

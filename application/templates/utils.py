@@ -85,11 +85,8 @@ def walk_is_maxed(id, max=42):
 
 def update_total():
     print("Starting to update user totals.")
-    db = database.get_db()
-    if not is_blocked():
-        start_blocking()
-    else:
-        return False # We could return a success variable
+    db = database.get_db() # i put the blocking in database.get_db
+    start_blocking()
     try:
         with db.cursor() as cur:
             cur.execute(
