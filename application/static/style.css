@@ -424,7 +424,8 @@ footer a:hover {
 }
 
 #usersearchlist {
-  width: 300px;
+  margin: 45px auto 0 auto;
+  width: 75%;
 }
 
 #usersearchlist a {

@@ -33,10 +33,12 @@
         {% endif %}
         ctx.style.width = 0.9 * window.screen.width;
     }
+
+    window.onload = () => {
+        genchart();
+    }
 </script>
 {% endblock %}
-
-{% block onload %}genchart(){% endblock %}
 
 {% block body %}
 <div id="otherprofile" class="profilediv contentw">
