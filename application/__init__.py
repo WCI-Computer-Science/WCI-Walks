@@ -11,6 +11,8 @@ def create_app():
     with app.app_context():
         from .models import database, loginmanager, oauth, user
         from .controllers import index, users, admin
+        from .controllers.errors import error404, error500
+
         # Create database and set up automatic database closing for requests
         database.init_app(app)
 
@@ -22,5 +24,9 @@ def create_app():
 
         # Route /admin to admin pages
         app.register_blueprint(admin.bp)
+
+        # Route errors
+        app.register_error_handler(404, error404)
+        app.register_error_handler(500, error500)
 
     return app
