@@ -17,7 +17,9 @@ except:
         GOOGLE_CLIENT_SECRET = ""
 try:
     DB = os.environ['DATABASE_URL']
+    DONT_LOAD_DB = False
 except: # Probably running on travis, no need for real values here, but warn anyways.
     print("Warn: Could not load DATABASE_URL, using bogus values.")
     DB = ""
+    DONT_LOAD_DB = True
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"

@@ -2,6 +2,7 @@ import sys, time
 from application.models import database
 from wtforms.validators import ValidationError
 from datetime import date
+from flask import current_app
 
 def get_all_time_leaderboard():
     db = database.get_db()
@@ -175,15 +176,6 @@ def replace_walk_distances(distances, dates, olddistances, user, id):
                 print("Updated", user.id, "walk on", dates[i], "to be", distances[i]) # No spaces here, the default seperator is a space
     db.commit()
 
-# function not necessary (check the admin blueprint)
-'''
-def user_exists(wrdsbusername):
-    db = database.get_db()
-    with db.cursor() as cur:
-        cur.execute(
-            "SELECT COUNT(*) FROM users WHERE wrdsbusername=%s", (wrdsbusername,)
-        )
-        return cur.fetchone()[0]>0
-'''
 total = 0
-db_get_total()
+if not current_app.config["DONT_LOAD_DB"]:
+    db_get_total()
