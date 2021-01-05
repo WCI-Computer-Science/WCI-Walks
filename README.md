@@ -1,5 +1,5 @@
 # WCI Walks
-
+!(https://travis-ci.com/WCI-Computer-Science/WCI-Walks.svg?branch=main "Build Status")
 ## About this app
 WCI Walks tracks the walkathon progress of students at WCI. It tracks individual as well as total progress.
 
