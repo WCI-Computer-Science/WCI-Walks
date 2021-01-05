@@ -410,7 +410,7 @@ footer a:hover {
   width: 100%;
 }
 
-#adminbutton {
+.adminbutton {
   margin: 10px 0 0 0;
   padding: 5px;
   border: 1px solid rgb(36, 36, 37);
@@ -418,7 +418,7 @@ footer a:hover {
   background-color: rgba(164, 48, 63, 0.25);
 }
 
-#adminbutton:hover {
+.adminbutton:hover {
   background-color: rgb(164, 48, 63);
   color: white;
 }
