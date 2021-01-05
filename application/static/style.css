@@ -518,10 +518,9 @@ footer a:hover {
 .legalheader {
   padding: 25px;
   color: whitesmoke;
-  text-alight: center;
 }
 
-.legalheader h2 {
+.legalheader h2, .legalheader p {
   text-align: center;
 }
 
