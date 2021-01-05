@@ -423,21 +423,21 @@ footer a:hover {
   color: white;
 }
 
-.usersearchlist {
+#usersearchlist {
   width: 300px;
 }
 
-.usersearchlist a {
+#usersearchlist a {
   display: block;
   text-decoration: none;
   color: inherit;
 }
 
-.usersearchlist .name {
+#usersearchlist .name {
   text-align: left;
 }
 
-.usersearchlist .distance {
+#usersearchlist .distance {
   text-align: right;
 }
 
@@ -490,11 +490,7 @@ footer a:hover {
   }
 }
 
-
-
 /* Privacy Policy and Terms of Service formatting */
-
-
 
 .legal {
   padding: 25px 5% 50px 5%;

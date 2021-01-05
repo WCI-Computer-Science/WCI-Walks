@@ -1,5 +1,6 @@
 import sys
 import ast
+import json
 
 from flask import abort, Blueprint, render_template, redirect, request
 from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances, get_credentials_from_wrdsbusername, user_exists
@@ -25,12 +26,12 @@ def updatetotal():
 @bp.route("/getuserlist")
 def getuserlist():
   if not current_user.is_admin(): abort(403)
-  search = request.args.get("text", "").lower() # remove case sensitive matching
+  search = request.args.get("text", "").lower()
   userlist = get_all_time_leaderboard()
   if search != "":
     userlist = [i for i in userlist if search in i[0].lower()]
   userlist.sort(key=lambda user:user[0])
-  return render_template("userlist.html", userlist=userlist)
+  return json.dumps(userlist)
 
 @bp.route("/searchforuser")
 def searchforuser():
