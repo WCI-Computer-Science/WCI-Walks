@@ -56,7 +56,7 @@ def isadmin(userid):
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT wrdsbusername, adminvalid FROM admins WHERE id=%s;", (userid,)
+            "SELECT wrdsbusername, valid FROM admins WHERE id=%s;", (userid,)
         )
         row = cur.fetchone()
     return (row[0]==get_wrdsbusername_from_id(userid) and row[1] if row!=None else False)
