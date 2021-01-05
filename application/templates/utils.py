@@ -86,7 +86,7 @@ def walk_is_maxed(id, max=42):
 def update_total():
     print("Starting to update user totals.")
     db = database.get_db() # i put the blocking in database.get_db
-    start_blocking()
+    database.start_blocking()
     try:
         with db.cursor() as cur:
             cur.execute(
@@ -100,19 +100,21 @@ def update_total():
                     distances[i[0]] = i[1]
             for i in distances.keys():
                 cur.execute(
-                    "UPDATE users SET distance=%s WHERE id=%s;", (distances[i], i,)
+                    "UPDATE users SET distance=%s WHERE id=%s;", (distances[i], i)
                 )
         db.commit()
         print("Done updating user totals.\nStarting to update global total!")
         with db.cursor() as cur:
+            print('ok1')
             cur.execute(
                 "SELECT distance FROM users;"
             )
-            newtotal = sum(i[0] for i in cur.fetchall())
-            set_total(newtotal) # just use set_total here
-        db_commit_total()
+            print('ok2')
+            newtotal = sum(i['distance'] for i in cur.fetchall())
+            set_total(newtotal, cur)
+        db.commit()
     finally:
-        stop_blocking()
+        database.stop_blocking()
     print("Done updating totals!")
     return True
 
@@ -120,22 +122,16 @@ def get_total():
     global total
     return total
 
-def set_total(num):
+def set_total(num, cur):
     global total
     total = num
-    db_commit_total()
+    db_write_total(cur)
     return total
 
-def add_to_total(num):
+def add_to_total(num, cur): # i deleted sub_from_total, since we can just use add_to_total(-num)
     global total
     total += num
-    db_commit_total()
-    return total
-
-def sub_from_total(num):
-    global total
-    total -= num
-    db_commit_total()
+    db_write_total(cur)
     return total
 
 def db_get_total():
@@ -143,39 +139,26 @@ def db_get_total():
     db = database.get_db()
     with db.cursor() as cur:
         total = database.get_total(cur) # database get_total already exists
+    if total:
+        total = total['distance']
+    else:
+        total = 0
     return total
 
-def db_commit_total():
+def db_write_total(cur):
     global total
-    db = database.get_db()
-    with db.cursor() as cur:
+    cur.execute(
+        "SELECT * FROM total;"
+    )
+    if cur.fetchone()==None:
         cur.execute(
-            "SELECT * FROM total;"
+            "INSERT INTO total (distance) VALUES (%s);", (round(total, 1),)
         )
-        if cur.fetchone()==None:
-            cur.execute(
-                "INSERT INTO total (distance) VALUES (%s);", (round(total, 1),)
-            )
-        else:
-            cur.execute(
-                "UPDATE total SET distance=%s", (round(total, 1),)
-            )
-    db.commit()
+    else:
+        cur.execute(
+            "UPDATE total SET distance=%s", (round(total, 1),)
+        )
     return total
-
-def is_blocked():
-    global block
-    return block
-
-def stop_blocking():
-    global block
-    block = False
-    return block
-
-def start_blocking():
-    global block
-    block = True
-    return block
 
 def fancy_float(n):
     n = float(n)
@@ -192,6 +175,8 @@ def replace_walk_distances(distances, dates, olddistances, user, id):
                 print("Updated", user.id, "walk on", dates[i], "to be", distances[i]) # No spaces here, the default seperator is a space
     db.commit()
 
+# function not necessary (check the admin blueprint)
+'''
 def user_exists(wrdsbusername):
     db = database.get_db()
     with db.cursor() as cur:
@@ -199,7 +184,6 @@ def user_exists(wrdsbusername):
             "SELECT COUNT(*) FROM users WHERE wrdsbusername=%s", (wrdsbusername,)
         )
         return cur.fetchone()[0]>0
-
+'''
 total = 0
 db_get_total()
-block = False

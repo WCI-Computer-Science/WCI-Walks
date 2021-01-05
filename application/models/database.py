@@ -1,13 +1,9 @@
 # Connects to database
 
-import psycopg2
-import psycopg2.extras
-import click
-import time
+import psycopg2, psycopg2.extras, click, time
 
 from flask import current_app, g
 from flask.cli import with_appcontext
-from application.templates.utils import is_blocked
 
 # Get database from sqlite connect method
 def get_db():
@@ -43,6 +39,22 @@ def init_app(app):
 # Get total from database
 def get_total(cur):
     cur.execute(
-        'SELECT * FROM total'
+        'SELECT * FROM total;'
     )
     return cur.fetchone()
+
+block = False
+
+def is_blocked():
+    global block
+    return block
+
+def stop_blocking():
+    global block
+    block = False
+    return block
+
+def start_blocking():
+    global block
+    block = True
+    return block

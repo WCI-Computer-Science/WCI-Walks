@@ -1,11 +1,12 @@
-import sys
-import ast
-import json
+import sys, ast, json
 
 from flask import abort, Blueprint, render_template, redirect, request, flash
-from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances, get_credentials_from_wrdsbusername, user_exists
+from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances, get_credentials_from_wrdsbusername
 from flask_login import current_user, login_required
-from application.models import database
+
+from application.models import *
+from application.templates.utils import add_to_total
+
 from datetime import datetime
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -74,13 +75,36 @@ def editdistancespage(wrdsbusername):
 @bp.route("/deleteuser/<wrdsbusername>", methods=("GET", "POST"))
 def deleteuser(wrdsbusername):
   if not current_user.is_admin(): abort(403)
-  if not user_exists(wrdsbusername): abort(404)
+
+  db = database.get_db()
+  with db.cursor() as cur:
+    cur.execute(
+      'SELECT * FROM users WHERE wrdsbusername=%s LIMIT 1;', (wrdsbusername,)
+    )
+    user = cur.fetchone()
+    if not user: abort(404)
+  
   if request.method == "POST":
     if request.form.get("confirm") == wrdsbusername:
-      pass
+      db = database.get_db()
+      with db.cursor() as cur:
+        add_to_total(-user['distance'], cur)
+        cur.execute(
+          'DELETE FROM users WHERE id=%s;', (user['id'],)
+        )
+        cur.execute(
+          'DELETE FROM walks WHERE id=%s;', (user['id'],)
+        )
+        cur.execute(
+          'DELETE FROM admins WHERE id=%s;', (user['id'],)
+        )
+      db.commit()
+      redirect('/admin')
     else:
       flash("You did not type the correct name!")
+  
   return render_template(
     "deleteuser.html",
+    username=user['username'],
     wrdsbusername=wrdsbusername
   )

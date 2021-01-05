@@ -9,7 +9,9 @@ CREATE TABLE IF NOT EXISTS total (
     id: used to identify each submission of walk
     email: ensure user is part of WRDSB
     username: student's name
+    wrdsbusername: email without the @wrdsb.ca
     distance: student's total distance
+    active: whether a user is active
  */
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
@@ -21,7 +23,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 /* Info stored for each walk (one walk stored per day):
-    id: used to identify student who did walk
+    id: used to identify student who did the walk
+    username: used to identify student who did the walk
     distance: student's distance for that day
     walkdate: date of walk stored as YYYY-MM-DD
 */
