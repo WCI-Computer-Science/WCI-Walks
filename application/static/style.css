@@ -520,7 +520,7 @@ footer a:hover {
   color: whitesmoke;
 }
 
-.legalheader h2 {
+.legalheader h2, .legalheader p {
   text-align: center;
 }
 
