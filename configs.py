@@ -10,10 +10,14 @@ except:
         SECRET_KEY = os.environ['SECRET_KEY']
         GOOGLE_CLIENT_ID = os.environ['GOOGLE_CLIENT_ID']
         GOOGLE_CLIENT_SECRET = os.environ['GOOGLE_CLIENT_SECRET']
-    except: # Probably running on travis, no need for real values here
+    except: # Probably running on travis, no need for real values here, but warn anyways
         print("Warn: Could not load secrets, using bogus values.")
         SECRET_KEY = ""
         GOOGLE_CLIENT_ID = ""
         GOOGLE_CLIENT_SECRET = ""
-DB = os.environ['DATABASE_URL']
+try:
+    DB = os.environ['DATABASE_URL']
+except: # Probably running on travis, no need for real values here, but warn anyways.
+    print("Warn: Could not load DATABASE_URL, using bogus values.")
+    DB = ""
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
