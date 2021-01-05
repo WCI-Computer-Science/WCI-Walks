@@ -1,5 +1,5 @@
 from flask import Flask
-import secrets, configs
+import configs
 
 def create_app():
 
