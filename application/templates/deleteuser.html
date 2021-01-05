@@ -2,20 +2,22 @@
 {% block body %}
 <div class="content contentw admindiv">
   <h1>Delete {{username}}</h1>
-  <p>
-    Are you sure you want to do this?<br />
-    If you are, type "{{wrdsbusername}}" into the box below.
-  </p>
-  {% for message in get_flashed_messages() %}
-    <div class='message'><p>{{ message }}</p></div>
-  {% endfor %}
-  <form method="post">
-    <div>
-      <input type="text" name="confirm"></input>
-    </div>
-    <input type="submit" value="Delete"></input>
-    <div>
-      <a class="button" class="adminbutton" href="/users/viewprofile/{{wrdsbusername}}">Go Back!</a><br />
-    </div>
-  </form>
+  <div class="adminchoice">
+    <p>
+      Are you sure you want to do this?<br />
+      If you are, type "{{wrdsbusername}}" into the box below.
+    </p>
+    {% for message in get_flashed_messages() %}
+      <div class='message'><p>{{ message }}</p></div>
+    {% endfor %}
+    <form method="post">
+      <div>
+        <input type="text" name="confirm"></input>
+      </div>
+      <input type="submit" value="Delete"></input>
+    </form>
+  </div>
+  <div class="adminchoice">
+    <a class="button adminbutton panicbutton" href="/users/viewprofile/{{wrdsbusername}}">Go Back!</a><br />
+  </div>
 {% endblock %}

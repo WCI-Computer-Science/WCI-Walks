@@ -410,12 +410,30 @@ footer a:hover {
   width: 100%;
 }
 
+.adminchoice {
+  margin: 20px 0;
+}
+
+.admincontrol {
+  margin-left: 20px;
+}
+
 .adminbutton {
   margin: 10px 0 0 0;
-  padding: 5px;
+  padding: 10px;
+  font-size: 1em;
   border: 1px solid rgb(36, 36, 37);
   border-radius: 7px;
   background-color: rgba(164, 48, 63, 0.25);
+}
+
+.panicbutton {
+  margin-top: 40px;
+  padding-top: 0.3em;
+  font-size: 1.2em;
+  width: 7em;
+  height: 2em;
+  text-align: center;
 }
 
 .adminbutton:hover {

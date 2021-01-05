@@ -66,26 +66,26 @@ def info():
         data=data
     )
 
-@bp.route('/viewprofile/<username>', methods=('GET', 'POST'))
+@bp.route('/viewprofile/<wrdsbusername>', methods=('GET', 'POST'))
 @login_required
-def viewprofile(username):
+def viewprofile(wrdsbusername):
     db = database.get_db()
     with db.cursor() as cur:
         try:
-            userid, name = get_credentials_from_wrdsbusername(username, cur)
+            userid, name = get_credentials_from_wrdsbusername(wrdsbusername, cur)
             labels, data = current_user.get_walk_chart_data(cur, id=userid)
         except TypeError:
             cur.close()
             return render_template(
                 'error.html',
-                text="Sorry, we couldn't find any record of "+str(username)+" in our database."
+                text="Sorry, we couldn't find any record of "+str(wrdsbusername)+" in our database."
                 )
     return render_template(
         'otherusers.html',
         labels=labels,
         data=data,
         name=name,
-        wrdsbusername=username
+        wrdsbusername=wrdsbusername
     )
 
 @bp.route('/login', methods=('GET', 'POST'))
