@@ -73,7 +73,7 @@ def isblacklisted(userid, email):
                 "SELECT id, valid FROM blacklist WHERE wrdsbusername=%s;", (email.split("@")[0],)
             )
             result = cur.fetchone()
-    return (result[0] in [userid, email.split("@")[0]] and valid if result!= None else False)
+    return (result[0] in [userid, email.split("@")[0]] and result[1] if result!= None else False)
 
 def walk_will_max_distance(distance, id):
     curdistance = _get_walk_distance(id)
