@@ -85,7 +85,9 @@ def deleteuser(wrdsbusername):
     if not user: abort(404)
   
   if request.method == "POST":
-    if request.form.get("confirm") == wrdsbusername:
+    if isadmin(get_credentials_from_wrdsbusername(wrdsbusername)):
+      flash("You can't delete the account of an active admin! Revoke their admin powers first.")
+    elif request.form.get("confirm") == wrdsbusername:
       db = database.get_db()
       with db.cursor() as cur:
         add_to_total(-user['distance'], cur)
@@ -94,9 +96,6 @@ def deleteuser(wrdsbusername):
         )
         cur.execute(
           'DELETE FROM walks WHERE id=%s;', (user['id'],)
-        )
-        cur.execute(
-          'DELETE FROM admins WHERE id=%s;', (user['id'],)
         )
       db.commit()
       redirect('/admin')
