@@ -61,6 +61,20 @@ def isadmin(userid):
         row = cur.fetchone()
     return (row[0]==get_wrdsbusername_from_id(userid) and row[1] if row!=None else False)
 
+def isblacklisted(userid, email):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT wrdsbusername, valid FROM blacklist WHERE id=%s;", (userid,)
+        )
+        result = cur.fetchone()
+        if result == None:
+            cur.execute(
+                "SELECT id, valid FROM blacklist WHERE wrdsbusername=%s;", (email.split("@")[0],)
+            )
+            result = cur.fetchone()
+    return (result[0] in [userid, email.split("@")[0]] and valid if result!= None else False)
+
 def walk_will_max_distance(distance, id):
     curdistance = _get_walk_distance(id)
     return (distance + curdistance)>42

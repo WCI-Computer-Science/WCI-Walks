@@ -89,6 +89,10 @@ def deleteuser(wrdsbusername):
     elif request.form.get("confirm") == wrdsbusername:
       db = database.get_db()
       with db.cursor() as cur:
+        if request.form.get("ban") == "on":
+          cur.execute(
+            'INSERT INTO blacklist (id, wrdsbusername, valid) VALUES (%s, %s, %s)', (user['id'], wrdsbusername, True,)
+          )
         add_to_total(-user['distance'], cur)
         cur.execute(
           'DELETE FROM users WHERE id=%s;', (user['id'],)
@@ -96,10 +100,6 @@ def deleteuser(wrdsbusername):
         cur.execute(
           'DELETE FROM walks WHERE id=%s;', (user['id'],)
         )
-        if request.form.get("ban") == "on":
-          cur.execute(
-            'INSERT INTO blacklist (id, wrdsbusername, valid) VALUES (%s, %s, %s)', (user['id'], wrdsbusername, True,)
-          )
       db.commit()
       return redirect('/admin'), 303
     else:

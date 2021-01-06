@@ -7,7 +7,7 @@ from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField,
 from wtforms.fields.html5 import EmailField, IntegerField
 
 from application.models import *
-from application.templates.utils import get_credentials_from_wrdsbusername, walk_will_max_distance, walk_is_maxed, add_to_total
+from application.templates.utils import get_credentials_from_wrdsbusername, walk_will_max_distance, walk_is_maxed, add_to_total, isblacklisted
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 
@@ -126,6 +126,9 @@ def confirmlogin():
     print(idinfo, file=sys.stderr)
     
     db = database.get_db()
+    if isblacklisted(userid, email):
+        flash("You have been banned from WCI Walks and cannot create an account or log in. Please contact us if you think this is a mistake.")
+        return redirect(url_for('users.login'))
     with db.cursor() as cur:
         if not user.User.exists(userid, cur):
             current_user = user.User(userid=userid, email=email, username=username)
