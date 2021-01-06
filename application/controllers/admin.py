@@ -83,9 +83,8 @@ def deleteuser(wrdsbusername):
     )
     user = cur.fetchone()
     if not user: abort(404)
-  
   if request.method == "POST":
-    if isadmin(get_credentials_from_wrdsbusername(wrdsbusername)):
+    if isadmin(user['id']):
       flash("You can't delete the account of an active admin! Revoke their admin powers first.")
     elif request.form.get("confirm") == wrdsbusername:
       db = database.get_db()
@@ -97,8 +96,12 @@ def deleteuser(wrdsbusername):
         cur.execute(
           'DELETE FROM walks WHERE id=%s;', (user['id'],)
         )
+        if request.form.get("ban") == "on":
+          cur.execute(
+            'INSERT INTO blacklist (id, wrdsbusername, valid) VALUES (%s, %s, %s)', (user['id'], wrdsbusername, True,)
+          )
       db.commit()
-      redirect('/admin')
+      return redirect('/admin'), 303
     else:
       flash("You did not type the correct name!")
   
