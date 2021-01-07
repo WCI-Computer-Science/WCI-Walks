@@ -117,6 +117,9 @@ def update_total():
                 cur.execute(
                     "UPDATE users SET distance=%s WHERE id=%s;", (distances[i], i)
                 )
+            cur.execute(
+                    "DELETE FROM walks WHERE distance=0;"
+            )
         db.commit()
         print("Done updating user totals.\nStarting to update global total!")
         with db.cursor() as cur:
@@ -176,11 +179,13 @@ def db_write_total(cur):
     return total
 
 def fancy_float(n):
-    n = float(n)
-    if n%1==0:
-        return int(n)
-    return n
-
+    try:
+        n = float(n)
+        if n%1==0:
+            return int(n)
+        return n
+    except ValueError:
+        return 0
 def replace_walk_distances(distances, dates, olddistances, user, id):
     db = database.get_db()
     with db.cursor() as cur:
