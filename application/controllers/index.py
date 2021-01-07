@@ -1,7 +1,7 @@
 import datetime
 
 from flask import Blueprint, url_for, redirect, render_template, request, session
-from application.templates.utils import get_all_time_leaderboard, get_day_leaderboard
+from application.templates.utils import get_all_time_leaderboard, get_day_leaderboard, fancy_float
 
 from application.models import database
 
@@ -11,13 +11,13 @@ bp = Blueprint('index', __name__, url_prefix='/')
 def home():
     db = database.get_db()
     with db.cursor() as cur:
-        total = database.get_total(cur)
+        total = database.get_total(cur)[0]
     
     return render_template(
         'index.html',
         alltimeleaderboard=get_all_time_leaderboard(),
         yesterdayleaderboard=get_day_leaderboard(datetime.date.today()-datetime.timedelta(days=1)),
-        total=total
+        total=fancy_float(total)
     )
 
 @bp.route('/contact', methods=('GET',))

@@ -12,7 +12,7 @@ def get_all_time_leaderboard():
         )
         userdistances = cur.fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
-
+    userdistances = [[i[0],fancy_float(i[1]), i[2]] for i in userdistances]
     return userdistances
 
 def get_day_leaderboard(date):
@@ -24,6 +24,7 @@ def get_day_leaderboard(date):
         userdistances = cur.fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
     userdistances = list(map(_convert_id_to_wrdsbusername, userdistances))
+    userdistances = [[i[0],fancy_float(i[1]), i[2]] for i in userdistances]
     return userdistances
 
 def get_credentials_from_wrdsbusername(wrdsbusername, cur=None):
@@ -100,7 +101,7 @@ def walk_is_maxed(id, max=42):
 
 def update_total():
     print("Starting to update user totals.")
-    db = database.get_db() # i put the blocking in database.get_db
+    db = database.get_db()
     database.start_blocking()
     try:
         with db.cursor() as cur:
@@ -146,7 +147,7 @@ def set_total(num, cur):
     db_write_total(cur)
     return total
 
-def add_to_total(num, cur): # i deleted sub_from_total, since we can just use add_to_total(-num)
+def add_to_total(num, cur):
     global total
     total += num
     db_write_total(cur)
@@ -156,7 +157,7 @@ def db_get_total():
     global total
     db = database.get_db()
     with db.cursor() as cur:
-        total = database.get_total(cur) # database get_total already exists
+        total = database.get_total(cur)
     if total:
         total = total['distance']
     else:
@@ -186,13 +187,14 @@ def fancy_float(n):
         return n
     except ValueError:
         return 0
+
 def replace_walk_distances(distances, dates, olddistances, user, id):
     db = database.get_db()
     with db.cursor() as cur:
         for i in range(len(dates)):
             if distances[i]!=olddistances[i]:
                 user.update_walk(distances[i], dates[i], None, cur, replace=True, id=id)
-                print("Updated", user.id, "walk on", dates[i], "to be", distances[i]) # No spaces here, the default seperator is a space
+                print("Updated", user.id, "walk on", dates[i], "to be", distances[i])
     db.commit()
 
 total = 0
