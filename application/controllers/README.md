@@ -1,5 +1,5 @@
-# URL Page
-A description of each Blueprint and its URL is given on this page. All URLs are routed to a Blueprint.
+# Controllers
+A description of each Blueprint and its URL is given in this file. All URLs are routed to a Blueprint.
 
 # index
 ## URL: /
@@ -38,7 +38,7 @@ If the user is already logged in, they will be redirected to /users.
 Once clicking on the login button, users will be redirected to /users/authorize.
 
 ### /viewprofile/\<username\>
-The /users/<username> page allows a logged-in user to see another person's basic walking statistics.
+The /users/\<username\> page allows a logged-in user to see another person's basic walking statistics.
 If the user is not logged in, they will be redirected to /users/login.
 
 ### /authorize
@@ -75,8 +75,8 @@ The /getuserlist page returns a JSON list of all usernames that contain the stri
 ### /searchforuser
 The /searchforuser page allows admins to search through all users.
 
-### /edituserdistances/<wrdsbusername>
-The /edituserdistances page allows admins to edit the distances that the user `wrdsbusername` has recorded
+### /edituserdistances/\<wrdsbusername\>
+The /edituserdistances/\<wrdsbusername\> page allows admins to edit the distances that the user `wrdsbusername` has recorded
 
-### /deleteuser/<wrdsbusername>
-The /deleteuser page allows admins to delete any record of the user `wrdsbusername` from the tables `users` and `walks`. Anyone who meets all the conditions to access /admins cannot be deleted.
+### /deleteuser/\<wrdsbusername\>
+The /deleteuser/\<wrdsbusername\> page allows admins to delete any record of the user `wrdsbusername` from the tables `users` and `walks`. Anyone who meets all the conditions to access /admins cannot be deleted.
