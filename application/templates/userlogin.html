@@ -1,10 +1,13 @@
 {% extends "utils/layout.html" %}
 {% block body %}
 <div class="login contentw">
+    {% if get_flashed_messages() | length == 0 %}
     <h1>Login here</h1>
-    {% for error in get_flashed_messages() %}
-        <div class='error'><h2>{{ error }}</h2></div>
-    {% endfor %}
+    {% else %}
+        {% for error in get_flashed_messages() %}
+            <div class='error'><h2>{{ error }}</h2></div>
+        {% endfor %}
+    {% endif %}
     <form action="/users/authorize">
         <input type="image" src="../static/btn_google_signin_light_normal.png" class="googlebtn" />
         <div class="consent">
