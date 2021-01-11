@@ -1,6 +1,5 @@
 import ast
 import json
-import sys
 from datetime import datetime
 
 from flask import Blueprint, abort, flash, redirect, render_template, request
@@ -70,7 +69,9 @@ def editdistancespage(wrdsbusername):
         for i in alldates:
             distances.append(fancy_float(request.form.get(str(i))))
             datetimedates.append(i)
-            dates.append(datetime.strptime(i, "%Y-%m-%d").strftime("%A, %B %d, %Y"))
+            dates.append(
+                datetime.strptime(i, "%Y-%m-%d").strftime("%A, %B %d, %Y")
+            )
         replace_walk_distances(
             distances,
             datetimedates,
@@ -108,7 +109,8 @@ def deleteuser(wrdsbusername):
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT * FROM users WHERE wrdsbusername=%s LIMIT 1;", (wrdsbusername,)
+            "SELECT * FROM users WHERE wrdsbusername=%s LIMIT 1;",
+            (wrdsbusername,)
         )
         user = cur.fetchone()
         if not user:
@@ -123,7 +125,11 @@ def deleteuser(wrdsbusername):
             with db.cursor() as cur:
                 if request.form.get("ban") == "on":
                     cur.execute(
-                        "INSERT INTO blacklist (id, wrdsbusername, valid) VALUES (%s, %s, %s)",
+                        """
+                            INSERT INTO blacklist
+                            (id, wrdsbusername, valid)
+                            VALUES (%s, %s, %s)
+                        """,
                         (
                             user["id"],
                             wrdsbusername,
@@ -139,5 +145,7 @@ def deleteuser(wrdsbusername):
             flash("You did not type the correct name!")
 
     return render_template(
-        "deleteuser.html", username=user["username"], wrdsbusername=wrdsbusername
+        "deleteuser.html",
+        username=user["username"],
+        wrdsbusername=wrdsbusername
     )

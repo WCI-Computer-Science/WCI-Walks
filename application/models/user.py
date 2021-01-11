@@ -1,9 +1,4 @@
-import json
-import sys
-from datetime import date, timedelta
-
-import flask_login
-from flask import current_app, redirect, url_for
+from datetime import timedelta
 
 from application.templates.utils import (
     get_credentials_from_wrdsbusername,
@@ -29,7 +24,7 @@ class User:
         self.id = userid
         self.email = email
         self.username = username
-        self.wrdsbusername = email.split("@")[0] if email != None else None
+        self.wrdsbusername = email.split("@")[0] if email is not None else None
         self.distance = distance
         self.is_authenticated = authenticated
         self.is_active = active
@@ -40,7 +35,11 @@ class User:
 
     def write_db(self, cur):
         cur.execute(
-            "INSERT INTO users (id, email, username, wrdsbusername, distance, active) VALUES (%s, %s, %s, %s, %s, %s);",
+            """
+                INSERT INTO users
+                (id, email, username, wrdsbusername, distance, active)
+                VALUES (%s, %s, %s, %s, %s, %s);
+            """,
             (
                 self.id,
                 self.email,
@@ -53,7 +52,8 @@ class User:
 
     def update_distance_db(self, cur):
         cur.execute(
-            "UPDATE users SET distance=%s WHERE id=%s;", (self.distance, self.id)
+            "UPDATE users SET distance=%s WHERE id=%s;",
+            (self.distance, self.id)
         )
 
     def read_db(self, cur):
@@ -65,38 +65,46 @@ class User:
         self.is_active = user["active"]
 
     def get_walk(self, date, cur, id=None):
-        if id != None:
+        if id is not None:
             useid = id
         else:
             useid = self.id
         cur.execute(
-            "SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1", (useid, date)
+            "SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1",
+            (useid, date)
         )
         return cur.fetchone()
 
     def insert_walk(self, distance, date, cur, id=None):
-        if id != None:
+        if id is not None:
             useid = id
         else:
             useid = self.id
-        username = get_credentials_from_wrdsbusername(get_wrdsbusername_from_id(useid))[
-            1
-        ]
+        username = get_credentials_from_wrdsbusername(
+            get_wrdsbusername_from_id(useid)
+        )[1]
         cur.execute(
-            "INSERT INTO walks (id, username, distance, walkdate) VALUES (%s, %s, %s, %s);",
+            """
+                INSERT INTO walks
+                (id, username, distance, walkdate)
+                VALUES (%s, %s, %s, %s);
+            """,
             (useid, username, distance, date),
         )
 
     def update_walk(self, distance, date, walk, cur, replace=False, id=None):
-        if id != None:
+        if id is not None:
             useid = id
         else:
             useid = self.id
-        if self.get_walk(date, cur, id=useid) != None:
+        if self.get_walk(date, cur, id=useid) is not None:
             cur.execute(
                 "UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;",
                 (
-                    round((distance if replace else walk["distance"] + distance), 1),
+                    round(
+                        (distance if replace else walk["distance"] + distance),
+                        1
+                    ),
                     useid,
                     date,
                 ),
@@ -109,7 +117,9 @@ class User:
             useid = self.id
         else:
             useid = id
-        cur.execute("SELECT walkdate, distance FROM walks WHERE id=%s;", (useid,))
+        cur.execute(
+            "SELECT walkdate, distance FROM walks WHERE id=%s;", (useid,)
+        )
         allwalks = cur.fetchall()
         allwalks.sort(key=lambda row: row["walkdate"])
 
@@ -146,5 +156,9 @@ def load_user(userid):
         return None
 
     return User(
-        user["id"], user["email"], user["username"], user["distance"], user["active"]
+        user["id"],
+        user["email"],
+        user["username"],
+        user["distance"],
+        user["active"]
     )

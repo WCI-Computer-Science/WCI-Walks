@@ -1,5 +1,3 @@
-import sys
-import time
 from datetime import date
 
 from flask import current_app
@@ -22,7 +20,8 @@ def get_day_leaderboard(date):
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT username, distance, id FROM walks WHERE walkdate=%s;", (date,)
+            "SELECT username, distance, id FROM walks WHERE walkdate=%s;",
+            (date,)
         )
         userdistances = cur.fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
@@ -32,7 +31,7 @@ def get_day_leaderboard(date):
 
 
 def get_credentials_from_wrdsbusername(wrdsbusername, cur=None):
-    if cur == None:
+    if cur is None:
         closecur = True
         db = database.get_db()
         cur = db.cursor()
@@ -51,7 +50,10 @@ def get_credentials_from_wrdsbusername(wrdsbusername, cur=None):
 def get_wrdsbusername_from_id(userid):
     db = database.get_db()
     with db.cursor() as cur:
-        cur.execute("SELECT wrdsbusername FROM users WHERE id=%s LIMIT 1;", (userid,))
+        cur.execute(
+            "SELECT wrdsbusername FROM users WHERE id=%s LIMIT 1;",
+            (userid,)
+        )
         return cur.fetchone()[0]
 
 
@@ -63,10 +65,14 @@ def _convert_id_to_wrdsbusername(leaderboarddata):
 def isadmin(userid):
     db = database.get_db()
     with db.cursor() as cur:
-        cur.execute("SELECT wrdsbusername, valid FROM admins WHERE id=%s;", (userid,))
+        cur.execute(
+            "SELECT wrdsbusername, valid FROM admins WHERE id=%s;",
+            (userid,)
+        )
         row = cur.fetchone()
     return (
-        row[0] == get_wrdsbusername_from_id(userid) and row[1] if row != None else False
+        row[0] == get_wrdsbusername_from_id(userid)
+        and row[1] if row is not None else False
     )
 
 
@@ -74,10 +80,11 @@ def isblacklisted(userid, email):
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT wrdsbusername, valid FROM blacklist WHERE id=%s;", (userid,)
+            "SELECT wrdsbusername, valid FROM blacklist WHERE id=%s;",
+            (userid,)
         )
         result = cur.fetchone()
-        if result == None:
+        if result is None:
             cur.execute(
                 "SELECT id, valid FROM blacklist WHERE wrdsbusername=%s;",
                 (email.split("@")[0],),
@@ -85,7 +92,7 @@ def isblacklisted(userid, email):
             result = cur.fetchone()
     return (
         result[0] in [userid, email.split("@")[0]] and result[1]
-        if result != None
+        if result is not None
         else False
     )
 
@@ -107,7 +114,7 @@ def _get_walk_distance(id):
             ),
         )
         walk = cur.fetchone()
-        if walk != None:
+        if walk is not None:
             return int(walk[0])
         else:
             return 0
@@ -138,7 +145,8 @@ def update_total():
                     distances[i[0]] = i[1]
             for i in distances.keys():
                 cur.execute(
-                    "UPDATE users SET distance=%s WHERE id=%s;", (distances[i], i)
+                    "UPDATE users SET distance=%s WHERE id=%s;",
+                    (distances[i], i)
                 )
             cur.execute("DELETE FROM walks WHERE distance=0;")
         db.commit()
@@ -190,8 +198,11 @@ def db_get_total():
 def db_write_total(cur):
     global total
     cur.execute("SELECT * FROM total;")
-    if cur.fetchone() == None:
-        cur.execute("INSERT INTO total (distance) VALUES (%s);", (round(total, 1),))
+    if cur.fetchone() is None:
+        cur.execute(
+            "INSERT INTO total (distance) VALUES (%s);",
+            (round(total, 1),)
+        )
     else:
         cur.execute("UPDATE total SET distance=%s", (round(total, 1),))
     return total
@@ -212,8 +223,22 @@ def replace_walk_distances(distances, dates, olddistances, user, id):
     with db.cursor() as cur:
         for i in range(len(dates)):
             if distances[i] != olddistances[i]:
-                user.update_walk(distances[i], dates[i], None, cur, replace=True, id=id)
-                print("Updated", user.id, "walk on", dates[i], "to be", distances[i])
+                user.update_walk(
+                    distances[i],
+                    dates[i],
+                    None,
+                    cur,
+                    replace=True,
+                    id=id
+                )
+                print(
+                    "Updated",
+                    user.id,
+                    "walk on",
+                    dates[i],
+                    "to be",
+                    distances[i]
+                )
     db.commit()
 
 

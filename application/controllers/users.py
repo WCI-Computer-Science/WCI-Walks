@@ -1,30 +1,21 @@
 import datetime
-import functools
-import json
 import sys
-import time
 
 from flask import (
     Blueprint,
-    abort,
-    current_app,
     flash,
     redirect,
     render_template,
     request,
-    session,
     url_for,
 )
 from flask_login import current_user, login_required, login_user, logout_user
 from wtforms import (
     DecimalField,
     Form,
-    PasswordField,
-    StringField,
     SubmitField,
     validators,
 )
-from wtforms.fields.html5 import EmailField, IntegerField
 
 from application.models import *
 from application.templates.utils import (
@@ -53,7 +44,11 @@ def info():
     if request.method == "POST":
         form.distance.validators = [
             validators.InputRequired(),
-            validators.NumberRange(min=0.01, max=42, message="Invalid distance"),
+            validators.NumberRange(
+                min=0.01,
+                max=42,
+                message="Invalid distance"
+            ),
             walk_is_maxed(current_user.get_id(), max=42),
         ]
         if form.validate():
@@ -109,7 +104,10 @@ def viewprofile(wrdsbusername):
     db = database.get_db()
     with db.cursor() as cur:
         try:
-            userid, name = get_credentials_from_wrdsbusername(wrdsbusername, cur)
+            userid, name = get_credentials_from_wrdsbusername(
+                wrdsbusername,
+                cur
+            )
             labels, data = current_user.get_walk_chart_data(cur, id=userid)
         except TypeError:
             cur.close()
@@ -175,7 +173,11 @@ def confirmlogin():
         return redirect(url_for("users.login"))
     with db.cursor() as cur:
         if not user.User.exists(userid, cur):
-            current_user = user.User(userid=userid, email=email, username=username)
+            current_user = user.User(
+                userid=userid,
+                email=email,
+                username=username
+            )
             current_user.write_db(cur)
             db.commit()
         else:
