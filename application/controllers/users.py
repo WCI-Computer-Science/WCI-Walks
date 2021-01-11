@@ -4,36 +4,53 @@ import json
 import sys
 import time
 
-from flask import (Blueprint, abort, current_app, flash, redirect,
-                   render_template, request, session, url_for)
+from flask import (
+    Blueprint,
+    abort,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required, login_user, logout_user
-from wtforms import (DecimalField, Form, PasswordField, StringField,
-                     SubmitField, validators)
+from wtforms import (
+    DecimalField,
+    Form,
+    PasswordField,
+    StringField,
+    SubmitField,
+    validators,
+)
 from wtforms.fields.html5 import EmailField, IntegerField
 
 from application.models import *
-from application.templates.utils import (add_to_total,
-                                         get_credentials_from_wrdsbusername,
-                                         isblacklisted, walk_is_maxed,
-                                         walk_will_max_distance)
+from application.templates.utils import (
+    add_to_total,
+    get_credentials_from_wrdsbusername,
+    isblacklisted,
+    walk_is_maxed,
+    walk_will_max_distance,
+)
 
-bp = Blueprint('users', __name__, url_prefix='/users')
+bp = Blueprint("users", __name__, url_prefix="/users")
+
 
 class SubmitDistanceForm(Form):
-    distance = DecimalField(
-        "Log your walk distance (in km)",
-        places=2
-    )
+    distance = DecimalField("Log your walk distance (in km)", places=2)
     submit = SubmitField()
 
-@bp.route('/', methods=('GET', 'POST'))
+
+@bp.route("/", methods=("GET", "POST"))
 @login_required
 def info():
     db = database.get_db()
     date = datetime.date.today()
     form = SubmitDistanceForm(request.form)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form.distance.validators = [
             validators.InputRequired(),
             validators.NumberRange(min=0.01, max=42, message="Invalid distance"),
@@ -42,8 +59,17 @@ def info():
         if form.validate():
             with db.cursor() as cur:
                 walk = current_user.get_walk(date, cur)
-                walkwillmaxdistance = walk_will_max_distance(float(form.distance.data), current_user.get_id())
-                distance = round((float(form.distance.data) if not(walkwillmaxdistance) else 42-walk["distance"]), 1)
+                walkwillmaxdistance = walk_will_max_distance(
+                    float(form.distance.data), current_user.get_id()
+                )
+                distance = round(
+                    (
+                        float(form.distance.data)
+                        if not (walkwillmaxdistance)
+                        else 42 - walk["distance"]
+                    ),
+                    1,
+                )
 
                 if walk is None:
                     current_user.insert_walk(distance, date, cur)
@@ -57,24 +83,27 @@ def info():
 
             db.commit()
             if walkwillmaxdistance:
-                flash("Your walk was partly recorded. You can't go more than 42 km per day.")
+                flash(
+                    "Your walk was partly recorded. You can't go more than 42 km per day."
+                )
             else:
                 flash("You've successfully updated the distance!")
         else:
             flash("You can only go between 0 and 42 km per day!")
-    
+
     with db.cursor() as cur:
         labels, data = current_user.get_walk_chart_data(cur)
 
     return render_template(
-        'users.html',
+        "users.html",
         username=current_user.username,
         form=form,
         labels=labels,
-        data=data
+        data=data,
     )
 
-@bp.route('/viewprofile/<wrdsbusername>', methods=('GET', 'POST'))
+
+@bp.route("/viewprofile/<wrdsbusername>", methods=("GET", "POST"))
 @login_required
 def viewprofile(wrdsbusername):
     db = database.get_db()
@@ -85,41 +114,46 @@ def viewprofile(wrdsbusername):
         except TypeError:
             cur.close()
             return render_template(
-                'error.html',
-                text="Sorry, we couldn't find any record of "+str(wrdsbusername)+" in our database."
-                )
+                "error.html",
+                text="Sorry, we couldn't find any record of "
+                + str(wrdsbusername)
+                + " in our database.",
+            )
     return render_template(
-        'otherusers.html',
+        "otherusers.html",
         labels=labels,
         data=data,
         name=name,
-        wrdsbusername=wrdsbusername
+        wrdsbusername=wrdsbusername,
     )
 
-@bp.route('/login', methods=('GET', 'POST'))
+
+@bp.route("/login", methods=("GET", "POST"))
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('users.info'))
-    
-    return render_template('userlogin.html')
+        return redirect(url_for("users.info"))
 
-@bp.route('/authorize', methods=('GET', 'POST'))
+    return render_template("userlogin.html")
+
+
+@bp.route("/authorize", methods=("GET", "POST"))
 def authorize():
     if current_user.is_authenticated:
-        return redirect(url_for('users.info'))
-    
-    auth_endpoint = oauth.get_google_configs()['authorization_endpoint']
+        return redirect(url_for("users.info"))
+
+    auth_endpoint = oauth.get_google_configs()["authorization_endpoint"]
 
     request_uri = oauth.get_client().prepare_request_uri(
         auth_endpoint,
-        redirect_uri=request.base_url + '/confirmlogin',
-        scope=['openid', 'email', 'profile']
+        redirect_uri=request.base_url + "/confirmlogin",
+        scope=["openid", "email", "profile"],
     )
     return redirect(request_uri)
 
-@bp.route('/authorize/confirmlogin', methods=('GET', 'POST'))
+
+@bp.route("/authorize/confirmlogin", methods=("GET", "POST"))
 def confirmlogin():
-    code = request.args.get('code')
+    code = request.args.get("code")
     id_token = oauth.get_id_token(code)
     idinfo = oauth.verify_id_token(id_token)
 
@@ -129,14 +163,16 @@ def confirmlogin():
         username = idinfo["name"]
     else:
         flash("Email invalid. Are you using your WRDSB email?")
-        return redirect(url_for('users.login'))
-    
+        return redirect(url_for("users.login"))
+
     print(idinfo, file=sys.stderr)
-    
+
     db = database.get_db()
     if isblacklisted(userid, email):
-        flash("You have been banned from WCI Walks and cannot create an account or log in. Please contact us if you think this is a mistake.")
-        return redirect(url_for('users.login'))
+        flash(
+            "You have been banned from WCI Walks and cannot create an account or log in. Please contact us if you think this is a mistake."
+        )
+        return redirect(url_for("users.login"))
     with db.cursor() as cur:
         if not user.User.exists(userid, cur):
             current_user = user.User(userid=userid, email=email, username=username)
@@ -147,11 +183,12 @@ def confirmlogin():
             current_user.read_db(cur)
 
     login_user(current_user)
-    return redirect(url_for('users.info'))
+    return redirect(url_for("users.info"))
 
-@bp.route('/logout', methods=('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))
+
+@bp.route("/logout", methods=("GET", "POST", "PUT", "PATCH", "DELETE"))
 @login_required
 def logout():
     logout_user()
     # add a log out view in the future
-    return redirect(url_for('index.home'))
+    return redirect(url_for("index.home"))
