@@ -1,5 +1,3 @@
-import json
-
 import google.auth.transport.requests
 import requests
 from flask import current_app, g, request
