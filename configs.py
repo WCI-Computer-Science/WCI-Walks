@@ -6,7 +6,7 @@ try:
     SECRET_KEY = secrets.secret_key
     GOOGLE_CLIENT_ID = secrets.google_client_id
     GOOGLE_CLIENT_SECRET = secrets.google_client_secret
-except ModuleNotFoundError:
+except (ModuleNotFoundError, AttributeError):
     try:
         SECRET_KEY = os.environ["SECRET_KEY"]
         GOOGLE_CLIENT_ID = os.environ["GOOGLE_CLIENT_ID"]
