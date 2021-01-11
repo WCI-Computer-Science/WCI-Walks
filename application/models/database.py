@@ -1,9 +1,13 @@
 # Connects to database
 
-import psycopg2, psycopg2.extras, click, time
+import time
 
+import click
+import psycopg2
+import psycopg2.extras
 from flask import current_app, g
 from flask.cli import with_appcontext
+
 
 # Get database from sqlite connect method
 def get_db():

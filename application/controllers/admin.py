@@ -1,13 +1,17 @@
-import sys, ast, json
+import ast
+import json
+import sys
+from datetime import datetime
 
-from flask import abort, Blueprint, render_template, redirect, request, flash
-from application.templates.utils import isadmin, update_total, get_all_time_leaderboard, fancy_float, replace_walk_distances, get_credentials_from_wrdsbusername
+from flask import Blueprint, abort, flash, redirect, render_template, request
 from flask_login import current_user, login_required
 
 from application.models import *
-from application.templates.utils import add_to_total
-
-from datetime import datetime
+from application.templates.utils import (add_to_total, fancy_float,
+                                         get_all_time_leaderboard,
+                                         get_credentials_from_wrdsbusername,
+                                         isadmin, replace_walk_distances,
+                                         update_total)
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 

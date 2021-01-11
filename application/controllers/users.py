@@ -1,13 +1,21 @@
-import functools, sys, datetime, json, time
+import datetime
+import functools
+import json
+import sys
+import time
 
-from flask import abort, Blueprint, current_app, url_for, flash, redirect, render_template, request, session
-from flask_login import current_user, login_user, logout_user, login_required
-
-from wtforms import Form, PasswordField, DecimalField, StringField, SubmitField, validators
+from flask import (Blueprint, abort, current_app, flash, redirect,
+                   render_template, request, session, url_for)
+from flask_login import current_user, login_required, login_user, logout_user
+from wtforms import (DecimalField, Form, PasswordField, StringField,
+                     SubmitField, validators)
 from wtforms.fields.html5 import EmailField, IntegerField
 
 from application.models import *
-from application.templates.utils import get_credentials_from_wrdsbusername, walk_will_max_distance, walk_is_maxed, add_to_total, isblacklisted
+from application.templates.utils import (add_to_total,
+                                         get_credentials_from_wrdsbusername,
+                                         isblacklisted, walk_is_maxed,
+                                         walk_will_max_distance)
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 

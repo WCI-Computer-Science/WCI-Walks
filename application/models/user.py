@@ -1,9 +1,14 @@
-import sys, json
-from flask import current_app, redirect, url_for
-import flask_login
-from . import database, loginmanager
+import json
+import sys
 from datetime import date, timedelta
-from application.templates.utils import isadmin, get_wrdsbusername_from_id, get_credentials_from_wrdsbusername
+
+import flask_login
+from flask import current_app, redirect, url_for
+
+from application.templates.utils import (get_credentials_from_wrdsbusername,
+                                         get_wrdsbusername_from_id, isadmin)
+
+from . import database, loginmanager
 
 login_manager = loginmanager.get_login_manager()
 

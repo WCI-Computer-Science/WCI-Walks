@@ -1,8 +1,12 @@
-import sys, time
-from application.models import database
-from wtforms.validators import ValidationError
+import sys
+import time
 from datetime import date
+
 from flask import current_app
+from wtforms.validators import ValidationError
+
+from application.models import database
+
 
 def get_all_time_leaderboard():
     db = database.get_db()

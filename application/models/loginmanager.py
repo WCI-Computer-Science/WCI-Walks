@@ -1,6 +1,7 @@
 from flask import current_app, g
 from flask_login import LoginManager
 
+
 def init_login_manager():
     login_manager = LoginManager()
     login_manager.init_app(current_app)

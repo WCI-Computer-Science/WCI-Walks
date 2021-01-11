@@ -1,5 +1,6 @@
 from flask import render_template
 
+
 def error404(e):
   return render_template("error404.html"), 404
 

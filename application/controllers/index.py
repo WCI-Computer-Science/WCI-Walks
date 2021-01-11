@@ -1,9 +1,11 @@
 import datetime
 
-from flask import Blueprint, url_for, redirect, render_template, request, session
-from application.templates.utils import get_all_time_leaderboard, get_day_leaderboard, fancy_float
+from flask import (Blueprint, redirect, render_template, request, session,
+                   url_for)
 
 from application.models import database
+from application.templates.utils import (fancy_float, get_all_time_leaderboard,
+                                         get_day_leaderboard)
 
 bp = Blueprint('index', __name__, url_prefix='/')
 

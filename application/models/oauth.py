@@ -1,10 +1,11 @@
 import json
 
-from flask import g, current_app, request
-import requests
-from oauthlib.oauth2 import WebApplicationClient
-from google.oauth2 import id_token
 import google.auth.transport.requests
+import requests
+from flask import current_app, g, request
+from google.oauth2 import id_token
+from oauthlib.oauth2 import WebApplicationClient
+
 
 def get_google_configs():
     return requests.get(current_app.config['GOOGLE_DISCOVERY_URL']).json()
