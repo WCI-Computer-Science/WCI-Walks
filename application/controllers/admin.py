@@ -118,7 +118,7 @@ def deleteuser(wrdsbusername):
     if request.method == "POST":
         if isadmin(user["id"]):
             flash(
-                "You can't delete the account of an active admin! Revoke their admin powers first."
+                "You can't delete the account of an active admin! Have Tristan or Scott revoke their admin powers first."
             )
         elif request.form.get("confirm") == wrdsbusername:
             db = database.get_db()
