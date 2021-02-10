@@ -125,6 +125,12 @@ def viewprofile(wrdsbusername):
         wrdsbusername=wrdsbusername,
     )
 
+@bp.route("/loggedin")
+def loggedin():
+    if current_user.is_authenticated:
+        return "{'loggedin':true}"
+    else:
+        return "{'loggedin':false}"
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
