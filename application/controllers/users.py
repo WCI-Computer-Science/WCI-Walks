@@ -42,7 +42,6 @@ def info():
     form = SubmitDistanceForm(request.form)
 
     if request.method == "POST":
-        print(request.form.get("distance"))
         form.distance.validators = [
             validators.InputRequired(),
             validators.NumberRange(
@@ -82,10 +81,16 @@ def info():
                 flash(
                     "Your walk was partly recorded. You can't go more than 42 km per day."
                 )
+                if request.form.get("extension", None) != None:
+                    return "Your walk was partly recorded. You can't go more than 42 km per day."
             else:
                 flash("You've successfully updated the distance!")
+                if request.form.get("extension", None) != None:
+                    return "You've successfully updated the distance!"
         else:
             flash("You can only go between 0 and 42 km per day!")
+            if request.form.get("extension", None) != None:
+                return "You can only go between 0 and 42 km per day!"
 
     with db.cursor() as cur:
         labels, data = current_user.get_walk_chart_data(cur)
