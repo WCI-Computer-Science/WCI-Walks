@@ -42,7 +42,7 @@ def info():
     form = SubmitDistanceForm(request.form)
 
     if request.method == "POST":
-        print(form.distance.data)
+        print(request.form.get("distance"))
         form.distance.validators = [
             validators.InputRequired(),
             validators.NumberRange(
