@@ -262,7 +262,7 @@ def update_tick():
     update_leaderboard_positions()
 
 def long_update_tick():
-    pass
+    update_total()
 
 total = 0
 if not current_app.config["DONT_LOAD_DB"]:
