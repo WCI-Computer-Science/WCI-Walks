@@ -258,11 +258,13 @@ def update_leaderboard_positions():
                 )
     db.commit()
 
-def update_tick():
-    update_leaderboard_positions()
+def update_tick(context):
+    with context:
+        update_leaderboard_positions()
 
-def long_update_tick():
-    update_total()
+def long_update_tick(context):
+    with context:
+        update_total()
 
 total = 0
 if not current_app.config["DONT_LOAD_DB"]:

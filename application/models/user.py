@@ -30,13 +30,36 @@ class User:
         self.is_active = active
         self.is_anonymous = False
 
-    def get_position(self):
+    def get_likes(self):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT likes FROM users WHERE id=%s;", (self.id,)
+            )
+            return int(cur.fetchone()[0])
+
+    def get_new_likes(self, clear=False):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT likediff FROM users WHERE id=%s;", (self.id,)
+            )
+            likediff = cur.fetchone()[0]
+            if clear:
+                cur.execute(
+                    "UPDATE users SET likediff=0 WHERE id=%s;", (self.id,)
+                )
+                db.commit()
+            return int(likediff) if likediff!= None else 0
+
+    def get_leaderboard_position(self):
         db = database.get_db()
         with db.cursor() as cur:
             cur.execute(
                 "SELECT position FROM users WHERE id=%s;", (self.id,)
             )
             return cur.fetchone()[0]
+
     def add_distance(self, distance):
         self.distance = round(self.distance + distance, 1)
 
