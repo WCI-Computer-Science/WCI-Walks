@@ -1,10 +1,16 @@
-from flask import Flask
+from flask import Flask, request
 import configs
 
+def redirect_http_https():
+    if request.is_secure:
+        return
+    url = request.url.replace("http://", "https://", 1)
+    return redirect(url, 301)
 
 def create_app():
 
     app = Flask(__name__)
+    app.before_request(redirect_http_https)
 
     # Configurations
     app.config.from_object(configs)
