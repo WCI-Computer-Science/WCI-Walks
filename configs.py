@@ -16,6 +16,19 @@ except (ModuleNotFoundError, AttributeError):
         SECRET_KEY = ""
         GOOGLE_CLIENT_ID = ""
         GOOGLE_CLIENT_SECRET = ""
+        
+try:
+    import secrets
+
+    DB = os.environ["DATABASE_URL"]
+except KeyError:
+    try:
+        DB = secrets.database_url
+    except (ModuleNotFoundError, AttributeError):  # Probably running on travis, no need for real values here, but warn anyways
+        print("Warn: Could not load DATABASE_URL, using bogus values.")
+        DB = ""
+        DONT_LOAD_DB = True
+
 try:
     DB = os.environ["DATABASE_URL"]
     DONT_LOAD_DB = False
