@@ -22,6 +22,28 @@ CREATE TABLE IF NOT EXISTS users (
     active SMALLINT DEFAULT 1
 );
 
+/* Info stored to see who is an admin:
+    id: used to identify each person
+    wrdsbusername: email without the @wrdsb.ca
+    valid: whether a user is an admin
+ */
+CREATE TABLE IF NOT EXISTS admins (
+    id TEXT PRIMARY KEY,
+    wrdsbusername TEXT NOT NULL,
+    valid SMALLINT DEFAULT 0
+);
+
+/* Info stored to see who is on the blacklist:
+    id: used to identify each person
+    wrdsbusername: email without the @wrdsb.ca
+    valid: whether a user is an admin
+ */
+CREATE TABLE IF NOT EXISTS blacklist (
+    id TEXT PRIMARY KEY,
+    wrdsbusername TEXT NOT NULL,
+    valid SMALLINT DEFAULT 0
+);
+
 /* Info stored for each walk (one walk stored per day):
     id: used to identify student who did the walk
     username: used to identify student who did the walk
