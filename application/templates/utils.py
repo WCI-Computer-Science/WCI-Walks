@@ -9,10 +9,10 @@ from application.models import database
 def get_all_time_leaderboard():
     db = database.get_db()
     with db.cursor() as cur:
-        cur.execute("SELECT username, distance, wrdsbusername FROM users;")
+        cur.execute("SELECT username, distance, wrdsbusername, position, id FROM users;")
         userdistances = cur.fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
-    userdistances = [[i[0], fancy_float(i[1]), i[2]] for i in userdistances]
+    userdistances = [[i[0], fancy_float(i[1]), i[2], i[3], i[4]] for i in userdistances]
     return userdistances
 
 
@@ -241,8 +241,25 @@ def replace_walk_distances(distances, dates, olddistances, user, id):
                 )
     db.commit()
 
+def update_leaderboard_positions():
+    db = database.get_db()
+    leaderboard = get_all_time_leaderboard()
+    with db.cursor() as cur:
+        for i in range(len(leaderboard)):
+            if leaderboard[i][3]!=i+1 and leaderboard[i][1]>0:
+                cur.execute(
+                    "UPDATE users SET position=%s WHERE id=%s;",
+                    (i+1, leaderboard[i][4])
+                )
+            elif leaderboard[i][3]!=None and leaderboard[i][1]<=0:
+                cur.execute(
+                    "UPDATE users SET position=null WHERE id=%s;",
+                    (leaderboard[i][4],)
+                )
+    db.commit()
+
 def update_tick():
-    pass
+    update_leaderboard_positions()
 
 def long_update_tick():
     pass

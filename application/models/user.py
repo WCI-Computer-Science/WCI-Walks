@@ -30,6 +30,13 @@ class User:
         self.is_active = active
         self.is_anonymous = False
 
+    def get_position(self):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT position FROM users WHERE id=%s;", (self.id,)
+            )
+            return cur.fetchone()[0]
     def add_distance(self, distance):
         self.distance = round(self.distance + distance, 1)
 
