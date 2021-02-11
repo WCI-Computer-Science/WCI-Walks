@@ -241,6 +241,11 @@ def replace_walk_distances(distances, dates, olddistances, user, id):
                 )
     db.commit()
 
+def update_tick():
+    pass
+
+def long_update_tick():
+    pass
 
 total = 0
 if not current_app.config["DONT_LOAD_DB"]:
