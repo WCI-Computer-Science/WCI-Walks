@@ -22,6 +22,8 @@ from application.templates.utils import (
     add_to_total,
     get_credentials_from_wrdsbusername,
     isblacklisted,
+    like,
+    unlike,
     walk_is_maxed,
     walk_will_max_distance,
 )
@@ -113,6 +115,43 @@ def info():
         data=data,
     )
 
+@bp.route("/like/<wrdsbusername>")
+@login_required
+def likesomeone(wrdsbusername):
+    db = database.get_db()
+    with db.cursor() as cur:
+        try:
+            userid, name = get_credentials_from_wrdsbusername(
+                wrdsbusername, cur
+            )
+        except TypeError:
+            return render_template(
+                "error.html",
+                text="Sorry, we couldn't find any record of "
+                + str(wrdsbusername)
+                + " in our database.",
+            )
+    like(current_user.id, userid)
+    return redirect("/users/viewprofile/"+wrdsbusername, 302)
+
+@bp.route("/unlike/<wrdsbusername>")
+@login_required
+def unlikesomeone(wrdsbusername):
+    db = database.get_db()
+    with db.cursor() as cur:
+        try:
+            userid, name = get_credentials_from_wrdsbusername(
+                wrdsbusername, cur
+            )
+        except TypeError:
+            return render_template(
+                "error.html",
+                text="Sorry, we couldn't find any record of "
+                + str(wrdsbusername)
+                + " in our database.",
+            )
+    unlike(current_user.id, userid)
+    return redirect("/users/viewprofile/"+wrdsbusername, 302)
 
 @bp.route("/viewprofile/<wrdsbusername>", methods=("GET", "POST"))
 @login_required
