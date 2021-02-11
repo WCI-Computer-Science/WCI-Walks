@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, redirect, request
 import configs
 
 def redirect_http_https():
