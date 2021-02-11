@@ -21,9 +21,11 @@ try:
     import secrets
 
     DB = os.environ["DATABASE_URL"]
+    DONT_LOAD_DB = False
 except KeyError:
     try:
         DB = secrets.database_url
+        DONT_LOAD_DB = False
     except (ModuleNotFoundError, AttributeError):  # Probably running on travis, no need for real values here, but warn anyways
         print("Warn: Could not load DATABASE_URL, using bogus values.")
         DB = ""
