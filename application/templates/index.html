@@ -34,7 +34,7 @@
         <h2>All Time Leaderboard</h2>
         <table class="leaderboard">
             {% if alltimeleaderboard|length > 0 and alltimeleaderboard[0][1] > 0 %}
-                {% for i in range(0, [alltimeleaderboard|length, 21] | min) %}
+                {% for i in range(0, [alltimeleaderboard|length, 31] | min) %}
                     {% if alltimeleaderboard[i][1]>0 %} 
                         <tr>
                             <td class="rank">
@@ -65,7 +65,7 @@
         <h2>Yesterday's Leaderboard</h2>
         <table class="leaderboard">
             {% if yesterdayleaderboard|length > 0 and yesterdayleaderboard[0][1] > 0 %}
-                {% for i in range(0, [yesterdayleaderboard|length, 21] | min) %}
+                {% for i in range(0, [yesterdayleaderboard|length, 31] | min) %}
                     {% if yesterdayleaderboard[i][1]>0 %}
                         <tr>
                             <td class="rank">
