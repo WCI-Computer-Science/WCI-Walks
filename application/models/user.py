@@ -29,40 +29,42 @@ class User:
         self.is_authenticated = authenticated
         self.is_active = active
         self.is_anonymous = False
+        self.liked = None
+
+    def get_liked(self):
+        db = database.get_db()
+        with db.cursor() as cur:
+            if self.liked==None:
+                cur.execute(
+                    "SELECT liked FROM users WHERE id=%s;", (self.id,)
+                )
+                liked = cur.fetchone()[0]
+                self.liked = liked.split(",") if liked != None else []
+        return self.liked
 
     def like(self, to):
         db = database.get_db()
         with db.cursor() as cur:
-            cur.execute(
-                "SELECT liked FROM users WHERE id=%s;", (self.id,)
-            )
-            liked = cur.fetchone()[0]
-            liked = liked.split(",") if liked != None else []
-            if to not in liked:
+            if to not in self.get_liked():
                 cur.execute(
                     "UPDATE users SET likes=Coalesce(likes, 0)+1, likediff=Coalesce(likediff, 0)+1 WHERE id=%s;", (to,)
                 )
-                liked.append(to)
+                self.liked.append(to)
                 cur.execute(
-                    "UPDATE users SET liked=%s WHERE id=%s;", (",".join(liked), self.id)
+                    "UPDATE users SET liked=%s WHERE id=%s;", (",".join(self.liked), self.id)
                 )
                 db.commit()
 
     def unlike(self, to):
         db = database.get_db()
         with db.cursor() as cur:
-            cur.execute(
-                "SELECT liked FROM users WHERE id=%s;", (self.id,)
-            )
-            liked = cur.fetchone()[0]
-            liked = liked.split(",") if liked != None else []
-            if to in liked:
+            if to in self.get_liked():
                 cur.execute(
                     "UPDATE users SET likes=Coalesce(likes, 0)-1, likediff=Coalesce(likediff, 0)-1 WHERE id=%s;", (to,)
                 )
-                liked.remove(to)
+                self.liked.remove(to)
                 cur.execute(
-                    "UPDATE users SET liked=%s WHERE id=%s;", (",".join(liked), self.id)
+                    "UPDATE users SET liked=%s WHERE id=%s;", (",".join(self.liked), self.id)
                 )
                 db.commit()
 
