@@ -8,6 +8,7 @@ from flask import (
     render_template,
     request,
     url_for,
+    session
 )
 from flask_login import current_user, login_required, login_user, logout_user
 from wtforms import (
@@ -161,21 +162,16 @@ def authorize():
     if current_user.is_authenticated:
         return redirect(url_for("users.info"))
 
-    auth_endpoint = oauth.get_google_configs()["authorization_endpoint"]
-
-    request_uri = oauth.get_client().prepare_request_uri(
-        auth_endpoint,
-        redirect_uri=request.base_url + "/confirmlogin",
-        scope=["openid", "email", "profile"],
-    )
-    return redirect(request_uri)
+    auth_url = oauth.get_auth_url()
+    return redirect(auth_url)
 
 
 @bp.route("/authorize/confirmlogin", methods=("GET", "POST"))
 def confirmlogin():
     code = request.args.get("code")
-    id_token = oauth.get_id_token(code)
-    idinfo = oauth.verify_id_token(id_token)
+    token = oauth.get_access_token(code)
+    print(token)
+    idinfo = oauth.get_id_info(token)
 
     if idinfo.get("email_verified") and idinfo.get("hd") == "wrdsb.ca":
         userid = idinfo["sub"]

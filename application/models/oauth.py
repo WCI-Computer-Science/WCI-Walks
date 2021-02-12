@@ -1,43 +1,32 @@
-import google.auth.transport.requests
 import requests
-from flask import current_app, g, request
-from google.oauth2 import id_token
-from oauthlib.oauth2 import WebApplicationClient
+from flask import current_app, g, request, session
 
-
-def get_google_configs():
-    return requests.get(current_app.config["GOOGLE_DISCOVERY_URL"]).json()
-
-
-def get_client():
-    if "client" not in g:
-        g.client = WebApplicationClient(current_app.config["GOOGLE_CLIENT_ID"])
-    return g.client
-
-
-def get_id_token(auth_code):
-    client = get_client()
-    token_url, headers, body = client.prepare_token_request(
-        get_google_configs()["token_endpoint"],
-        authorization_response=request.url,
-        redirect_url=request.base_url,
-        code=auth_code,
-        hd="wrdsb.ca",
+def get_auth_url():
+    auth_url = ("https://accounts.google.com/o/oauth2/v2/auth" +
+        "?client_id=" + current_app.config["GOOGLE_CLIENT_ID"] +
+        "&redirect_uri=" + request.url_root + "users/authorize/confirmlogin" +
+        "&response_type=code" +
+        "&access_type=offline"
     )
-    return requests.post(
-        token_url,
-        headers=headers,
-        data=body,
-        auth=(
-            current_app.config["GOOGLE_CLIENT_ID"],
-            current_app.config["GOOGLE_CLIENT_SECRET"],
-        ),
-    ).json()["id_token"]
+    auth_url += "&scope=" + current_app.config["OAUTH_SCOPES"][0]
+    for i in range(1, len(current_app.config["OAUTH_SCOPES"])):
+        auth_url += " " + current_app.config["OAUTH_SCOPES"]
 
+    return auth_url
 
-def verify_id_token(token):
-    return id_token.verify_oauth2_token(
-        token,
-        google.auth.transport.requests.Request(),
-        current_app.config["GOOGLE_CLIENT_ID"],
+def get_access_token(auth_code):
+    res = requests.post(
+        "https://oauth2.googleapis.com/token",
+        json={
+            "code": auth_code,
+            "client_id": current_app.config["GOOGLE_CLIENT_ID"],
+            "client_secret": current_app.config["GOOGLE_CLIENT_SECRET"],
+            "grant_type": "authorization_code",
+            "redirect_uri": request.url_root + "users/authorize/confirmlogin"
+        }
     )
+    res = res.json()
+    return res["access_token"], res["refresh_token"]
+
+def get_id_info(token):
+    pass

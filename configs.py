@@ -32,3 +32,4 @@ except KeyError:
         DONT_LOAD_DB = True
 
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
+OAUTH_SCOPES = ["https://www.googleapis.com/auth/fitness.activity.read"]
