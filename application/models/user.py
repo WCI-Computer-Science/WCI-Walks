@@ -36,7 +36,8 @@ class User:
             cur.execute(
                 "SELECT likes FROM users WHERE id=%s;", (self.id,)
             )
-            return int(cur.fetchone()[0])
+            likes = cur.fetchone()[0]
+            return int(likes) if likes != None else 0
 
     def get_new_likes(self, clear=False):
         db = database.get_db()

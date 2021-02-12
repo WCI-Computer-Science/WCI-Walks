@@ -148,6 +148,16 @@ def update_total():
                     "UPDATE users SET distance=%s WHERE id=%s;",
                     (distances[i], i)
                 )
+            cur.execute(
+                "SELECT id, distance FROM users;"
+            )
+            allusers = cur.fetchall()
+            for i in allusers:
+                if i[0] not in distances.keys() and i[1] != 0:
+                    cur.execute(
+                        "UPDATE users SET distance=0 WHERE id=%s;",
+                        (i[0],)
+                    )
             cur.execute("DELETE FROM walks WHERE distance=0;")
         db.commit()
         print("Done updating user totals.\nStarting to update global total!")
