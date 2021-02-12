@@ -1,5 +1,6 @@
 # WCI Walks
 ![Build Status](https://travis-ci.com/WCI-Computer-Science/WCI-Walks.svg?branch=main "Build Status")
+(Might not always be indicative of the status of the website itself, as Travis is finicky)
 ## About this app
 WCI Walks tracks the walkathon progress of students at WCI. It tracks individual as well as total progress.
 
@@ -19,6 +20,7 @@ Then ensure you have created a file called secrets.py with the following variabl
 secret_key = # Put your secure code for signing cookies
 google_client_id = # Put the Client ID of your Google Oauth web application
 google_client_secret = # Put the Client Secret of your Google Oauth web application
+database_url = # Put the url to connect to your database here
 ```
 
 After that, follow the instructions below.
@@ -49,11 +51,7 @@ export FLASK_APP=wsgi.py
 ```
 export FLASK_RUN_CERT=adhoc
 ```
-9. export local postgres database
-```
-export DATABASE_URL=_your_database_here_
-```
-10. run the app
+9. run the app
 ```
 flask run
 ```
