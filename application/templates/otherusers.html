@@ -43,7 +43,7 @@
 {% block body %}
 <div id="otherprofile" class="profilediv contentw">
     <div class="chart">
-        <h1>{{ name }}'s distances: {% if userid in current_user.get_liked() %}<a href="/users/unlike/{{ wrdsbusername }}"><img src="../../static/filled_heart.png" height="25" alt="Unlike"/></a>{% else %}<a href="/users/like/{{ wrdsbusername }}"><img src="../../static/empty_heart.png" height="25" alt="Like"/></a>{% endif %}</h1>
+        <h1>{{ name }}'s distances: {% if userid in current_user.get_liked() %}<a href="/users/unlike/{{ wrdsbusername }}"><img src="../../static/filled_heart.png" height="30" alt="Unlike"/></a>{% else %}<a href="/users/like/{{ wrdsbusername }}"><img src="../../static/empty_heart.png" height="30" alt="Like"/></a>{% endif %}</h1>
         {% if current_user is defined and current_user.is_authenticated and current_user.is_admin() %}
             <span class="admincontrol" style="float:right">
                 <a class="button adminbutton" href="/admin/deleteuser/{{ wrdsbusername }}">Delete user</a>
