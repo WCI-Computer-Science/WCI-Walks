@@ -84,7 +84,7 @@ def info():
                     flash(
                         "Your walk was partly recorded. You can't go more than 42 km per day."
                     )
-                
+
             else:
                 if request.form.get("extension", None) != None:
                     return "You've successfully updated the distance!"
@@ -92,7 +92,7 @@ def info():
                     flash(
                         "You've successfully updated the distance!"
                     )
-                
+
         else:
             if request.form.get("extension", None) != None:
                 return "You can only go between 0 and 42 km per day!"
@@ -100,7 +100,7 @@ def info():
                 flash(
                   "You can only go between 0 and 42 km per day!"
                 )
-            
+
 
     with db.cursor() as cur:
         labels, data = current_user.get_walk_chart_data(cur)
@@ -176,6 +176,7 @@ def viewprofile(wrdsbusername):
         data=data,
         name=name,
         wrdsbusername=wrdsbusername,
+        userid=userid,
     )
 
 @bp.route("/loggedin")
