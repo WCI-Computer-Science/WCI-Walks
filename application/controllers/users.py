@@ -95,10 +95,10 @@ def info():
 
         else:
             if request.form.get("extension", None) != None:
-                return "Please enter a number between 0 and 42 km!"
+                return "You can only go between 0 and 42 km per day!"
             else:
                 flash(
-                  "Please enter a number between 0 and 42 km!"
+                  "You can only go between 0 and 42 km per day!"
                 )
 
 
