@@ -276,42 +276,6 @@ def long_update_tick(context):
     with context:
         update_total()
 
-def like(sendfrom, to):
-    db = database.get_db()
-    with db.cursor() as cur:
-        cur.execute(
-            "SELECT liked FROM users WHERE id=%s;", (sendfrom,)
-        )
-        liked = cur.fetchone()[0]
-        liked = liked.split(",") if liked != None else []
-        if to not in liked:
-            cur.execute(
-                "UPDATE users SET likes=Coalesce(likes, 0)+1, likediff=Coalesce(likediff, 0)+1 WHERE id=%s;", (to,)
-            )
-            liked.append(to)
-            cur.execute(
-                "UPDATE users SET liked=%s WHERE id=%s;", (",".join(liked), sendfrom)
-            )
-            db.commit()
-
-def unlike(sendfrom, to):
-    db = database.get_db()
-    with db.cursor() as cur:
-        cur.execute(
-            "SELECT liked FROM users WHERE id=%s;", (sendfrom,)
-        )
-        liked = cur.fetchone()[0]
-        liked = liked.split(",") if liked != None else []
-        if to in liked:
-            cur.execute(
-                "UPDATE users SET likes=Coalesce(likes, 0)-1, likediff=Coalesce(likediff, 0)-1 WHERE id=%s;", (to,)
-            )
-            liked.remove(to)
-            cur.execute(
-                "UPDATE users SET liked=%s WHERE id=%s;", (",".join(liked), sendfrom)
-            )
-            db.commit()
-
 total = 0
 if not current_app.config["DONT_LOAD_DB"]:
     db_get_total()
