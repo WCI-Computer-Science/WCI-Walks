@@ -228,8 +228,6 @@ def confirmlogin():
         flash("Email invalid. Are you using your WRDSB email?")
         return redirect(url_for("users.login"))
 
-    print(idinfo, file=sys.stderr)
-
     db = database.get_db()
     if isblacklisted(userid, email):
         flash(
