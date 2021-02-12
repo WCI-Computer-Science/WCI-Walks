@@ -30,6 +30,42 @@ class User:
         self.is_active = active
         self.is_anonymous = False
 
+    def like(self, to):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT liked FROM users WHERE id=%s;", (self.id,)
+            )
+            liked = cur.fetchone()[0]
+            liked = liked.split(",") if liked != None else []
+            if to not in liked:
+                cur.execute(
+                    "UPDATE users SET likes=Coalesce(likes, 0)+1, likediff=Coalesce(likediff, 0)+1 WHERE id=%s;", (to,)
+                )
+                liked.append(to)
+                cur.execute(
+                    "UPDATE users SET liked=%s WHERE id=%s;", (",".join(liked), self.id)
+                )
+                db.commit()
+
+    def unlike(self, to):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT liked FROM users WHERE id=%s;", (self.id,)
+            )
+            liked = cur.fetchone()[0]
+            liked = liked.split(",") if liked != None else []
+            if to in liked:
+                cur.execute(
+                    "UPDATE users SET likes=Coalesce(likes, 0)-1, likediff=Coalesce(likediff, 0)-1 WHERE id=%s;", (to,)
+                )
+                liked.remove(to)
+                cur.execute(
+                    "UPDATE users SET liked=%s WHERE id=%s;", (",".join(liked), self.id)
+                )
+                db.commit()
+
     def get_likes(self):
         db = database.get_db()
         with db.cursor() as cur:

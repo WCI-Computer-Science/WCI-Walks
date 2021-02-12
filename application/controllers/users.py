@@ -22,8 +22,6 @@ from application.templates.utils import (
     add_to_total,
     get_credentials_from_wrdsbusername,
     isblacklisted,
-    like,
-    unlike,
     walk_is_maxed,
     walk_will_max_distance,
 )
@@ -131,7 +129,7 @@ def likesomeone(wrdsbusername):
                 + str(wrdsbusername)
                 + " in our database.",
             )
-    like(current_user.id, userid)
+    current_user.like(userid)
     return redirect("/users/viewprofile/"+wrdsbusername, 302)
 
 @bp.route("/unlike/<wrdsbusername>")
@@ -150,7 +148,7 @@ def unlikesomeone(wrdsbusername):
                 + str(wrdsbusername)
                 + " in our database.",
             )
-    unlike(current_user.id, userid)
+    current_user.unlike(userid)
     return redirect("/users/viewprofile/"+wrdsbusername, 302)
 
 @bp.route("/viewprofile/<wrdsbusername>", methods=("GET", "POST"))
