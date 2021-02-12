@@ -67,10 +67,7 @@ def info():
                     1,
                 )
 
-                if walk is None:
-                    current_user.insert_walk(distance, date, cur)
-                else:
-                    current_user.update_walk(distance, date, walk, cur)
+                current_user.update_walk(distance, date, walk, cur)
 
                 add_to_total(distance, cur)
 
@@ -85,7 +82,7 @@ def info():
                     flash(
                         "Your walk was partly recorded. You can't go more than 42 km per day."
                     )
-                
+
             else:
                 if request.form.get("extension", None) != None:
                     return "You've successfully updated the distance!"
@@ -93,7 +90,7 @@ def info():
                     flash(
                         "You've successfully updated the distance!"
                     )
-                
+
         else:
             if request.form.get("extension", None) != None:
                 return "You can only go between 0 and 42 km per day!"
@@ -101,7 +98,7 @@ def info():
                 flash(
                   "You can only go between 0 and 42 km per day!"
                 )
-            
+
 
     with db.cursor() as cur:
         labels, data = current_user.get_walk_chart_data(cur)
@@ -114,6 +111,43 @@ def info():
         data=data,
     )
 
+@bp.route("/like/<wrdsbusername>")
+@login_required
+def likesomeone(wrdsbusername):
+    db = database.get_db()
+    with db.cursor() as cur:
+        try:
+            userid, name = get_credentials_from_wrdsbusername(
+                wrdsbusername, cur
+            )
+        except TypeError:
+            return render_template(
+                "error.html",
+                text="Sorry, we couldn't find any record of "
+                + str(wrdsbusername)
+                + " in our database.",
+            )
+    current_user.like(userid)
+    return redirect("/users/viewprofile/"+wrdsbusername, 302)
+
+@bp.route("/unlike/<wrdsbusername>")
+@login_required
+def unlikesomeone(wrdsbusername):
+    db = database.get_db()
+    with db.cursor() as cur:
+        try:
+            userid, name = get_credentials_from_wrdsbusername(
+                wrdsbusername, cur
+            )
+        except TypeError:
+            return render_template(
+                "error.html",
+                text="Sorry, we couldn't find any record of "
+                + str(wrdsbusername)
+                + " in our database.",
+            )
+    current_user.unlike(userid)
+    return redirect("/users/viewprofile/"+wrdsbusername, 302)
 
 @bp.route("/viewprofile/<wrdsbusername>", methods=("GET", "POST"))
 @login_required
@@ -140,6 +174,7 @@ def viewprofile(wrdsbusername):
         data=data,
         name=name,
         wrdsbusername=wrdsbusername,
+        userid=userid,
     )
 
 @bp.route("/loggedin")

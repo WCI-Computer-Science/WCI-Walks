@@ -2,7 +2,7 @@
 {% block body %}
 <div class="login contentw">
     {% if get_flashed_messages() | length == 0 %}
-    <h1>Login here</h1>
+    <h1>Login</h1>
     {% else %}
         {% for error in get_flashed_messages() %}
             <div class='error'><h2>{{ error }}</h2></div>

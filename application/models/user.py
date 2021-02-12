@@ -29,6 +29,75 @@ class User:
         self.is_authenticated = authenticated
         self.is_active = active
         self.is_anonymous = False
+        self.liked = None
+
+    def get_liked(self):
+        db = database.get_db()
+        with db.cursor() as cur:
+            if self.liked==None:
+                cur.execute(
+                    "SELECT liked FROM users WHERE id=%s;", (self.id,)
+                )
+                liked = cur.fetchone()[0]
+                self.liked = liked.split(",") if liked != None else []
+        return self.liked
+
+    def like(self, to):
+        db = database.get_db()
+        with db.cursor() as cur:
+            if to not in self.get_liked():
+                cur.execute(
+                    "UPDATE users SET likes=Coalesce(likes, 0)+1, likediff=Coalesce(likediff, 0)+1 WHERE id=%s;", (to,)
+                )
+                self.liked.append(to)
+                cur.execute(
+                    "UPDATE users SET liked=%s WHERE id=%s;", (",".join(self.liked), self.id)
+                )
+                db.commit()
+
+    def unlike(self, to):
+        db = database.get_db()
+        with db.cursor() as cur:
+            if to in self.get_liked():
+                cur.execute(
+                    "UPDATE users SET likes=Coalesce(likes, 0)-1, likediff=Coalesce(likediff, 0)-1 WHERE id=%s;", (to,)
+                )
+                self.liked.remove(to)
+                cur.execute(
+                    "UPDATE users SET liked=%s WHERE id=%s;", (",".join(self.liked), self.id)
+                )
+                db.commit()
+
+    def get_likes(self):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT likes FROM users WHERE id=%s;", (self.id,)
+            )
+            likes = cur.fetchone()[0]
+            return int(likes) if likes != None else 0
+
+    def get_new_likes(self, clear=False):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT likediff FROM users WHERE id=%s;", (self.id,)
+            )
+            likediff = cur.fetchone()[0]
+            if clear:
+                cur.execute(
+                    "UPDATE users SET likediff=0 WHERE id=%s;", (self.id,)
+                )
+                db.commit()
+            return int(likediff) if likediff!= None else 0
+
+    def get_leaderboard_position(self):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT position FROM users WHERE id=%s;", (self.id,)
+            )
+            return cur.fetchone()[0]
 
     def add_distance(self, distance):
         self.distance = round(self.distance + distance, 1)

@@ -9,10 +9,10 @@ from application.models import database
 def get_all_time_leaderboard():
     db = database.get_db()
     with db.cursor() as cur:
-        cur.execute("SELECT username, distance, wrdsbusername FROM users;")
+        cur.execute("SELECT username, distance, wrdsbusername, position, id FROM users;")
         userdistances = cur.fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
-    userdistances = [[i[0], fancy_float(i[1]), i[2]] for i in userdistances]
+    userdistances = [[i[0], fancy_float(i[1]), i[2], i[3], i[4]] for i in userdistances]
     return userdistances
 
 
@@ -148,14 +148,24 @@ def update_total():
                     "UPDATE users SET distance=%s WHERE id=%s;",
                     (distances[i], i)
                 )
+            cur.execute(
+                "SELECT id, distance FROM users;"
+            )
+            allusers = cur.fetchall()
+            for i in allusers:
+                if i[0] not in distances.keys() and i[1] != 0:
+                    cur.execute(
+                        "UPDATE users SET distance=0 WHERE id=%s;",
+                        (i[0],)
+                    )
             cur.execute("DELETE FROM walks WHERE distance=0;")
         db.commit()
         print("Done updating user totals.\nStarting to update global total!")
         with db.cursor() as cur:
             print("ok1")
-            cur.execute("SELECT distance FROM users;")
+            cur.execute("SELECT SUM(distance) FROM users;")
             print("ok2")
-            newtotal = sum(i["distance"] for i in cur.fetchall())
+            newtotal = int(cur.fetchone()[0])
             set_total(newtotal, cur)
         db.commit()
     finally:
@@ -241,6 +251,30 @@ def replace_walk_distances(distances, dates, olddistances, user, id):
                 )
     db.commit()
 
+def update_leaderboard_positions():
+    db = database.get_db()
+    leaderboard = get_all_time_leaderboard()
+    with db.cursor() as cur:
+        for i in range(len(leaderboard)):
+            if leaderboard[i][3]!=i+1 and leaderboard[i][1]>0:
+                cur.execute(
+                    "UPDATE users SET position=%s WHERE id=%s;",
+                    (i+1, leaderboard[i][4])
+                )
+            elif leaderboard[i][3]!=None and leaderboard[i][1]<=0:
+                cur.execute(
+                    "UPDATE users SET position=null WHERE id=%s;",
+                    (leaderboard[i][4],)
+                )
+    db.commit()
+
+def update_tick(context):
+    with context:
+        update_leaderboard_positions()
+
+def long_update_tick(context):
+    with context:
+        update_total()
 
 total = 0
 if not current_app.config["DONT_LOAD_DB"]:
