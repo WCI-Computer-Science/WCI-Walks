@@ -66,10 +66,7 @@ def info():
                     1,
                 )
 
-                if walk is None:
-                    current_user.insert_walk(distance, date, cur)
-                else:
-                    current_user.update_walk(distance, date, walk, cur)
+                current_user.update_walk(distance, date, walk, cur)
 
                 add_to_total(distance, cur)
 
