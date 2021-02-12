@@ -163,9 +163,9 @@ def update_total():
         print("Done updating user totals.\nStarting to update global total!")
         with db.cursor() as cur:
             print("ok1")
-            cur.execute("SELECT distance FROM users;")
+            cur.execute("SELECT SUM(distance) FROM users;")
             print("ok2")
-            newtotal = sum(i["distance"] for i in cur.fetchall())
+            newtotal = int(cur.fetchone()[0])
             set_total(newtotal, cur)
         db.commit()
     finally:
