@@ -30,19 +30,18 @@ def get_day_distance(userid, date): #date should be datetime.date object
 
 def autoload_day(userid, username, date, cur):
     distance = get_day_distance(userid, date)
-    add_to_total(distance)
     walk = cur.execute(
             "SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
             (userid, date)
         )
     if walk:
         cur.execute(
-            "UPDATE users SET distance=distance+%s WHERE id=%s",
+            "UPDATE users SET distance=%s WHERE id=%s",
             (distance, userid)
         )
         cur.execute(
             "UPDATE walks SET distance=distance+%s WHERE id=%s AND walkdate=%s LIMIT 1;",
-            (distance, userid)
+            (distance-walk["distance"], userid)
         )
     else:
         cur.execute(
@@ -56,6 +55,7 @@ def autoload_day(userid, username, date, cur):
             """,
             (userid, username, distance, date),
         )
+        add_to_total(distance)
 
 def autoload_day_all(date): # Autoload all users with google fit connected
     db = database.get_db()
