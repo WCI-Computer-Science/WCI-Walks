@@ -10,7 +10,7 @@ def get_auth_url():
     )
     auth_url += "&scope=" + current_app.config["OAUTH_SCOPES"][0]
     for i in range(1, len(current_app.config["OAUTH_SCOPES"])):
-        auth_url += " " + current_app.config["OAUTH_SCOPES"]
+        auth_url += "%20" + current_app.config["OAUTH_SCOPES"][i]
 
     return auth_url
 
@@ -26,7 +26,16 @@ def get_access_token(auth_code):
         }
     )
     res = res.json()
-    return res["access_token"], res["refresh_token"]
+    return res["access_token"], res.get("refresh_token")
 
 def get_id_info(token):
-    pass
+    print(token)
+    res = requests.post(
+        "https://openidconnect.googleapis.com/v1/userinfo",
+        headers={
+            "Content-length": "0",
+            "Content-type": "application/json",
+            "Authorization": "Bearer " + token
+        }
+    )
+    return res.json()

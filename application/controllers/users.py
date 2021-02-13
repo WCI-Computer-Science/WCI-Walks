@@ -204,8 +204,7 @@ def authorize():
 @bp.route("/authorize/confirmlogin", methods=("GET", "POST"))
 def confirmlogin():
     code = request.args.get("code")
-    token = oauth.get_access_token(code)
-    print(token)
+    token, refresh = oauth.get_access_token(code)
     idinfo = oauth.get_id_info(token)
 
     if idinfo.get("email_verified") and idinfo.get("hd") == "wrdsb.ca":

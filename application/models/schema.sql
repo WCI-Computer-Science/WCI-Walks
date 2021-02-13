@@ -19,7 +19,12 @@ CREATE TABLE IF NOT EXISTS users (
     username TEXT NOT NULL,
     wrdsbusername TEXT NOT NULL,
     distance REAL NOT NULL,
-    active SMALLINT DEFAULT 1
+    position SMALLINT,
+    likes SMALLINT,
+    likediff SMALLINT,
+    liked TEXT,
+    active SMALLINT DEFAULT 1,
+    refreshtoken TEXT
 );
 
 /* Info stored to see who is an admin:
