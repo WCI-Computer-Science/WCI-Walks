@@ -37,9 +37,8 @@ def updatetotal():
 
 
 @bp.route("/getuserlist")
+@login_required
 def getuserlist():
-    if not current_user.is_admin():
-        abort(403)
     search = request.args.get("text", "").lower()
     userlist = get_all_time_leaderboard()
     if search != "":
@@ -49,9 +48,8 @@ def getuserlist():
 
 
 @bp.route("/searchforuser")
+@login_required
 def searchforuser():
-    if not current_user.is_admin():
-        abort(403)
     return render_template("searchforuser.html")
 
 
@@ -102,6 +100,7 @@ def editdistancespage(wrdsbusername):
 
 
 @bp.route("/deleteuser/<wrdsbusername>", methods=("GET", "POST"))
+@login_required
 def deleteuser(wrdsbusername):
     if not current_user.is_admin():
         abort(403)
