@@ -31,16 +31,6 @@ class User:
         self.is_anonymous = False
         self.liked = None
     
-    def get_refresh(self):
-        db = database.get_db()
-        with db.cursor() as cur:
-            cur.execute(
-                "SELECT refreshtoken FROM users WHERE id=%s;",
-                (self.id,)
-            )
-            result = cur.fetchone()[0]
-        return result
-    
     def add_refresh(self, refresh, cur):
         cur.execute(
             "UPDATE users SET refreshtoken=%s WHERE id=%s;",

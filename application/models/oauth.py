@@ -1,5 +1,6 @@
 import requests
 from flask import current_app, g, request, session
+from application.models import database
 
 def get_auth_url():
     auth_url = ("https://accounts.google.com/o/oauth2/v2/auth" +
@@ -51,3 +52,14 @@ def refresh_access_token(refresh):
         }
     )
     return res.text
+
+
+def get_refresh(refresh, userid):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT refreshtoken FROM users WHERE id=%s;",
+            (userid,)
+        )
+        result = cur.fetchone()[0]
+    return result

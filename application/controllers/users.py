@@ -113,7 +113,7 @@ def info():
 @bp.route("/autoload")
 @login_required
 def autoload(): # Automatically load walk distance
-    access_token = oauth.refresh_access_token(current_user.get_refresh())
+    access_token = oauth.refresh_access_token(oauth.get_refresh(current_user.id))
     # Get new access_token for each API call for simplicity
     res = requests.get(
         ""
