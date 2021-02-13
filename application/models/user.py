@@ -122,7 +122,7 @@ class User:
                 self.wrdsbusername,
                 self.distance,
                 self.is_active,
-            ),
+            )
         )
 
     def update_distance_db(self, cur):
@@ -164,7 +164,7 @@ class User:
                 (id, username, distance, walkdate)
                 VALUES (%s, %s, %s, %s);
             """,
-            (useid, username, distance, date),
+            (useid, username, distance, date)
         )
 
     def update_walk(self, distance, date, walk, cur, replace=False, id=None):
@@ -182,7 +182,7 @@ class User:
                     ),
                     useid,
                     date,
-                ),
+                )
             )
         else:
             self.insert_walk(distance, date, cur, id=useid)

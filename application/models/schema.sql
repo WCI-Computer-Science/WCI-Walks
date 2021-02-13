@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS total (
     wrdsbusername: email without the @wrdsb.ca
     distance: student's total distance
     active: whether a user is active
+    refreshtoken: OAuth refresh token
+    googlefit: whether a user is connected with Google Fit
  */
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
@@ -55,6 +57,7 @@ CREATE TABLE IF NOT EXISTS blacklist (
     username: used to identify student who did the walk
     distance: student's distance for that day
     walkdate: date of walk stored as YYYY-MM-DD
+    trackedwithfit: whether a walk was inputted by Google Fit
 */
 CREATE TABLE IF NOT EXISTS walks (
     id TEXT NOT NULL,
