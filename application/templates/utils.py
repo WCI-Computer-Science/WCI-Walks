@@ -322,7 +322,7 @@ def autoload_day(userid, username, date, cur):
             """,
             (userid, username, distance, date),
         )
-        add_to_total(distance)
+        add_to_total(distance, cur)
 
 def autoload_day_all(date): # Autoload all users with google fit connected
     db = database.get_db()
