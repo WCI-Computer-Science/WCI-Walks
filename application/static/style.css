@@ -489,6 +489,13 @@ footer a:hover {
   grid-column-end: 3;
 }
 
+#googlefit {
+  margin: 25px auto;
+  width: 100%;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
 @media (min-width: 992px) {
   .profilediv {
     padding: 25px 5% 50px 5%;
@@ -496,16 +503,18 @@ footer a:hover {
 
   #distancediv {
     margin: 0;
-    width: 100%;
     grid-column-start: 1;
     grid-column-end: 2;
   }
 
   #profile .chart {
     margin: 0;
-    width: 100%;
     grid-column-start: 2;
     grid-column-end: 3;
+  }
+
+  #googlefit {
+    margin: 0;
   }
 }
 

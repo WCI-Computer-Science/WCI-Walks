@@ -51,6 +51,7 @@
     {% if current_user.get_likes()!=0 or current_user.get_new_likes()!=0 %}You have {% if current_user.get_likes()>=0 %}{{ current_user.get_likes() }}{% else %}0{% endif %} likes{% if current_user.get_new_likes()!=0 %} ({% if current_user.get_new_likes()>0 %}+{% endif %}{{current_user.get_new_likes(clear=True)}} since last time){% endif %}.{% endif %}
     {% if current_user.get_leaderboard_position() not in ["", None] or (current_user.get_likes()!=0 or current_user.get_new_likes()!=0) %}</h3>{% endif %}
     </h1>
+    {% if not current_user.connected_with_googlefit(current_user.id) %}
     <div id="distancediv">
         {% for message in get_flashed_messages() %}
             <div class='message'><p>{{ message }}</p></div>
@@ -63,9 +64,20 @@
             </form>
         </div>
     </div>
+    {% endif %}
     <div class="chart">
         <h2>Your Progress:</h2>
         <canvas id="myChart"></canvas>
+    </div>
+    <div id="googlefit">
+        <a href="/users/togglegooglefit">
+            {% if current_user.connected_with_googlefit(current_user.id) %}
+                Disconnect from Google Fit
+            {% else %}
+                Connect to Google Fit
+            {% endif %}
+        </a>
+        <p>Make sure you haven't submitted anything today before connecting with google fit!</p>
     </div>
 </div>
 {% endblock %}

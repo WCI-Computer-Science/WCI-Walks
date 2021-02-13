@@ -61,5 +61,5 @@ CREATE TABLE IF NOT EXISTS walks (
     username TEXT NOT NULL,
     distance REAL NOT NULL,
     walkdate DATE NOT NULL,
-    trackedwithfit BOOLEAN DEFAULT FALSE,
+    trackedwithfit BOOLEAN DEFAULT FALSE
 );

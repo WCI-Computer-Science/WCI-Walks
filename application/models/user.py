@@ -145,7 +145,7 @@ class User:
         else:
             useid = self.id
         cur.execute(
-            "SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1",
+            "SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
             (useid, date)
         )
         return cur.fetchone()
@@ -220,18 +220,16 @@ class User:
         return cur.fetchone()
     
     @staticmethod
-    def connected_with_googlefit(userid, cur):
-        cur.execute("SELECT googlefit FROM users WHERE id=%s LIMIT 1", (userid,))
-        return cur.fetchone()[0]
+    def connected_with_googlefit(userid):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute("SELECT googlefit FROM users WHERE id=%s;", (userid,))
+            googlefit = cur.fetchone()[0]
+        return googlefit
     
     @staticmethod
-    def connect_googlefit(userid, cur):
-        cur.execute("UPDATE users SET googlefit=TRUE WHERE id=%s LIMIT 1", (userid,))
-    
-    @staticmethod
-    def disconnect_googlefit(userid, cur):
-        cur.execute("UPDATE users SET googlefit=FALSE WHERE id=%s LIMIT 1", (userid,))
-
+    def toggle_googlefit(userid, cur):
+        cur.execute("UPDATE users SET googlefit = NOT googlefit WHERE id=%s;", (userid,))
 
 @login_manager.user_loader
 def load_user(userid):

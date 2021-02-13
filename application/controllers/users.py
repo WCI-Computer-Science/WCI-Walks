@@ -111,6 +111,16 @@ def info():
     )
 
 
+@bp.route("/togglegooglefit")
+@login_required
+def togglegooglefit():
+    db = database.get_db()
+    with db.cursor() as cur:
+        user.User.toggle_googlefit(current_user.id, cur)
+    db.commit()
+    return redirect("/users")
+
+
 @bp.route("/like/<wrdsbusername>")
 @login_required
 def likesomeone(wrdsbusername):
@@ -239,7 +249,7 @@ def confirmlogin():
         else:
             current_user = user.User(userid=userid)
             current_user.read_db(cur)
-            if not current_user.get_refresh():
+            if not oauth.get_refresh(current_user.id):
                 if refresh:
                     current_user.add_refresh(refresh, cur)
                 else:
