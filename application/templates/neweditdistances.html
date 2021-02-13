@@ -1,0 +1,15 @@
+{% extends "utils/layout.html" %}
+{% block body %}
+<div class="contentw admindiv">
+  <h1>Edit {{user}}'s Distances</h1>
+  <table>
+    {% for userwalk in userdata %}
+      <tr>
+        <td>{{userwalk[0]}}:</td>
+        <td><input type="number" value="{{userwalk[1]}}" {% if userwalk[2] %}disabled{% endif %} id="{{userwalk[0]}}" /></td>
+        <td>{% if userwalk[2] %}<button class="blankbutton" id="{{userwalk[0]}}disablefit"><img src="../../../static/fit_icon.png" alt="Disable fit tracking for this walk" height="30"/></button>{% endif %}</td> 
+      </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

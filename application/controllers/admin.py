@@ -11,6 +11,7 @@ from application.templates.utils import (
     fancy_float,
     get_all_time_leaderboard,
     get_credentials_from_wrdsbusername,
+    get_edit_distance_data,
     isadmin,
     replace_walk_distances,
     update_total,
@@ -98,6 +99,18 @@ def editdistancespage(wrdsbusername):
         user=get_credentials_from_wrdsbusername(wrdsbusername)[1],
     )
 
+@bp.route("/edituserdistances/new/<wrdsbusername>", methods=("GET", "POST"))
+@login_required
+def newedituserdistancespage(wrdsbusername):
+    if not current_user.is_admin():
+        abort(403)
+    if request.method == "GET":
+        userdata = get_edit_distance_data(wrdsbusername)
+        return render_template(
+            "neweditdistances.html",
+            userdata=userdata,
+            user=get_credentials_from_wrdsbusername(wrdsbusername)[1],
+        )
 
 @bp.route("/deleteuser/<wrdsbusername>", methods=("GET", "POST"))
 @login_required

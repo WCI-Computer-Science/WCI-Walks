@@ -283,6 +283,17 @@ def verify_walk_form(form, id):
         return "You can't go less that 0 km per day!"
     return True
 
+def get_edit_distance_data(wrdsbusername):
+    userid, username = get_credentials_from_wrdsbusername(wrdsbusername)
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT walkdate, distance, trackedwithfit FROM walks WHERE id=%s", (userid,)
+        )
+        allwalks = cur.fetchall()
+        allwalks.sort(key=lambda row: row[0])
+    return allwalks
+
 def update_tick(context):
     with context:
         update_leaderboard_positions()
