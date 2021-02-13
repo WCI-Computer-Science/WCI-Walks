@@ -1,43 +1,68 @@
-import google.auth.transport.requests
 import requests
-from flask import current_app, g, request
-from google.oauth2 import id_token
-from oauthlib.oauth2 import WebApplicationClient
+from flask import current_app, g, request, session
+from application.models import database
 
-
-def get_google_configs():
-    return requests.get(current_app.config["GOOGLE_DISCOVERY_URL"]).json()
-
-
-def get_client():
-    if "client" not in g:
-        g.client = WebApplicationClient(current_app.config["GOOGLE_CLIENT_ID"])
-    return g.client
-
-
-def get_id_token(auth_code):
-    client = get_client()
-    token_url, headers, body = client.prepare_token_request(
-        get_google_configs()["token_endpoint"],
-        authorization_response=request.url,
-        redirect_url=request.base_url,
-        code=auth_code,
-        hd="wrdsb.ca",
+def get_auth_url():
+    auth_url = ("https://accounts.google.com/o/oauth2/v2/auth" +
+        "?client_id=" + current_app.config["GOOGLE_CLIENT_ID"] +
+        "&redirect_uri=" + request.url_root + "users/authorize/confirmlogin" +
+        "&response_type=code" +
+        "&access_type=offline"
     )
-    return requests.post(
-        token_url,
-        headers=headers,
-        data=body,
-        auth=(
-            current_app.config["GOOGLE_CLIENT_ID"],
-            current_app.config["GOOGLE_CLIENT_SECRET"],
-        ),
-    ).json()["id_token"]
+    auth_url += "&scope=" + current_app.config["OAUTH_SCOPES"][0]
+    for i in range(1, len(current_app.config["OAUTH_SCOPES"])):
+        auth_url += "%20" + current_app.config["OAUTH_SCOPES"][i]
+
+    return auth_url
 
 
-def verify_id_token(token):
-    return id_token.verify_oauth2_token(
-        token,
-        google.auth.transport.requests.Request(),
-        current_app.config["GOOGLE_CLIENT_ID"],
+def get_access_token(auth_code):
+    res = requests.post(
+        "https://oauth2.googleapis.com/token",
+        json={
+            "code": auth_code,
+            "client_id": current_app.config["GOOGLE_CLIENT_ID"],
+            "client_secret": current_app.config["GOOGLE_CLIENT_SECRET"],
+            "grant_type": "authorization_code",
+            "redirect_uri": request.url_root + "users/authorize/confirmlogin"
+        }
     )
+    res = res.json()
+    return res["access_token"], res.get("refresh_token")
+
+
+def get_id_info(access_token):
+    res = requests.post(
+        "https://openidconnect.googleapis.com/v1/userinfo",
+        headers={
+            "Content-length": "0",
+            "Content-type": "application/json",
+            "Authorization": "Bearer " + access_token
+        }
+    )
+    return res.json()
+
+
+def refresh_access_token(refresh):
+    res = requests.post(
+        "https://oauth2.googleapis.com/token",
+        json={
+            "refresh_token": refresh,
+            "client_id": current_app.config["GOOGLE_CLIENT_ID"],
+            "client_secret": current_app.config["GOOGLE_CLIENT_SECRET"],
+            "grant_type": "refresh_token",
+            "redirect_uri": request.url_root + "users/authorize/confirmlogin"
+        }
+    )
+    return res.text
+
+
+def get_refresh(userid):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT refreshtoken FROM users WHERE id=%s;",
+            (userid,)
+        )
+        result = cur.fetchone()[0]
+    return result

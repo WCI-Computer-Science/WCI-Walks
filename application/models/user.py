@@ -30,6 +30,12 @@ class User:
         self.is_active = active
         self.is_anonymous = False
         self.liked = None
+    
+    def add_refresh(self, refresh, cur):
+        cur.execute(
+            "UPDATE users SET refreshtoken=%s WHERE id=%s;",
+            (refresh, self.id)
+        )
 
     def get_liked(self):
         db = database.get_db()
@@ -116,7 +122,7 @@ class User:
                 self.wrdsbusername,
                 self.distance,
                 self.is_active,
-            ),
+            )
         )
 
     def update_distance_db(self, cur):
@@ -139,7 +145,7 @@ class User:
         else:
             useid = self.id
         cur.execute(
-            "SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1",
+            "SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
             (useid, date)
         )
         return cur.fetchone()
@@ -158,7 +164,7 @@ class User:
                 (id, username, distance, walkdate)
                 VALUES (%s, %s, %s, %s);
             """,
-            (useid, username, distance, date),
+            (useid, username, distance, date)
         )
 
     def update_walk(self, distance, date, walk, cur, replace=False, id=None):
@@ -176,7 +182,7 @@ class User:
                     ),
                     useid,
                     date,
-                ),
+                )
             )
         else:
             self.insert_walk(distance, date, cur, id=useid)
@@ -212,7 +218,18 @@ class User:
     def exists(userid, cur):
         cur.execute("SELECT id FROM users WHERE id=%s LIMIT 1;", (userid,))
         return cur.fetchone()
-
+    
+    @staticmethod
+    def connected_with_googlefit(userid):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute("SELECT googlefit FROM users WHERE id=%s;", (userid,))
+            googlefit = cur.fetchone()[0]
+        return googlefit
+    
+    @staticmethod
+    def toggle_googlefit(userid, cur):
+        cur.execute("UPDATE users SET googlefit = NOT googlefit WHERE id=%s;", (userid,))
 
 @login_manager.user_loader
 def load_user(userid):

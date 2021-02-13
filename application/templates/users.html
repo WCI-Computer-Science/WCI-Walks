@@ -52,20 +52,37 @@
     {% if current_user.get_leaderboard_position() not in ["", None] or (current_user.get_likes()!=0 or current_user.get_new_likes()!=0) %}</h3>{% endif %}
     </h1>
     <div id="distancediv">
-        {% for message in get_flashed_messages() %}
-            <div class='message'><p>{{ message }}</p></div>
-        {% endfor %}
-        <div id='submitdistance'>
-            <h2>Submit distance</h2>
-            <form id='submitdistanceform'  method="post">
-                <div>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</div>
-                {{ form.submit() }}
-            </form>
-        </div>
+        {% if not current_user.connected_with_googlefit(current_user.id) %}
+            {% for message in get_flashed_messages() %}
+                <div class='message'><p>{{ message }}</p></div>
+            {% endfor %}
+            <div id='submitdistance'>
+                <h2>Submit distance</h2>
+                <form id='submitdistanceform'  method="post">
+                    <div>{{ form.distance.label }}: {{ form.distance(min="0.1", max="42") }}</div>
+                    {{ form.submit() }}
+                </form>
+            </div>
+        {% else %}
+            <h2>Google Fit Connected</h2>
+            <p>Your distance will be automatically uploaded from the Google Fit app every hour or so.</p>
+        {% endif %}
     </div>
     <div class="chart">
-        <h2>Your Progress:</h2>
+        <h2>Your Progress</h2>
         <canvas id="myChart"></canvas>
+    </div>
+    <div id="googlefit">
+        <h3>
+            <a href="/users/togglegooglefit" class="button adminbutton">
+                {% if current_user.connected_with_googlefit(current_user.id) %}
+                    Disconnect from Google Fit
+                {% else %}
+                    Connect to Google Fit
+                {% endif %}
+            </a>
+        </h3>
+        <p>Make sure you haven't submitted anything today before connecting with Google Fit!</p>
     </div>
 </div>
 {% endblock %}

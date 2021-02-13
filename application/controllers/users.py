@@ -1,5 +1,4 @@
-import datetime
-import sys
+import datetime, sys, requests
 
 from flask import (
     Blueprint,
@@ -8,6 +7,7 @@ from flask import (
     render_template,
     request,
     url_for,
+    session
 )
 from flask_login import current_user, login_required, login_user, logout_user
 from wtforms import (
@@ -118,6 +118,17 @@ def info():
         data=data,
     )
 
+
+@bp.route("/togglegooglefit")
+@login_required
+def togglegooglefit():
+    db = database.get_db()
+    with db.cursor() as cur:
+        user.User.toggle_googlefit(current_user.id, cur)
+    db.commit()
+    return redirect("/users")
+
+
 @bp.route("/like/<wrdsbusername>")
 @login_required
 def likesomeone(wrdsbusername):
@@ -204,21 +215,15 @@ def authorize():
     if current_user.is_authenticated:
         return redirect(url_for("users.info"))
 
-    auth_endpoint = oauth.get_google_configs()["authorization_endpoint"]
-
-    request_uri = oauth.get_client().prepare_request_uri(
-        auth_endpoint,
-        redirect_uri=request.base_url + "/confirmlogin",
-        scope=["openid", "email", "profile"],
-    )
-    return redirect(request_uri)
+    auth_url = oauth.get_auth_url()
+    return redirect(auth_url)
 
 
 @bp.route("/authorize/confirmlogin", methods=("GET", "POST"))
 def confirmlogin():
     code = request.args.get("code")
-    id_token = oauth.get_id_token(code)
-    idinfo = oauth.verify_id_token(id_token)
+    token, refresh = oauth.get_access_token(code)
+    idinfo = oauth.get_id_info(token)
 
     if idinfo.get("email_verified") and idinfo.get("hd") == "wrdsb.ca":
         userid = idinfo["sub"]
@@ -234,6 +239,7 @@ def confirmlogin():
             "You have been banned from WCI Walks and cannot create an account or log in. Please contact us if you think this is a mistake."
         )
         return redirect(url_for("users.login"))
+    
     with db.cursor() as cur:
         if not user.User.exists(userid, cur):
             current_user = user.User(
@@ -242,10 +248,22 @@ def confirmlogin():
                 username=username
             )
             current_user.write_db(cur)
-            db.commit()
+            if refresh:
+                current_user.add_refresh(refresh, cur)
+            else:
+                return redirect(oauth.get_auth_url() + "&prompt=consent")
+                # This should only happen if the refresh token is lost
+                # due to deleting and re-adding user, server crash, etc
         else:
             current_user = user.User(userid=userid)
             current_user.read_db(cur)
+            if not oauth.get_refresh(current_user.id):
+                if refresh:
+                    current_user.add_refresh(refresh, cur)
+                else:
+                    return redirect(oauth.get_auth_url() + "&prompt=consent")
+                    # Same situations as above
+        db.commit()
 
     login_user(current_user)
     return redirect(url_for("users.info"))
