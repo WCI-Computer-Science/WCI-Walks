@@ -23,7 +23,7 @@ def create_app():
         from .templates.utils import update_tick, long_update_tick
         scheduler = BackgroundScheduler()
         scheduler.add_job(lambda: update_tick(app.app_context()), 'cron', minute="*/5") # Thing that need to be polled
-        scheduler.add_job(lambda: long_update_tick(app.app_context()), 'cron', hour="1") # Long function that could interupt normal functioning, like refreshing totals. Runs at 1am
+        scheduler.add_job(lambda: long_update_tick(app.app_context()), 'cron', hour="0") # Long function that could interupt normal functioning, like refreshing totals. Runs at 1am
         scheduler.start()
 
         # Create database and set up automatic database closing for requests
