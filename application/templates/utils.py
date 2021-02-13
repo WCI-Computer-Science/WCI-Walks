@@ -4,7 +4,7 @@ from flask import current_app
 from wtforms.validators import ValidationError
 
 from application.models import database
-from application.models.fitapi import autoload_day_all
+from application.models.fitapi import get_day_distance
 
 
 def get_all_time_leaderboard():
@@ -294,6 +294,46 @@ def get_edit_distance_data(wrdsbusername):
         allwalks = cur.fetchall()
         allwalks.sort(key=lambda row: row[0])
     return allwalks
+
+def autoload_day(userid, username, date, cur):
+    distance = get_day_distance(userid, date)
+    walk = cur.execute(
+            "SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
+            (userid, date)
+        )
+    if walk:
+        cur.execute(
+            "UPDATE users SET distance=%s WHERE id=%s",
+            (distance, userid)
+        )
+        cur.execute(
+            "UPDATE walks SET distance=distance+%s WHERE id=%s AND walkdate=%s LIMIT 1;",
+            (distance-walk["distance"], userid)
+        )
+    else:
+        cur.execute(
+            "UPDATE users SET distance=distance+%s WHERE id=%s",
+            (distance, userid)
+        )
+        cur.execute(
+            """
+                INSERT INTO walks (id, username, distance, walkdate, trackedwithfit)
+                VALUES (%s, %s, %s, %s, TRUE);
+            """,
+            (userid, username, distance, date),
+        )
+        add_to_total(distance)
+
+def autoload_day_all(date): # Autoload all users with google fit connected
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute("SELECT userid, username, googlefit FROM users;")
+        users = cur.fetchall()
+        for userid, username, googlefit in users:
+            if googlefit:
+                dist = autoload_day(userid, username, date, cur)
+    
+    db.commit()
 
 def update_tick(context):
     with context:

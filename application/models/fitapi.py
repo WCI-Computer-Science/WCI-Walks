@@ -1,6 +1,5 @@
 import requests, datetime
 from application.models import oauth, database
-from application.templates.utils import add_to_total
 
 def get_day_distance(userid, date): #date should be datetime.date object
     access_token = oauth.refresh_access_token(oauth.get_refresh(userid))
@@ -27,43 +26,3 @@ def get_day_distance(userid, date): #date should be datetime.date object
     except:
         val = 0
     return val
-
-def autoload_day(userid, username, date, cur):
-    distance = get_day_distance(userid, date)
-    walk = cur.execute(
-            "SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
-            (userid, date)
-        )
-    if walk:
-        cur.execute(
-            "UPDATE users SET distance=%s WHERE id=%s",
-            (distance, userid)
-        )
-        cur.execute(
-            "UPDATE walks SET distance=distance+%s WHERE id=%s AND walkdate=%s LIMIT 1;",
-            (distance-walk["distance"], userid)
-        )
-    else:
-        cur.execute(
-            "UPDATE users SET distance=distance+%s WHERE id=%s",
-            (distance, userid)
-        )
-        cur.execute(
-            """
-                INSERT INTO walks (id, username, distance, walkdate, trackedwithfit)
-                VALUES (%s, %s, %s, %s, TRUE);
-            """,
-            (userid, username, distance, date),
-        )
-        add_to_total(distance)
-
-def autoload_day_all(date): # Autoload all users with google fit connected
-    db = database.get_db()
-    with db.cursor() as cur:
-        cur.execute("SELECT userid, username, googlefit FROM users;")
-        users = cur.fetchall()
-        for userid, username, googlefit in users:
-            if googlefit:
-                dist = autoload_day(userid, username, date, cur)
-    
-    db.commit()
