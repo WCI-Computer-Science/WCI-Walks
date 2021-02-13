@@ -31,6 +31,11 @@ body {
     color: initial;
 }
 
+.blankbutton {
+  border: none;
+  background-color: #FFF;
+}
+
 input[type="text"], input[type="number"] {
     font-size: 1em;
     border-radius: 10px;
