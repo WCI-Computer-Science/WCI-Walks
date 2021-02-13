@@ -1,5 +1,4 @@
-import datetime
-import sys
+import datetime, sys, requests
 
 from flask import (
     Blueprint,
@@ -110,6 +109,17 @@ def info():
         labels=labels,
         data=data,
     )
+
+@bp.route("/autoload")
+@login_required
+def autoload(): # Automatically load walk distance
+    access_token = oauth.refresh_access_token(current_user.get_refresh())
+    # Get new access_token for each API call for simplicity
+    res = requests.get(
+        ""
+    ) # TODO: autoloading multiple times might continuously add same distance
+    # Should we integrate fully with google fit (no manual option),
+    # or should we just make an autoload option?
 
 @bp.route("/like/<wrdsbusername>")
 @login_required
@@ -231,7 +241,7 @@ def confirmlogin():
             )
             current_user.write_db(cur)
             if refresh:
-                current_user.add_refresh_token(refresh, cur)
+                current_user.add_refresh(refresh, cur)
             else:
                 return redirect(oauth.get_auth_url() + "&prompt=consent")
                 # This should only happen if the refresh token is lost
@@ -241,7 +251,7 @@ def confirmlogin():
             current_user.read_db(cur)
             if not current_user.get_refresh():
                 if refresh:
-                    current_user.add_refresh_token(refresh, cur)
+                    current_user.add_refresh(refresh, cur)
                 else:
                     return redirect(oauth.get_auth_url() + "&prompt=consent")
                     # Same situations as above

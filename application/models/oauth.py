@@ -38,3 +38,16 @@ def get_id_info(token):
         }
     )
     return res.json()
+
+def refresh_access_token(refresh):
+    res = requests.post(
+        "https://oauth2.googleapis.com/token",
+        json={
+            "refresh_token": refresh,
+            "client_id": current_app.config["GOOGLE_CLIENT_ID"],
+            "client_secret": current_app.config["GOOGLE_CLIENT_SECRET"],
+            "grant_type": "refresh_token",
+            "redirect_uri": request.url_root + "users/authorize/confirmlogin"
+        }
+    )
+    return res.text

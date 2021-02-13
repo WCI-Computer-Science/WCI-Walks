@@ -40,6 +40,12 @@ class User:
             )
             result = cur.fetchone()[0]
         return result
+    
+    def add_refresh(self, refresh, cur):
+        cur.execute(
+            "UPDATE users SET refreshtoken=%s WHERE id=%s;",
+            (refresh, self.id)
+        )
 
     def get_liked(self):
         db = database.get_db()
@@ -127,12 +133,6 @@ class User:
                 self.distance,
                 self.is_active,
             ),
-        )
-    
-    def add_refresh_token(self, refresh, cur):
-        cur.execute(
-            "UPDATE users SET refreshtoken=%s WHERE id=%s;",
-            (refresh, self.id)
         )
 
     def update_distance_db(self, cur):
