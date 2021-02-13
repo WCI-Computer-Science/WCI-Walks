@@ -1,4 +1,4 @@
-import requests, datetime
+import requests
 from flask import current_app, g, request, session
 from application.models import database
 
@@ -15,6 +15,7 @@ def get_auth_url():
 
     return auth_url
 
+
 def get_access_token(auth_code):
     res = requests.post(
         "https://oauth2.googleapis.com/token",
@@ -29,6 +30,7 @@ def get_access_token(auth_code):
     res = res.json()
     return res["access_token"], res.get("refresh_token")
 
+
 def get_id_info(access_token):
     res = requests.post(
         "https://openidconnect.googleapis.com/v1/userinfo",
@@ -39,6 +41,7 @@ def get_id_info(access_token):
         }
     )
     return res.json()
+
 
 def refresh_access_token(refresh):
     res = requests.post(
@@ -63,29 +66,3 @@ def get_refresh(userid):
         )
         result = cur.fetchone()[0]
     return result
-
-def autoload_day(userid, date): #date should be datetime.date object
-    access_token = refresh_access_token(get_refresh(userid))
-    start_time = int(datetime.datetime.combine(date, datetime.datetime.min.time()).timestamp())*1000
-    end_time = start_time + 86400000
-    res = requests.post(
-        "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
-        headers={
-            "Content-type": "application/json",
-            "Authorization": "Bearer " + access_token
-        },
-        json={
-            "aggregateBy": [{
-                "dataTypeName": "com.google.distance.delta",
-                "dataSourceId": "derived:com.google.distance.delta:com.google.android.gms:platform_distance_delta"
-            }],
-            "bucketByTime": { "durationMillis": 86400000 },
-            "startTimeMillis": start_time,
-            "endTimeMillis": end_time
-        }
-    ).json()
-    try:
-        val = round(res["bucket"][0]["dataset"][0]["point"][0]["value"][0]["fpVal"]/1000, 2)
-    except:
-        val = 0
-    return val

@@ -110,16 +110,6 @@ def info():
         data=data,
     )
 
-@bp.route("/autoload")
-@login_required
-def autoload(): # Automatically load walk distance
-    access_token = oauth.refresh_access_token(oauth.get_refresh(current_user.id))
-    # Get new access_token for each API call for simplicity
-    res = requests.get(
-        ""
-    ) # TODO: autoloading multiple times might continuously add same distance
-    # Should we integrate fully with google fit (no manual option),
-    # or should we just make an autoload option?
 
 @bp.route("/like/<wrdsbusername>")
 @login_required

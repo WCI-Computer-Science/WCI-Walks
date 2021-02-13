@@ -218,6 +218,19 @@ class User:
     def exists(userid, cur):
         cur.execute("SELECT id FROM users WHERE id=%s LIMIT 1;", (userid,))
         return cur.fetchone()
+    
+    @staticmethod
+    def connected_with_googlefit(userid, cur):
+        cur.execute("SELECT googlefit FROM users WHERE id=%s LIMIT 1", (userid,))
+        return cur.fetchone()[0]
+    
+    @staticmethod
+    def connect_googlefit(userid, cur):
+        cur.execute("UPDATE users SET googlefit=TRUE WHERE id=%s LIMIT 1", (userid,))
+    
+    @staticmethod
+    def disconnect_googlefit(userid, cur):
+        cur.execute("UPDATE users SET googlefit=FALSE WHERE id=%s LIMIT 1", (userid,))
 
 
 @login_manager.user_loader

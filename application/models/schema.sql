@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
     liked TEXT,
     active SMALLINT DEFAULT 1,
     refreshtoken TEXT,
-    googlefit SMALLINT DEFAULT 0
+    googlefit BOOLEAN DEFAULT FALSE
 );
 
 /* Info stored to see who is an admin:
@@ -61,5 +61,5 @@ CREATE TABLE IF NOT EXISTS walks (
     username TEXT NOT NULL,
     distance REAL NOT NULL,
     walkdate DATE NOT NULL,
-    trackedwithfit SMALLINT DEFAULT 0,
+    trackedwithfit BOOLEAN DEFAULT FALSE,
 );
