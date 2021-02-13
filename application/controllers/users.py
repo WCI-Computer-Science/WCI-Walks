@@ -25,7 +25,7 @@ from application.templates.utils import (
     isblacklisted,
     verify_walk_form,
     walk_is_maxed,
-    walk_will_max_distance,
+    walk_will_max_distance
 )
 
 bp = Blueprint("users", __name__, url_prefix="/users")
