@@ -4,7 +4,7 @@ from flask import current_app
 from wtforms.validators import ValidationError
 
 from application.models import database
-from applications.models.fitapi import autoload_day_all
+from application.models.fitapi import autoload_day_all
 
 
 def get_all_time_leaderboard():
