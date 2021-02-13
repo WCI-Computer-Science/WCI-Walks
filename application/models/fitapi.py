@@ -22,7 +22,7 @@ def get_day_distance(userid, date): #date should be datetime.date object
         }
     ).json()
     try:
-        val = round(res["bucket"][0]["dataset"][0]["point"][0]["value"][0]["fpVal"]/1000, 2)
+        val = round(res["bucket"][0]["dataset"][0]["point"][0]["value"][0]["fpVal"]/1000, 1)
     except:
         val = 0
     return val

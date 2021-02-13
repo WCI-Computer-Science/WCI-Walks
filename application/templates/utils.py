@@ -327,7 +327,7 @@ def autoload_day(userid, username, date, cur):
 def autoload_day_all(date): # Autoload all users with google fit connected
     db = database.get_db()
     with db.cursor() as cur:
-        cur.execute("SELECT userid, username, googlefit FROM users;")
+        cur.execute("SELECT id, username, googlefit FROM users;")
         users = cur.fetchall()
         for userid, username, googlefit in users:
             if googlefit:

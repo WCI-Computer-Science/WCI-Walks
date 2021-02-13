@@ -54,7 +54,8 @@ def refresh_access_token(refresh):
             "redirect_uri": request.url_root + "users/authorize/confirmlogin"
         }
     )
-    return res.text
+    res = res.json()
+    return res["access_token"]
 
 
 def get_refresh(userid):
