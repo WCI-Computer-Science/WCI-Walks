@@ -20,8 +20,10 @@ from wtforms import (
 from application.models import *
 from application.templates.utils import (
     add_to_total,
+    cap_distance,
     get_credentials_from_wrdsbusername,
     isblacklisted,
+    verify_walk_form,
     walk_is_maxed,
     walk_will_max_distance,
 )
@@ -51,7 +53,7 @@ def info():
             ),
             walk_is_maxed(current_user.get_id(), max=42),
         ]
-        if form.validate():
+        if verify_walk_form(form, current_user.id)==True:
             with db.cursor() as cur:
                 walk = current_user.get_walk(date, cur)
                 walkwillmaxdistance = walk_will_max_distance(
@@ -59,9 +61,7 @@ def info():
                 )
                 distance = round(
                     (
-                        float(form.distance.data)
-                        if not (walkwillmaxdistance)
-                        else 42 - walk["distance"]
+                        float(cap_distance(form.distance.data, current_user.id))
                     ),
                     1,
                 )
@@ -75,12 +75,20 @@ def info():
 
             db.commit()
             if walkwillmaxdistance:
-                if request.form.get("extension", None) != None:
-                    return "Your walk was partly recorded. You can't go more than 42 km per day."
+                if distance>0:
+                    if request.form.get("extension", None) != None:
+                        return "Your walk was partly recorded. You can't go more than 42 km per day."
+                    else:
+                        flash(
+                            "Your walk was partly recorded. You can't go more than 42 km per day."
+                        )
                 else:
-                    flash(
-                        "Your walk was partly recorded. You can't go more than 42 km per day."
-                    )
+                    if request.form.get("extension", None) != None:
+                        return "Your walk was partly recorded. You can't go less than 0 km per day."
+                    else:
+                        flash(
+                            "You walk was partly recorded. You can't go less than 0 km per day"
+                        )
 
             else:
                 if request.form.get("extension", None) != None:
@@ -92,10 +100,10 @@ def info():
 
         else:
             if request.form.get("extension", None) != None:
-                return "You can only go between 0 and 42 km per day!"
+                return verify_walk_form(form, current_user.id)
             else:
                 flash(
-                  "You can only go between 0 and 42 km per day!"
+                  verify_walk_form(form, current_user.id)
                 )
 
 
@@ -219,8 +227,6 @@ def confirmlogin():
     else:
         flash("Email invalid. Are you using your WRDSB email?")
         return redirect(url_for("users.login"))
-
-    print(idinfo, file=sys.stderr)
 
     db = database.get_db()
     if isblacklisted(userid, email):

@@ -99,8 +99,11 @@ def isblacklisted(userid, email):
 
 def walk_will_max_distance(distance, id):
     curdistance = _get_walk_distance(id)
-    return (distance + curdistance) > 42
+    return (distance + curdistance) > 42 or (distance + curdistance) < 0
 
+def cap_distance(distance, id):
+    curdistance = _get_walk_distance(id)
+    return (42-curdistance if distance>0 else curdistance*-1) if walk_will_max_distance(distance, id) else distance
 
 def _get_walk_distance(id):
     db = database.get_db()
@@ -267,6 +270,18 @@ def update_leaderboard_positions():
                     (leaderboard[i][4],)
                 )
     db.commit()
+
+def verify_walk_form(form, id):
+    try:
+        float(form.distance.data)
+    except ValueError:
+        return "Please submit a number."
+    walkdistance = _get_walk_distance(id)
+    if walkdistance>=42 and int(form.distance.data)>0:
+        return "You can only go up to 42 km per day!"
+    if walkdistance<=0 and float(form.distance.data)<0:
+        return "You can't go less that 0 km per day!"
+    return True
 
 def update_tick(context):
     with context:
