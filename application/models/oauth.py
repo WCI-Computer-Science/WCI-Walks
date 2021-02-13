@@ -29,7 +29,6 @@ def get_access_token(auth_code):
     return res["access_token"], res.get("refresh_token")
 
 def get_id_info(token):
-    print(token)
     res = requests.post(
         "https://openidconnect.googleapis.com/v1/userinfo",
         headers={

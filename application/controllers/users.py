@@ -215,14 +215,13 @@ def confirmlogin():
         flash("Email invalid. Are you using your WRDSB email?")
         return redirect(url_for("users.login"))
 
-    print(idinfo, file=sys.stderr)
-
     db = database.get_db()
     if isblacklisted(userid, email):
         flash(
             "You have been banned from WCI Walks and cannot create an account or log in. Please contact us if you think this is a mistake."
         )
         return redirect(url_for("users.login"))
+    
     with db.cursor() as cur:
         if not user.User.exists(userid, cur):
             current_user = user.User(
@@ -231,10 +230,22 @@ def confirmlogin():
                 username=username
             )
             current_user.write_db(cur)
-            db.commit()
+            if refresh:
+                current_user.add_refresh_token(refresh, cur)
+            else:
+                return redirect(oauth.get_auth_url() + "&prompt=consent")
+                # This should only happen if the refresh token is lost
+                # due to deleting and re-adding user, server crash, etc
         else:
             current_user = user.User(userid=userid)
             current_user.read_db(cur)
+            if not current_user.get_refresh():
+                if refresh:
+                    current_user.add_refresh_token(refresh, cur)
+                else:
+                    return redirect(oauth.get_auth_url() + "&prompt=consent")
+                    # Same situations as above
+        db.commit()
 
     login_user(current_user)
     return redirect(url_for("users.info"))
