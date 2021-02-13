@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS users (
     likediff SMALLINT,
     liked TEXT,
     active SMALLINT DEFAULT 1,
-    refreshtoken TEXT
+    refreshtoken TEXT,
+    googlefit SMALLINT DEFAULT 0
 );
 
 /* Info stored to see who is an admin:
@@ -59,5 +60,6 @@ CREATE TABLE IF NOT EXISTS walks (
     id TEXT NOT NULL,
     username TEXT NOT NULL,
     distance REAL NOT NULL,
-    walkdate DATE NOT NULL
+    walkdate DATE NOT NULL,
+    trackedwithfit SMALLINT DEFAULT 0,
 );
