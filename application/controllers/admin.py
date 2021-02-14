@@ -93,7 +93,7 @@ def editdistancespage(wrdsbusername):
             dates.append(i.strftime("%A, %B %d, %Y"))
     datetimedates = list(map(str, datetimedates))
     return render_template(
-        "editdistance.html",
+        "oldeditdistances.html",
         distances=distances,
         dates=dates,
         datetimedates=datetimedates,
@@ -110,7 +110,7 @@ def newedituserdistancespage(wrdsbusername):
         userdata = list(map(lambda a: [a[0], fancy_float(a[1]), a[2], a[0].strftime("%A, %B %d, %Y")], userdata))
         userid, username = get_credentials_from_wrdsbusername(wrdsbusername)
         return render_template(
-            "neweditdistances.html",
+            "editdistances.html",
             userdata=userdata,
             username=username,
             wrdsbusername=wrdsbusername,
