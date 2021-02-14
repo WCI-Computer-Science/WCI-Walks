@@ -296,13 +296,16 @@ def get_edit_distance_data(wrdsbusername):
     return allwalks
 
 def autoload_day(userid, username, date, cur):
+    print("user " + userid)
     distance = get_day_distance(userid, date)
+    print(distance)
     cur.execute(
             "SELECT distance FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
             (userid, date)
         )
     walk = cur.fetchone()
     if walk:
+        print("walk exists")
         if distance-walk[0] > 0:
             cur.execute(
                 "UPDATE users SET distance=%s WHERE id=%s;",
@@ -314,6 +317,7 @@ def autoload_day(userid, username, date, cur):
             )
             add_to_total(distance-walk[0], cur)
     elif distance > 0:
+        print("creating new walk")
         cur.execute(
             "UPDATE users SET distance=distance+%s WHERE id=%s;",
             (distance, userid)
@@ -328,6 +332,7 @@ def autoload_day(userid, username, date, cur):
         add_to_total(distance, cur)
 
 def autoload_day_all(date): # Autoload all users with google fit connected
+    print("\n\nAutoloading...")
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute("SELECT id, username FROM users WHERE googlefit=True;")
