@@ -51,8 +51,8 @@ def refresh_access_token(refresh):
             "client_id": current_app.config["GOOGLE_CLIENT_ID"],
             "client_secret": current_app.config["GOOGLE_CLIENT_SECRET"],
             "grant_type": "refresh_token",
-            "redirect_uri": request.url_root + "users/authorize/confirmlogin"
-        }
+            "redirect_uri": "https://wciwalks.herokuapp.com/" + "users/authorize/confirmlogin" #TODO: GET ROOT URL THAT DOESN'T REQUIRE REQUEST CONTEXT
+        } # HARDCODING FOR NOW
     )
     res = res.json()
     return res["access_token"]

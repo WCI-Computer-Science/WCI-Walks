@@ -20,7 +20,8 @@ def get_day_distance(userid, date): #date should be datetime.date object
             "startTimeMillis": start_time,
             "endTimeMillis": end_time
         }
-    ).json()
+    )
+    res = res.json()
     try:
         val = round(res["bucket"][0]["dataset"][0]["point"][0]["value"][0]["fpVal"]/1000, 1)
     except:
