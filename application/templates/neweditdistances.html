@@ -11,6 +11,7 @@
     function senddata(walkfield) {
         let distance = walkfield.value;
         if (distance == "") {
+            walkfield.value = walkfield.name;
             return;
         }
         let date = walkfield.id;
@@ -38,7 +39,7 @@
     {% for userwalk in userdata %}
       <tr>
         <td>{{userwalk[3]}}:</td>
-        <td><input type="number" value="{{userwalk[1]}}" id="{{userwalk[0]}}" onchange="senddata(this)" /></td>
+        <td><input type="number" value="{{userwalk[1]}}" id="{{userwalk[0]}}" onchange="senddata(this)" name="{{userwalk[1]}}" /></td>
         <td><img id="{{userwalk[0]}}fitimage" src="../../../static/fit_icon.png" alt="This walk was tracked with google fit" height="30" {% if not userwalk[2] %}hidden{% endif %}/></td> 
       </tr>
     {% endfor %}
