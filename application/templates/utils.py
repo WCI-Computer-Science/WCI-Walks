@@ -169,7 +169,7 @@ def update_total():
             print("ok1")
             cur.execute("SELECT SUM(distance) FROM users;")
             print("ok2")
-            newtotal = int(cur.fetchone()[0])
+            newtotal = round(cur.fetchone()[0], 1)
             set_total(newtotal, cur)
         db.commit()
     finally:
@@ -325,27 +325,27 @@ def autoload_day(userid, username, date, cur):
         )
     walk = cur.fetchone()
     if walk:
-        if distance-walk[0] > 0:
+        if round(distance-walk[0], 1) > 0:
             cur.execute(
-                "UPDATE users SET distance=%s WHERE id=%s;",
-                (distance, userid)
+                "UPDATE users SET distance=distance+%s WHERE id=%s;",
+                (round(distance-walk[0], 1), userid)
             )
             cur.execute(
-                "UPDATE walks SET distance=distance+%s WHERE id=%s AND walkdate=%s;",
-                (round(distance-walk[0], 1), userid, date)
+                "UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;",
+                (round(distance, 1), userid, date)
             )
             add_to_total(distance-walk[0], cur)
-    elif distance > 0:
+    elif round(distance, 1) > 0:
         cur.execute(
             "UPDATE users SET distance=distance+%s WHERE id=%s;",
-            (distance, userid)
+            (round(distance, 1), userid)
         )
         cur.execute(
             """
                 INSERT INTO walks (id, username, distance, walkdate, trackedwithfit)
                 VALUES (%s, %s, %s, %s, TRUE);
             """,
-            (userid, username, distance, date),
+            (userid, username, round(distance, 1), date),
         )
         add_to_total(distance, cur)
 

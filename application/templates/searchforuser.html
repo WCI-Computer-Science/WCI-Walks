@@ -5,7 +5,6 @@
         let text = encodeURIComponent(document.getElementById('name').value);
         let userlist = await fetch('/admin/getuserlist?text=' + text);
         userlist = await userlist.json();
-        console.log(userlist);
 
         let table = document.getElementById('usersearchlist').getElementsByTagName('tbody')[0];
         table.innerHTML = '';
@@ -49,7 +48,7 @@
 <div class="contentw admindiv">
     <h1>Search For User</h1>
     <label for="name">Enter a name:</label>
-    <input id="name" name="name" type="text" onchange="generateTable()"><br />
+    <input id="name" name="name" type="text" oninput="generateTable()"><br />
     <button onclick="generateTable()" id="adminbutton">Search</button><br />
     <table id="usersearchlist">
         <thead>
