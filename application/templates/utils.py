@@ -342,7 +342,6 @@ def update_tick(context):
         update_leaderboard_positions()
 
 def medium_update_tick(context):
-    print("\n\n\n*********\nTICKED\n**********\n\n\n")
     with context:
         autoload_day_all(date.today())
 
