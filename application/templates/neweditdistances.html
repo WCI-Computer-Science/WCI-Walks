@@ -10,6 +10,9 @@
     }
     function senddata(walkfield) {
         let distance = walkfield.value;
+        if (distance == "") {
+            return;
+        }
         let date = walkfield.id;
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("POST", "https://wciwalks.herokuapp.com/admin/edituserdistances/new/{{wrdsbusername}}", true);
