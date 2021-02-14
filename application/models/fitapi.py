@@ -5,9 +5,6 @@ def get_day_distance(userid, date): #date should be datetime.date object
     access_token = oauth.refresh_access_token(oauth.get_refresh(userid))
     start_time = int(datetime.datetime.combine(date, datetime.datetime.min.time()).timestamp())*1000
     end_time = start_time + 86400000
-    print(start_time)
-    print(end_time)
-    print("\n\nGetting distance...")
     res = requests.post(
         "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
         headers={
@@ -24,7 +21,6 @@ def get_day_distance(userid, date): #date should be datetime.date object
             "endTimeMillis": end_time
         }
     )
-    print(res.text)
     res = res.json()
     try:
         val = round(res["bucket"][0]["dataset"][0]["point"][0]["value"][0]["fpVal"]/1000, 1)
