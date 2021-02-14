@@ -55,7 +55,7 @@ def searchforuser():
     return render_template("searchforuser.html")
 
 
-@bp.route("/edituserdistances/<wrdsbusername>", methods=("GET", "POST"))
+@bp.route("/edituserdistances/old/<wrdsbusername>", methods=("GET", "POST"))
 @login_required
 def editdistancespage(wrdsbusername):
     if not current_user.is_admin():
@@ -100,7 +100,7 @@ def editdistancespage(wrdsbusername):
         user=get_credentials_from_wrdsbusername(wrdsbusername)[1],
     )
 
-@bp.route("/edituserdistances/new/<wrdsbusername>", methods=("GET", "POST"))
+@bp.route("/edituserdistances/<wrdsbusername>", methods=("GET", "POST"))
 @login_required
 def newedituserdistancespage(wrdsbusername):
     if not current_user.is_admin():
