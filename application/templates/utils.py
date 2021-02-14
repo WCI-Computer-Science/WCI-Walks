@@ -305,12 +305,12 @@ def autoload_day(userid, username, date, cur):
     if walk:
         if round(distance-walk[0], 1) > 0:
             cur.execute(
-                "UPDATE users SET distance=%s WHERE id=%s;",
-                (round(distance, 1), userid)
+                "UPDATE users SET distance=distance+%s WHERE id=%s;",
+                (round(distance-walk[0], 1), userid)
             )
             cur.execute(
-                "UPDATE walks SET distance=distance+%s WHERE id=%s AND walkdate=%s;",
-                (round(distance-walk[0], 1), userid, date)
+                "UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;",
+                (round(distance, 1), userid, date)
             )
             add_to_total(distance-walk[0], cur)
     elif round(distance, 1) > 0:
