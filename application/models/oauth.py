@@ -44,6 +44,7 @@ def get_id_info(access_token):
 
 
 def refresh_access_token(refresh):
+    print("\n\nRefreshed access token...")
     res = requests.post(
         "https://oauth2.googleapis.com/token",
         json={
@@ -54,6 +55,7 @@ def refresh_access_token(refresh):
             "redirect_uri": "https://wciwalks.herokuapp.com/" + "users/authorize/confirmlogin" #TODO: GET ROOT URL THAT DOESN'T REQUIRE REQUEST CONTEXT
         } # HARDCODING FOR NOW
     )
+    print(res.text)
     res = res.json()
     return res["access_token"]
 
