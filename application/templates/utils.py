@@ -303,8 +303,6 @@ def autoload_day(userid, username, date, cur):
         )
     walk = cur.fetchone()
     if walk:
-        print("\n\n\nWALK EXISTS\n\n")
-        print(distance)
         if distance-walk[0] > 0:
             cur.execute(
                 "UPDATE users SET distance=%s WHERE id=%s;",
