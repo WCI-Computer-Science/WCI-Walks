@@ -295,6 +295,28 @@ def get_edit_distance_data(wrdsbusername):
         allwalks.sort(key=lambda row: row[0])
     return allwalks
 
+def edit_distance_update(distance, date, wrdsbusername):
+    userid, username = get_credentials_from_wrdsbusername(wrdsbusername)
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT distance FROM walks WHERE id=%s AND walkdate=%s;",
+            (userid, date)
+        )
+        olddistance=float(cur.fetchone()[0])
+        if olddistance!=distance:
+            distancechange=distance-olddistance
+            cur.execute(
+                "UPDATE walks SET distance=%s, trackedwithfit=False WHERE id=%s AND walkdate=%s;",
+                (distance, userid, date)
+            )
+            cur.execute(
+                "UPDATE users SET distance=distance+%s WHERE id=%s;",
+                (distancechange, userid)
+            )
+            add_to_total(distancechange, cur)
+            db.commit()
+
 def autoload_day(userid, username, date, cur):
     distance = get_day_distance(userid, date)
     cur.execute(

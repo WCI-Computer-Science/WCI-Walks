@@ -8,6 +8,7 @@ from flask_login import current_user, login_required
 from application.models import *
 from application.templates.utils import (
     add_to_total,
+    edit_distance_update,
     fancy_float,
     get_all_time_leaderboard,
     get_credentials_from_wrdsbusername,
@@ -106,11 +107,19 @@ def newedituserdistancespage(wrdsbusername):
         abort(403)
     if request.method == "GET":
         userdata = get_edit_distance_data(wrdsbusername)
+        userdata = list(map(lambda a: [a[0], fancy_float(a[1]), a[2], a[0].strftime("%A, %B %d, %Y")], userdata))
+        userid, username = get_credentials_from_wrdsbusername(wrdsbusername)
         return render_template(
             "neweditdistances.html",
             userdata=userdata,
-            user=get_credentials_from_wrdsbusername(wrdsbusername)[1],
+            username=username,
+            wrdsbusername=wrdsbusername,
         )
+    else:
+        distance = float(request.form.get("distance"))
+        date = request.form.get("date")
+        edit_distance_update(distance, date, wrdsbusername)
+        return ""
 
 @bp.route("/deleteuser/<wrdsbusername>", methods=("GET", "POST"))
 @login_required
