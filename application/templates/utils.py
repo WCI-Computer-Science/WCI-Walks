@@ -169,7 +169,7 @@ def update_total():
             print("ok1")
             cur.execute("SELECT SUM(distance) FROM users;")
             print("ok2")
-            newtotal = int(cur.fetchone()[0])
+            newtotal = round(cur.fetchone()[0], 1)
             set_total(newtotal, cur)
         db.commit()
     finally:
