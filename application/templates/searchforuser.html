@@ -5,7 +5,6 @@
         let text = encodeURIComponent(document.getElementById('name').value);
         let userlist = await fetch('/admin/getuserlist?text=' + text);
         userlist = await userlist.json();
-        console.log(userlist);
 
         let table = document.getElementById('usersearchlist').getElementsByTagName('tbody')[0];
         table.innerHTML = '';
