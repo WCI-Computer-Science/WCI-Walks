@@ -31,7 +31,7 @@ except KeyError:
         DB = ""
         DONT_LOAD_DB = True
 
-EOS_DATE = datetime(2021, 1, 1)
+EOS_DATE = datetime(2030, 1, 1)
 
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 OAUTH_SCOPES = [
