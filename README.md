@@ -12,7 +12,7 @@ To take over support of this project please:
 4. In the `README.md` file, change the date above to July 2nd the year you are graduating
 5. In the `configs.py` file, change the variable EOS_DATE to be `datetime(<year>, 7, 1)`, where `<year>` is the year you're graduating
 6. In the `application/templates/contact.html` file, change the names and email address in the urgently contact us section to you and anyone you're working with's emails and names
-7. Submit a pull request to merge your fork into this repository
+7. Submit a pull request to merge your fork into this repository - A sample pull request and fork can be found in [#26](https://github.com/WCI-Computer-Science/WCI-Walks/pull/26)
 
 ## About this app
 WCI Walks tracks the walkathon progress of students at WCI. It tracks individual as well as total progress.
