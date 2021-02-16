@@ -3,7 +3,7 @@
 
 This project will no longer be supported on July 2nd, 2023.
 
-This project is currently maintained by **[@scott-22](https://github.com/scott-22)** and **[@awenelo](https://github.com/awenelo)**.
+This project is currently maintained by **[@octocat](https://github.com/octocat)** and **[@awenelo](https://github.com/awenelo)**.
 
 To take over support of this project please:
 1. Fork this GitHub repository
