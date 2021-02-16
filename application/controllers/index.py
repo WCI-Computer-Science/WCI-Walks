@@ -1,6 +1,6 @@
 import datetime
 
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, current_app
 
 from application.models import database
 from application.templates.utils import (
@@ -30,7 +30,7 @@ def home():
 
 @bp.route("/contact", methods=("GET",))
 def contact():
-    return render_template("contact.html")
+    return render_template("contact.html", displayeos=(True if datetime.date.today() >= current_app.config["EOS_DATE"].date() else False))
 
 
 @bp.route("/privacypolicy", methods=("GET",))

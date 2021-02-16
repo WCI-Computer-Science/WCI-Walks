@@ -1,5 +1,5 @@
 import os
-
+from datetime import datetime
 try:
     import secrets
 
@@ -30,6 +30,8 @@ except KeyError:
         print("Warn: Could not load DATABASE_URL, using bogus values.")
         DB = ""
         DONT_LOAD_DB = True
+
+EOS_DATE = datetime(2021, 1, 1)
 
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 OAUTH_SCOPES = [

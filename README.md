@@ -3,7 +3,16 @@
 
 This project will no longer be supported on July 2nd, 2023.
 
-This project is currently maintained by **[@scott-22](https://github.com/scott-22)** and **[@awenelo](https://github.com/awenelo)**. To take over support of this project, once this project is no longer supported, please file a pull request changing the users mentioned above to your username, the "no longer supported" date to July 2nd the year that you graduate and the date in configs.py to July 1st the same year.
+This project is currently maintained by **[@scott-22](https://github.com/scott-22)** and **[@awenelo](https://github.com/awenelo)**.
+
+To take over support of this project please:
+1. Fork this GitHub repository
+2. Open your fork
+3. In the `README.md` file, change the usernames above to be your username and anyone you are working with
+4. In the `README.md` file, change the date above to July 2nd the year you are graduating
+5. In the `configs.py` file, change the variable EOS_DATE to be `datetime(<year>, 7, 1)`, where `<year>` is the year you're graduating
+6. In the `application/templates/contact.html` file, change the names and email address in the urgently contact us section to you and anyone you're working with's emails and names
+7. Submit a pull request to merge your fork into this repository
 
 ## About this app
 WCI Walks tracks the walkathon progress of students at WCI. It tracks individual as well as total progress.

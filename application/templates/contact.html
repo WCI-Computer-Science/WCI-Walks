@@ -1,6 +1,14 @@
 {% extends "utils/layout.html" %}
 {% block body %}
 <div class="legal contentw">
+    {% if displayeos %}
+    <h1>This site isn't supported</h1>
+    <p>
+        If you go to WCI and are willing to take over mainenance until you graduate,
+        please go <a href="https://github.com/WCI-Computer-Science/WCI-Walks" target="_blank">here</a>
+        and follow the instructions in the README file.
+    </p>
+    {% else %}
     <h1>Contact Us</h1>
     <p>
         If you have a suggestion or request for a feature,
@@ -14,5 +22,6 @@
             If you need urgently help with something related to admin powers, please contact <a href="mailto:olent1333@wrdsb.ca,haos8097@wrdsb.ca?subject=WCI%20Walks%20admin%20help" target="_blank">Tristan and Scott</a> directly.
         {% endif %}
     </p>
+    {% endif %}
 </div>
 {% endblock %}
