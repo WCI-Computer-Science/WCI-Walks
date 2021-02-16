@@ -1,7 +1,7 @@
 # WCI Walks
 ![Build Status](https://travis-ci.com/WCI-Computer-Science/WCI-Walks.svg?branch=main "Build Status")
 
-This project will no longer be supported on July 2nd, 2023.
+This project will no longer be supported on July 2nd, 2030.
 
 This project is currently maintained by **[@octocat](https://github.com/octocat)** and **[@awenelo](https://github.com/awenelo)**.
 
