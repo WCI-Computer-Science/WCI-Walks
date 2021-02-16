@@ -3,7 +3,7 @@
 
 This project will no longer be supported on July 2nd, 2023.
 
-This project is currently maintained by [@scott-22](https://github.com/scott-22) and [@awenelo](https://github.com/awenelo). To take over support of this project, once this project is no longer supported, please file a pull request changing the users mentioned above to your username, the "no longer supported" date to July 2nd the year that you graduate and the date in configs.py to July 1st the same year.
+This project is currently maintained by **[@scott-22](https://github.com/scott-22)** and **[@awenelo](https://github.com/awenelo)**. To take over support of this project, once this project is no longer supported, please file a pull request changing the users mentioned above to your username, the "no longer supported" date to July 2nd the year that you graduate and the date in configs.py to July 1st the same year.
 
 ## About this app
 WCI Walks tracks the walkathon progress of students at WCI. It tracks individual as well as total progress.
