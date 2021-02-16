@@ -8,6 +8,10 @@
         messagep.innerHTML = message;
         messagep.removeAttribute("hidden");
     }
+
+    function hidecheck(walkfield) {
+        document.getElementById(walkfield.id.concat("doneimage")).setAttribute("hidden", "true");        
+    }
     function senddata(walkfield) {
         let distance = walkfield.value;
         if (distance == "") {
@@ -21,6 +25,8 @@
             if (xmlHttp.status==200) {
                 document.getElementById(date.concat("fitimage")).setAttribute("hidden", "true");
                 walkfield.name = walkfield.value;
+                document.getElementById(date.concat("loadingimage")).setAttribute("hidden", "true");
+                document.getElementById(date.concat("doneimage")).removeAttribute("hidden");
             } else if (xmlHttp.status==403 || xmlHttp.status==302) {
                 hideall("You don't have admin powers. You must have admin powers to be able to change distances. If you think this is a mistake, please <a href='https://wciwalks.herokuapp.com/contact'>contact us</a> or try again later.");
             } else {
@@ -29,6 +35,7 @@
         }
         xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xmlHttp.send("distance=".concat(distance.toString()).concat("&date=").concat(date));
+        document.getElementById(date.concat("loadingimage")).removeAttribute("hidden");
     }
 </script>
 {% endblock %}
@@ -40,8 +47,8 @@
     {% for userwalk in userdata %}
       <tr>
         <td>{{userwalk[3]}}:</td>
-        <td><input type="number" value="{{userwalk[1]}}" id="{{userwalk[0]}}" onchange="senddata(this)" name="{{userwalk[1]}}" /></td>
-        <td><img id="{{userwalk[0]}}fitimage" src="../../../static/fit_icon.png" alt="This walk was tracked with google fit" height="30" {% if not userwalk[2] %}hidden{% endif %}/></td> 
+        <td><input type="number" value="{{userwalk[1]}}" id="{{userwalk[0]}}" oninput="hidecheck(this)" onchange="senddata(this)" name="{{userwalk[1]}}" /></td>
+        <td><img id="{{userwalk[0]}}fitimage" src="../../../static/fit_icon.png" alt="This walk was tracked with google fit" height="30" {% if not userwalk[2] %}hidden{% endif %}/><img src="../../../static/loading_circle.gif" alt="Loading..." height="30" id="{{userwalk[0]}}loadingimage" hidden /><img src="../../../static/green_check.png" alt="Successful!" height="30" id="{{userwalk[0]}}doneimage" hidden /></td> 
       </tr>
     {% endfor %}
   </table>
