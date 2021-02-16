@@ -20,6 +20,7 @@
         xmlHttp.onload = function() {
             if (xmlHttp.status==200) {
                 document.getElementById(date.concat("fitimage")).setAttribute("hidden", "true");
+                walkfield.name = walkfield.value;
             } else if (xmlHttp.status==403 || xmlHttp.status==302) {
                 hideall("You don't have admin powers. You must have admin powers to be able to change distances. If you think this is a mistake, please <a href='https://wciwalks.herokuapp.com/contact'>contact us</a> or try again later.");
             } else {
