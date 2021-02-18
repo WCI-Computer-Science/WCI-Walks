@@ -19,8 +19,9 @@
             return;
         }
         let date = walkfield.id;
+        let targetURL = window.location.href;
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("POST", "https://wciwalks.herokuapp.com/admin/edituserdistances/{{wrdsbusername}}", true);
+        xmlHttp.open("POST", targetURL, true);
         xmlHttp.onload = function() {
             if (xmlHttp.status==200) {
                 document.getElementById(date.concat("fitimage")).setAttribute("hidden", "true");
