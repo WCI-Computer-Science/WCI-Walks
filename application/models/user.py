@@ -106,7 +106,7 @@ class User:
             return cur.fetchone()[0]
 
     def add_distance(self, distance):
-        self.distance = round(self.distance + distance, 1)
+        self.distance = round(float(self.distance) + distance, 1)
 
     def write_db(self, cur):
         cur.execute(
@@ -177,7 +177,7 @@ class User:
                 "UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;",
                 (
                     round(
-                        (distance if replace else walk["distance"] + distance),
+                        (distance if replace else float(walk["distance"]) + distance),
                         1
                     ),
                     useid,
