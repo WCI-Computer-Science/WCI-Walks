@@ -97,6 +97,13 @@ def isblacklisted(userid, email):
         else False
     )
 
+def haspayed(email):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT * FROM payed WHERE email=%s;", (email,)
+        )
+        return cur.fetchone() != None
 
 def walk_will_max_distance(distance, id):
     curdistance = _get_walk_distance(id)
@@ -356,7 +363,6 @@ def autoload_day_all(date): # Autoload all users with google fit connected
         users = cur.fetchall()
         for userid, username in users:
             dist = autoload_day(userid, username, date, cur)
-    
     db.commit()
 
 def update_tick(context):

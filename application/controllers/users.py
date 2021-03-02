@@ -22,6 +22,8 @@ from application.templates.utils import (
     add_to_total,
     cap_distance,
     get_credentials_from_wrdsbusername,
+    haspayed,
+    isadmin,
     isblacklisted,
     verify_walk_form,
     walk_is_maxed,
@@ -239,7 +241,11 @@ def confirmlogin():
             "You have been banned from WCI Walks and cannot create an account or log in. Please contact us if you think this is a mistake."
         )
         return redirect(url_for("users.login"))
-    
+    if not(haspayed(email)) and not(isadmin(userid)):
+        flash(
+            "You need to pay before you can track your walks!"
+        )
+        return redirect(url_for("users.login"))
     with db.cursor() as cur:
         if not user.User.exists(userid, cur):
             current_user = user.User(
