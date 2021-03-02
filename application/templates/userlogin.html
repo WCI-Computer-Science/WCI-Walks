@@ -6,7 +6,7 @@
     <p>Please use your WRDSB email!</p>
     {% else %}
         {% for error in get_flashed_messages() %}
-            <div class='error'><h2>{{ error }}</h2></div>
+            <div class='error'><h2 style="color:#A4303F">{{ error }}</h2></div>
         {% endfor %}
     {% endif %}
     <form action="/users/authorize">
