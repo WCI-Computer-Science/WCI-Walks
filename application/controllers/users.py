@@ -243,7 +243,7 @@ def confirmlogin():
         return redirect(url_for("users.login"))
     if not(haspayed(email)) and not(isadmin(userid)):
         flash(
-            "You need to pay before you can track your walks!"
+            "You need to pay the participation fee before you can track your walks! Please contact us if you've already done so."
         )
         return redirect(url_for("users.login"))
     with db.cursor() as cur:
