@@ -48,7 +48,7 @@
     {% if current_user.get_leaderboard_position() not in ["", None] or (current_user.get_likes()!=0 or current_user.get_new_likes()!=0) %}<h3>{% endif %}
     {% if current_user.get_leaderboard_position() not in ["", None] %}You are currently position {{current_user.get_leaderboard_position()}} on the leaderboard.{% endif %}
     {% if current_user.get_leaderboard_position() not in ["", None] and (current_user.get_likes()!=0 or current_user.get_new_likes()!=0) %}<br />{% endif %}
-    {% if current_user.get_likes()!=0 or current_user.get_new_likes()!=0 %}You have {% if current_user.get_likes()>=0 %}{{ current_user.get_likes() }}{% else %}0{% endif %} likes{% if current_user.get_new_likes()!=0 %} ({% if current_user.get_new_likes()>0 %}+{% endif %}{{current_user.get_new_likes(clear=True)}} since last time){% endif %}.{% endif %}
+    {% if current_user.get_likes()!=0 or current_user.get_new_likes()!=0 %}You have {% if current_user.get_likes()>=0 %}{{ current_user.get_likes() }}{% else %}0{% endif %} like{% if current_user.get_likes()>1 %}s{% endif %}{% if current_user.get_new_likes()!=0 %} ({% if current_user.get_new_likes()>0 %}+{% endif %}{{current_user.get_new_likes(clear=True)}} since last time){% endif %}.{% endif %}
     {% if current_user.get_leaderboard_position() not in ["", None] or (current_user.get_likes()!=0 or current_user.get_new_likes()!=0) %}</h3>{% endif %}
     </h1>
     <div id="distancediv">
