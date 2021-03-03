@@ -1,6 +1,6 @@
-import ast
-import json
+import ast, json
 from datetime import datetime
+from functools import wraps
 
 from flask import Blueprint, abort, flash, redirect, render_template, request
 from flask_login import current_user, login_required
@@ -28,7 +28,6 @@ def adminhome():
         abort(403)
     return render_template("adminpage.html")
 
-
 @bp.route("/updatetotal")
 @login_required
 def updatetotal():
@@ -37,28 +36,98 @@ def updatetotal():
     update_total()
     return render_template("updatetotalsuccess.html")
 
-
 @bp.route("/getuserlist")
 @login_required
 def getuserlist():
+    if not current_user.is_admin():
+        abort(403)
     search = request.args.get("text", "").lower()
-    userlist = get_all_time_leaderboard()
-    if search != "":
-        userlist = [i for i in userlist if search in i[0].lower()]
+    userlist = [i for i in get_all_time_leaderboard() if search in i[0].lower()]
     userlist.sort(key=lambda user: user[0])
     return json.dumps(userlist)
 
+@bp.route("/getpaymentlist")
+@login_required
+def getpaymentlist():
+    if not current_user.is_admin():
+        abort(403)
+    search = request.args.get("text", "").lower()
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute("SELECT * FROM payed;")
+        paymentlist = [i[0].replace("@wrdsb.ca", "") for i in cur.fetchall() if search in i[0].lower()]
+    return json.dumps(paymentlist)
 
 @bp.route("/searchforuser")
 @login_required
 def searchforuser():
+    if not current_user.is_admin():
+        abort(403)
     return render_template("searchforuser.html")
+
+@bp.route("/editpayments")
+@login_required
+def editpayments():
+    if not current_user.is_admin():
+        abort(403)
+    return render_template("editpayments.html")
+
+@bp.route("/addpayment/<wrdsbusername>", methods=("GET",))
+@login_required
+def addpayment(wrdsbusername):
+    if not current_user.is_admin():
+        abort(403)
+
+    email = wrdsbusername + "@wrdsb.ca"
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT * FROM payed WHERE email=%s LIMIT 1;",
+            (email,)
+        )
+        if cur.fetchone():
+            flash("User payment already added!")
+            return redirect("/admin/editpayments")
+        else:
+            cur.execute(
+                "INSERT INTO payed VALUES (%s)",
+                (email,)
+            )
+    db.commit()
+    flash("User payment successfully added!")
+    return redirect("/admin/editpayments")
+
+@bp.route("/deletepayment/<wrdsbusername>", methods=("GET",))
+@login_required
+def deletepayment(wrdsbusername):
+    if not current_user.is_admin():
+        abort(403)
+
+    email = wrdsbusername + "@wrdsb.ca"
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT * FROM payed WHERE email=%s LIMIT 1;",
+            (email,)
+        )
+        if not cur.fetchone():
+            flash("User does not exist!")
+            return redirect("/admin/editpayments")
+        else:
+            cur.execute(
+                "DELETE FROM payed WHERE email=%s",
+                (email,)
+            )
+    db.commit()
+    flash("User payment successfully deleted!")
+    return redirect("/admin/editpayments")
 
 @bp.route("/edituserdistances/<wrdsbusername>", methods=("GET", "POST"))
 @login_required
 def newedituserdistancespage(wrdsbusername):
     if not current_user.is_admin():
         abort(403)
+
     if request.method == "GET":
         userdata = get_edit_distance_data(wrdsbusername)
         userdata = list(map(lambda a: [a[0], fancy_float(a[1]), a[2], a[0].strftime("%A, %B %d, %Y")], userdata))

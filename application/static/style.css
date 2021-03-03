@@ -446,6 +446,11 @@ footer a:hover {
   color: white;
 }
 
+.email {
+  cursor: pointer;
+  text-align: center;
+}
+
 #usersearchlist {
   margin: 45px auto 0 auto;
   width: 60%;
