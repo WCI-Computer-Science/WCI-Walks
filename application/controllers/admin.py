@@ -180,6 +180,8 @@ def deleteuser(wrdsbusername):
                             True,
                         ),
                     )
+                if request.form.get("unpay") == "on":
+                    cur.execute("DELETE FROM payed WHERE email=%s", (user["email"],))
                 add_to_total(-user["distance"], cur)
                 cur.execute("DELETE FROM users WHERE id=%s;", (user["id"],))
                 cur.execute("DELETE FROM walks WHERE id=%s;", (user["id"],))
