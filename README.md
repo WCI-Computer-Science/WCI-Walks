@@ -18,14 +18,14 @@ To take over support of this project please:
 WCI Walks tracks the walkathon progress of students at WCI. It tracks individual as well as total progress.
 
 Each student can sign up for an account, and then log in.
-Once logged in, they can access user-specific information. This includes the distance they walked on different days, whether they're on the leaderboard, personal statistics, etc. They will also be able to input the distance they walk each day and see other users' progress.
+Once logged in, they can access user-specific information. This includes the distance they walked on different days, whether they're on the leaderboard, personal statistics, etc. They have two options to log their distances: downloading the Google Fit app and signing in with their account (recommended), or manually inputting distances.
 
 Basic information is displayed on the main page. This includes a leaderboard ranking the people who have walked the most all-time, as well as for the previous day.
 
-## Run this app
 As of the time of writing, you can access the app on this URL: https://wciwalks.herokuapp.com.  
-Alternatively, you can run the app locally for testing.
-Before testing, you must have a couple things set up.
+
+## Contributing
+Detailed instructions on setting up a development environment to test the app locally are given below.
 
 First, ensure you have PostgreSQL installed and have a database set up.
 Then ensure you have created a file called secrets.py with the following variables declared:
@@ -70,12 +70,12 @@ flask run
 ```
 
 ## Technical info
-This web application is built with a Flask backend using the App Factory and MVC patterns.
-It's deployed to Heroku and uses a Heroku PostgreSQL database.  
-It uses the default Jinja2 templating engine along with HTML and CSS for the frontend.  
+This web application is built with a Flask backend and Jinja2/HTML/CSS frontend.  
+It's deployed to Heroku and uses a Heroku PostgreSQL database add-on.  
+It connects with Google's Fit API to automatically log distances.  
 
 ## App directory
-The starting point of the app is in wsgi.py. 
+The starting point of the app is in wsgi.py.
 The dependencies are given in requirements.txt.
 The Python version is given in runtime.txt.
 The commands necessary for Heroku are given in Procfile.
