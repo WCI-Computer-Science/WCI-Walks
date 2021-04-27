@@ -26,7 +26,7 @@
             let emailData = row.insertCell();
             let emailText = document.createTextNode(i+"@wrdsb.ca");
             emailData.appendChild(emailText);
-            emailData.onclick = () => {confirmDelete(i)};
+            emailData.setAttribute('onclick', `confirmDelete("${i}")`);
             emailData.classList.add('email');
         }
     else {
