@@ -219,30 +219,22 @@ footer a:hover {
 }
 
 #logocontainer {
-  padding: 50px 0;
+  padding: 50px 20%;
 }
 
 #logo {
   box-sizing: content-box;
   position: relative;
-  width: 50%;
   margin: 0 auto;
   padding-top: 50%;
   overflow: hidden;
-  border-radius: 50%;
+  border-radius: 10%;
 }
 
 #logo img {
   width: 90%;
   position: absolute;
-  top: 0; right: 0; bottom: 0; left: 5%;
-}
-
-@media (min-width: 900px) {
-  #logo {
-    width: 450px;
-    padding-top: 450px;
-  }
+  top: 7.5%; right: 0; bottom: 7.5%; left: 5%;
 }
 
 #maininfo {
