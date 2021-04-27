@@ -24,6 +24,10 @@ Basic information is displayed on the main page. This includes a leaderboard ran
 
 As of the time of writing, you can access the app on this URL: https://wciwalks.herokuapp.com.  
 
+Colour scheme:
+Main colour: #706c74
+Accent color: #746444
+
 ## Contributing
 Detailed instructions on setting up a development environment to test the app locally are given below.
 
