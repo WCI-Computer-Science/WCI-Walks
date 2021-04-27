@@ -286,6 +286,11 @@ footer a:hover {
   text-align: left;
 }
 
+#appinfo a {
+  text-decoration: none;
+  color: rgb(120, 100, 68);
+}
+
 #alltimeleaderboard {
   grid-column-start: 1;
   grid-column-end: 11;

@@ -1,0 +1,103 @@
+{% extends "utils/layout.html" %}
+{% block body %}
+<div class="legal contentw">
+    <h1>Help</h1>
+
+    <div class="legalheader contentr">
+        <h2>About this app</h2>
+        <p>
+            Log your distance, compete for the leaderboard,
+            check out your friends' progress, see statistics, and more!
+            This guide walks you through each component of the app.
+        </p>
+    </div>
+    <p>
+        To skip to a specific section, click one of the entries below:</br>
+        <a href="#helploggingin">Logging In</a></br>
+        <a href="#helpwalks">Adding Walks</a></br>
+        <a href="#helpstatistics">Statistics</a></br>
+        <a href="#helpsocial">Social Features</a>
+    </p>
+
+    <h3 id="helploggingin">Logging In</h3>
+    <p>
+        To login, you must have registered with the school first.
+        After that, we need to manually input your email in the system,
+        so it may be a little bit before you are able to login.
+    </p>
+    <p>
+        Once you've been registered, select "Log In" from the menu
+        at the top right of the screen. You must use your WRDSB email.
+    </p>
+
+    <h3 id="helpwalks">Adding Walks</h3>
+    <p>
+        You have two options to add your walks.
+        You can sync with Google Fit on you phone to do it automatically (recommended),
+        or you can manually input them yourself.
+    </p>
+    <h4 id="helpwalksfit">Google Fit</h5>
+    <p>
+        To sync with Google Fit, you first need to download the
+        <a href="https://www.google.com/fit/">Google Fit</a> app on your phone,
+        and sign in with your <strong>WRDSB account</strong>.
+        </br>
+        Allow Google Fit <strong>permission</strong> to access all health data,
+        and allow it to track your activities.
+        Google Fit will not be able to track your walk progress otherwise.
+    </p>
+    <p>
+        After you've done that, head to your
+        <a href="/users/">Profile</a> and click on "Connect to Google Fit".
+        Now WCI Walks will automatically get distance from your Google Fit account.
+    </p>
+    <p>
+        <strong>However</strong>, in order to get distances to show up, 
+        you need to ensure they've shown up in the Google Fit app.
+        After you've done walking, make sure you have a <strong>WiFi connection</strong>,
+        and open the Google Fit app on your phone.
+        <strong>Reload</strong> the app until the correct distance appears.
+        This is important, since Google Fit doesn't always load distances
+        from your phone right away.
+    </p>
+    <h4 id="helpwalksmanual">Manual Inputting</h5>
+    <p>
+        This option isn't recommended, and should only be used when necessary.
+        To manually input distances, simply head to your
+        <a href="/users/">Profile</a>,
+        enter your distance in km into the form, and click submit.
+    </p>
+
+    <h3 id="helpstatistics">Statistics</h3>
+    <p>
+        Check your progress with statistics!
+        From your <a href="/users/">Profile</a>, you can see how much you've walked
+        and a chart that shows how far you've walked each day.
+    </p>
+    <p>
+        You also see which position on the leaderboard you're at,
+        as well as how many likes you have (see Social Features!).
+    </p>
+    <p>
+        From the home page, you can also see how far everybody has walked as a whole.
+    </p>
+
+    <h3 id="helpsocial">Social Features</h3>
+    <p>
+        There's a couple social features built into this app too!
+    </p>
+    <p>
+        The top 30 people will be shown on the leaderboard.
+        There's an all-time leaderboard for total walk distance,
+        as well as a day leaderboard which ranks whoever walked the day before.
+    </p>
+    <p>
+        To see someone else's walk statistics, simply click on their name on the leaderboard.
+        You can "like" them by clicking on the heart icon beside their name.
+        Don't worry, likes are anonymous!
+    </p>
+
+    <h3>Other Questions</h3>
+    <p>If you still have any questions, feel free to <a href="/contact">contact us</a>!</p>
+</div>
+{% endblock %}

@@ -41,3 +41,8 @@ def privacypolicy():
 @bp.route("/termsofservice", methods=("GET",))
 def termsofservice():
     return render_template("termsofservice.html")
+
+
+@bp.route("/help", methods=("GET",))
+def userhelp():
+    return render_template("help.html")
