@@ -228,7 +228,7 @@ footer a:hover {
   margin: 0 auto;
   padding-top: 50%;
   overflow: hidden;
-  border-radius: 10%;
+  border-radius: 40px;
 }
 
 #logo img {
