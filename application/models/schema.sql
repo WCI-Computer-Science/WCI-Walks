@@ -2,7 +2,7 @@
 
 /* Total distance travelled as a school */
 CREATE TABLE IF NOT EXISTS total (
-    distance REAL
+    distance NUMERIC(7,1)
 );
 
 /* Info stored for each user:
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT UNIQUE NOT NULL,
     username TEXT NOT NULL,
     wrdsbusername TEXT NOT NULL,
-    distance REAL NOT NULL,
+    distance NUMERIC(6,1) NOT NULL,
     position SMALLINT,
     likes SMALLINT,
     likediff SMALLINT,
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS blacklist (
 CREATE TABLE IF NOT EXISTS walks (
     id TEXT NOT NULL,
     username TEXT NOT NULL,
-    distance REAL NOT NULL,
+    distance NUMERIC(6,1) NOT NULL,
     walkdate DATE NOT NULL,
     trackedwithfit BOOLEAN DEFAULT FALSE
 );

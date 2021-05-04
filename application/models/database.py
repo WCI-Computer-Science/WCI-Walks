@@ -9,8 +9,6 @@ from flask import current_app, g
 
 # Get database from sqlite connect method
 def get_db():
-    while is_blocked():
-        time.sleep(2)
     if "db" not in g:
         g.db = psycopg2.connect(
             current_app.config["DB"],
@@ -46,23 +44,3 @@ def init_app(app):
 def get_total(cur):
     cur.execute("SELECT * FROM total;")
     return cur.fetchone()
-
-
-block = False
-
-
-def is_blocked():
-    global block
-    return block
-
-
-def stop_blocking():
-    global block
-    block = False
-    return block
-
-
-def start_blocking():
-    global block
-    block = True
-    return block

@@ -14,7 +14,6 @@ from application.templates.utils import (
     get_credentials_from_wrdsbusername,
     get_edit_distance_data,
     isadmin,
-    replace_walk_distances,
     update_total,
 )
 

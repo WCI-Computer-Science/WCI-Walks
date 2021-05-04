@@ -144,90 +144,34 @@ def walk_is_maxed(id, max=42):
 def update_total():
     print("Starting to update user totals.")
     db = database.get_db()
-    database.start_blocking()
     try:
         with db.cursor() as cur:
-            cur.execute("SELECT id, distance FROM walks;")
-            distances = {}
-            for i in cur.fetchall():
-                if i[0] in distances.keys():
-                    distances[i[0]] += i[1]
-                else:
-                    distances[i[0]] = i[1]
-            for i in distances.keys():
-                cur.execute(
-                    "UPDATE users SET distance=%s WHERE id=%s;",
-                    (distances[i], i)
-                )
             cur.execute(
-                "SELECT id, distance FROM users;"
+                """
+                UPDATE users u
+                SET distance=t.d
+                FROM (
+                    SELECT id, SUM(distance) d
+                    FROM walks
+                    GROUP BY id
+                ) t
+                WHERE u.id=t.id;
+                """
             )
-            allusers = cur.fetchall()
-            for i in allusers:
-                if i[0] not in distances.keys() and i[1] != 0:
-                    cur.execute(
-                        "UPDATE users SET distance=0 WHERE id=%s;",
-                        (i[0],)
-                    )
             cur.execute("DELETE FROM walks WHERE distance=0;")
         db.commit()
         print("Done updating user totals.\nStarting to update global total!")
         with db.cursor() as cur:
-            print("ok1")
-            cur.execute("SELECT SUM(distance) FROM users;")
-            print("ok2")
-            newtotal = round(cur.fetchone()[0], 1)
-            set_total(newtotal, cur)
+            cur.execute("UPDATE total SET distance=t.d FROM (SELECT SUM(distance) d FROM users) t;")
         db.commit()
-    finally:
-        database.stop_blocking()
+    except:
+        print("Something went wrong")
     print("Done updating totals!")
     return True
 
 
-def get_total():
-    global total
-    return total
-
-
-def set_total(num, cur):
-    global total
-    total = float(num)
-    db_write_total(cur)
-    return total
-
-
 def add_to_total(num, cur):
-    global total
-    total += float(num)
-    db_write_total(cur)
-    return total
-
-
-def db_get_total():
-    global total
-    db = database.get_db()
-    with db.cursor() as cur:
-        total = database.get_total(cur)
-    if total:
-        total = float(total["distance"])
-    else:
-        total = 0.0
-    return total
-
-
-def db_write_total(cur):
-    global total
-    cur.execute("SELECT * FROM total;")
-    if cur.fetchone() is None:
-        cur.execute(
-            "INSERT INTO total (distance) VALUES (%s);",
-            (round(total, 1),)
-        )
-    else:
-        cur.execute("UPDATE total SET distance=%s", (round(total, 1),))
-    return total
-
+    cur.execute("UPDATE total SET distance=distance+%s", (num,))
 
 def fancy_float(n):
     try:
@@ -237,8 +181,7 @@ def fancy_float(n):
         return n
     except ValueError:
         return 0
-
-
+"""
 def replace_walk_distances(distances, dates, olddistances, user, id):
     db = database.get_db()
     with db.cursor() as cur:
@@ -260,7 +203,7 @@ def replace_walk_distances(distances, dates, olddistances, user, id):
                     "to be",
                     distances[i]
                 )
-    db.commit()
+    db.commit()"""
 
 def update_leaderboard_positions():
     db = database.get_db()
@@ -310,9 +253,9 @@ def edit_distance_update(distance, date, wrdsbusername):
             "SELECT distance FROM walks WHERE id=%s AND walkdate=%s;",
             (userid, date)
         )
-        olddistance=float(cur.fetchone()[0])
-        if olddistance!=distance:
-            distancechange=distance-olddistance
+        olddistance = float(cur.fetchone()[0])
+        if olddistance != distance:
+            distancechange = distance-olddistance
             cur.execute(
                 "UPDATE walks SET distance=%s, trackedwithfit=False WHERE id=%s AND walkdate=%s;",
                 (distance, userid, date)
@@ -376,7 +319,3 @@ def medium_update_tick(context):
 def long_update_tick(context):
     with context:
         update_total()
-
-total = 0
-if not current_app.config["DONT_LOAD_DB"]:
-    db_get_total()
