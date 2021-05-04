@@ -321,7 +321,7 @@ def edit_distance_update(distance, date, wrdsbusername):
             "UPDATE users SET distance=distance+%s WHERE id=%s;",
             (distancechange, userid)
         )
-        add_to_total(distancechange, cur)
+        print("New total:", add_to_total(distancechange, cur))
         db.commit()
 
 def autoload_day(userid, username, date, cur):
