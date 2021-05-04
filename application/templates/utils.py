@@ -199,6 +199,7 @@ def set_total(num, cur):
 
 def add_to_total(num, cur):
     global total
+    total = float(total)
     total += float(num)
     db_write_total(cur)
     return total
