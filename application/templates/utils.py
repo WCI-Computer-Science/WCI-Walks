@@ -199,8 +199,11 @@ def set_total(num, cur):
 
 def add_to_total(num, cur):
     global total
+    print("Previous total:", total)
     total += float(num)
-    db_write_total(cur)
+    print("Total before writing to DB:", total)
+    print("DB total:", db_write_total(cur))
+    print("Total after writing to DB:", total)
     return total
 
 
