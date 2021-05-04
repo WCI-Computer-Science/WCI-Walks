@@ -192,14 +192,13 @@ def get_total():
 
 def set_total(num, cur):
     global total
-    total = num
+    total = float(num)
     db_write_total(cur)
     return total
 
 
 def add_to_total(num, cur):
     global total
-    total = float(total)
     total += float(num)
     db_write_total(cur)
     return total
@@ -211,9 +210,9 @@ def db_get_total():
     with db.cursor() as cur:
         total = database.get_total(cur)
     if total:
-        total = total["distance"]
+        total = float(total["distance"])
     else:
-        total = 0
+        total = 0.0
     return total
 
 
