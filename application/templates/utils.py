@@ -312,18 +312,17 @@ def edit_distance_update(distance, date, wrdsbusername):
         )
         olddistance=float(cur.fetchone()[0])
         print("Changing", olddistance, "to", distance)
-        if olddistance!=distance:
-            distancechange=distance-olddistance
-            cur.execute(
-                "UPDATE walks SET distance=%s, trackedwithfit=False WHERE id=%s AND walkdate=%s;",
-                (distance, userid, date)
-            )
-            cur.execute(
-                "UPDATE users SET distance=distance+%s WHERE id=%s;",
-                (distancechange, userid)
-            )
-            add_to_total(distancechange, cur)
-            db.commit()
+        distancechange=distance-olddistance
+        cur.execute(
+            "UPDATE walks SET distance=%s, trackedwithfit=False WHERE id=%s AND walkdate=%s;",
+            (distance, userid, date)
+        )
+        cur.execute(
+            "UPDATE users SET distance=distance+%s WHERE id=%s;",
+            (distancechange, userid)
+        )
+        add_to_total(distancechange, cur)
+        db.commit()
 
 def autoload_day(userid, username, date, cur):
     distance = get_day_distance(userid, date)
