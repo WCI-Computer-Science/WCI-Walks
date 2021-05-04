@@ -13,12 +13,15 @@
         document.getElementById(walkfield.id.concat("doneimage")).setAttribute("hidden", "true");        
     }
     function senddata(walkfield) {
+
         let distance = walkfield.value;
         if (distance == "") {
             walkfield.value = walkfield.name;
             return;
         }
         let date = walkfield.id;
+        document.getElementById(date.concat("loadingimage")).removeAttribute("hidden");
+        walkfield.disabled = true;
         let targetURL = window.location.href;
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("POST", targetURL, true);
@@ -33,10 +36,10 @@
             } else {
                 hideall("Uh oh... Something went wrong. Please try again later.");
             }
+            walkfield.disabled = false;
         }
         xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xmlHttp.send("distance=".concat(distance.toString()).concat("&date=").concat(date));
-        document.getElementById(date.concat("loadingimage")).removeAttribute("hidden");
     }
 </script>
 {% endblock %}
