@@ -311,6 +311,7 @@ def edit_distance_update(distance, date, wrdsbusername):
             (userid, date)
         )
         olddistance=float(cur.fetchone()[0])
+        print("Changing", olddistance, "to", distance)
         if olddistance!=distance:
             distancechange=distance-olddistance
             cur.execute(
