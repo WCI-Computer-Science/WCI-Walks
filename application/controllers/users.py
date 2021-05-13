@@ -3,6 +3,7 @@ import datetime, sys, requests
 from flask import (
     Blueprint,
     flash,
+    Markup,
     redirect,
     render_template,
     request,
@@ -242,9 +243,9 @@ def confirmlogin():
         )
         return redirect(url_for("users.login"))
     if not(haspayed(email)) and not(isadmin(userid)):
-        flash(
-            "You need to pay the participation fee before you can track your walks! Please contact us if you've already done so."
-        )
+        flash(Markup(
+            "You need to pay the participation fee before you can track your walks! Please email <a href=\"mailto:haos8097@wrdsb.ca\" target=\"_blank\">Scott</a> if you've already done so."
+        ))
         return redirect(url_for("users.login"))
     with db.cursor() as cur:
         if not user.User.exists(userid, cur):
