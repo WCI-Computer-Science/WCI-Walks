@@ -30,7 +30,7 @@
         </p>
     </div>
 
-    <div  id="alltimeleaderboard" class="column">
+    <div id="alltimeleaderboard" class="column">
         <h2>All Time Leaderboard</h2>
         <table class="leaderboard">
             {% if alltimeleaderboard|length > 0 and alltimeleaderboard[0][1] > 0 %}
@@ -42,7 +42,11 @@
                                     {{i+1}}.
                                 </a>
                             </td>
-                            <td class="name">
+                            {% if alltimeleaderboard[i][0]|length > 16 %}
+                                <td class="name small">
+                            {% else %}
+                                <td class="name">
+                            {% endif %}
                                 <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
                                     {{alltimeleaderboard[i][0]}}
                                 </a>
@@ -73,7 +77,11 @@
                                     {{i+1}}.
                                 </a>
                             </td>
-                            <td class="name">
+                            {% if yesterdayleaderboard[i][0]|length > 16 %}
+                                <td class="name small">
+                            {% else %}
+                                <td class="name">
+                            {% endif %}
                                 <a href="/users/viewprofile/{{yesterdayleaderboard[i][2]}}">
                                     {{yesterdayleaderboard[i][0]}}
                                 </a>

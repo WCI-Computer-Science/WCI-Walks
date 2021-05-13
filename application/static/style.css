@@ -248,7 +248,7 @@ footer a:hover {
   margin: 0;
   padding: 0 30px 30px 30px;
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   grid-auto-flow: column;
   row-gap: 10px;
   column-gap: 2%;
@@ -269,7 +269,7 @@ footer a:hover {
 
 #appinfo {
   grid-column-start: 1;
-  grid-column-end: 11;
+  grid-column-end: 13;
   grid-row-start: 1;
   grid-row-end: 2;
 }
@@ -285,14 +285,14 @@ footer a:hover {
 
 #alltimeleaderboard {
   grid-column-start: 1;
-  grid-column-end: 11;
+  grid-column-end: 13;
   grid-row-start: 2;
   grid-row-end: 3;
 }
 
 #yesterdayleaderboard {
   grid-column-start: 1;
-  grid-column-end: 11;
+  grid-column-end: 13;
   grid-row-start: 3;
   grid-row-end: 4;
 }
@@ -311,6 +311,10 @@ footer a:hover {
   text-align: left;
 }
 
+.leaderboard .small {
+  font-size: 0.85em;
+}
+
 .leaderboard .distance {
   text-align: right;
 }
@@ -322,20 +326,21 @@ footer a:hover {
 
   #appinfo {
     grid-column-start: 1;
-    grid-column-end: 11;
+    grid-column-end: 13;
     grid-row-start: 1;
     grid-row-end: 2;
   }
 
   #alltimeleaderboard {
     grid-column-start: 1;
-    grid-column-end: 6;
+    grid-column-end: 7;
     grid-row-start: 2;
     grid-row-end: 3;
   }
 
   #yesterdayleaderboard {
-    grid-column-start: 6;
+    grid-column-start: 7;
+    grid-column-end: 13;
     grid-row-start: 2;
     grid-row-end: 3;
   }
@@ -351,14 +356,14 @@ footer a:hover {
   
   #alltimeleaderboard {
     grid-column-start: 5;
-    grid-column-end: 8;
+    grid-column-end: 9;
     grid-row-start: 1;
     grid-row-end: 2;
   }
   
   #yesterdayleaderboard {
-    grid-column-start: 8;
-    grid-column-end: 11;
+    grid-column-start: 9;
+    grid-column-end: 13;
     grid-row-start: 1;
     grid-row-end: 2;
   }
@@ -370,8 +375,9 @@ footer a:hover {
   padding: 25px 5% 50px 5%;
 }
 
-.errors {
-    color: white;
+.error a {
+  text-decoration: none;
+  color: rgb(120, 100, 68);
 }
 
 .googlebtn {
