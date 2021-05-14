@@ -59,25 +59,30 @@ def info():
         if verify_walk_form(form, current_user.id)==True:
             with db.cursor() as cur:
                 walk = current_user.get_walk(date, cur)
-                walkwillmaxdistance = walk_will_max_distance(
-                    float(form.distance.data), current_user.get_id()
-                )
-                distance = round(
-                    (
-                        float(cap_distance(form.distance.data, current_user.id))
-                    ),
-                    1,
-                )
+                fit = walk["trackedwithfit"] if walk else False
 
-                current_user.update_walk(distance, date, walk, cur)
+                if fit:
+                    flash("You've already logged distance with Google Fit today. Wait until tomorrow to manually submit distances.")
+                else:
+                    walkwillmaxdistance = walk_will_max_distance(
+                        float(form.distance.data), current_user.get_id()
+                    )
+                    distance = round(
+                        (
+                            float(cap_distance(form.distance.data, current_user.id))
+                        ),
+                        1,
+                    )
 
-                add_to_total(distance, cur)
+                    current_user.update_walk(distance, date, walk, cur)
 
-                current_user.add_distance(distance)
-                current_user.update_distance_db(cur)
+                    add_to_total(distance, cur)
+
+                    current_user.add_distance(distance)
+                    current_user.update_distance_db(cur)
 
             db.commit()
-            if walkwillmaxdistance:
+            if not fit and walkwillmaxdistance:
                 if distance>0:
                     if request.form.get("extension", None) != None:
                         return "Your walk was partly recorded. You can't go more than 42 km per day."
@@ -93,7 +98,7 @@ def info():
                             "You walk was partly recorded. You can't go less than 0 km per day"
                         )
 
-            else:
+            elif not fit:
                 if request.form.get("extension", None) != None:
                     return "You've successfully updated the distance!"
                 else:
