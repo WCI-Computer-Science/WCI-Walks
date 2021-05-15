@@ -1,3 +1,11 @@
+/* Temporary formatting */
+#tempalert {
+  padding: 0 20px;
+  background-color: #746444;
+  color: white;
+  text-align: center;
+}
+
 /* Universal formatting */
 
 * {
