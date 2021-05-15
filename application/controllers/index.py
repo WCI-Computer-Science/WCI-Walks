@@ -21,9 +21,7 @@ def home():
     return render_template(
         "index.html",
         alltimeleaderboard=get_all_time_leaderboard(),
-        yesterdayleaderboard=get_day_leaderboard(
-            datetime.date.today() - datetime.timedelta(days=1)
-        ),
+        yesterdayleaderboard=get_day_leaderboard(datetime.date.today()),
         total=fancy_float(total),
     )
 
