@@ -20,8 +20,8 @@ def home():
 
     return render_template(
         "index.html",
-        alltimeleaderboard=get_all_time_leaderboard(),
-        yesterdayleaderboard=get_day_leaderboard(datetime.date.today()),
+        alltimeleaderboard=[[i[0] if len(i[0].split()) == 1 else ' '.join((i[0].split()[0], i[0].split()[-1])), i[1], i[2], i[3], i[4]] for i in get_all_time_leaderboard()],
+        yesterdayleaderboard=[[i[0] if len(i[0].split()) == 1 else ' '.join((i[0].split()[0], i[0].split()[-1])), i[1], i[2]] for i in get_day_leaderboard(datetime.date.today())],
         total=fancy_float(total),
     )
 

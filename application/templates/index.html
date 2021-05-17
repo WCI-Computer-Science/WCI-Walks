@@ -22,7 +22,7 @@
 
 <div class='columns contentw'>
     <div id='appinfo' class="column">
-        <h2>About this app</h2>
+        <h2>About</br>this app</h2>
         <p>
             Welcome to WCI Walks, a platform
             for your walkathon progress.
@@ -36,9 +36,18 @@
     </div>
 
     <div id="alltimeleaderboard" class="column">
-        <h2>All Time Leaderboard</h2>
+        <h2>All Time</br>Leaderboard</h2>
         <table class="leaderboard">
             {% if alltimeleaderboard|length > 0 and alltimeleaderboard[0][1] > 0 %}
+                <tr>
+                    <th></th>
+                    <th class="name">
+                        Name
+                    </th>
+                    <th class="distance">
+                        km
+                    </th>
+                </tr>
                 {% for i in range(0, [alltimeleaderboard|length, 30] | min) %}
                     {% if alltimeleaderboard[i][1]>0 %} 
                         <tr>
@@ -58,7 +67,7 @@
                             </td>
                             <td class="distance">
                                 <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
-                                    {{alltimeleaderboard[i][1]}} km
+                                    {{alltimeleaderboard[i][1]}}
                                 </a>
                             </td>
                         </tr>
@@ -74,6 +83,15 @@
         <h2>Day</br>Leaderboard</h2>
         <table class="leaderboard">
             {% if yesterdayleaderboard|length > 0 and yesterdayleaderboard[0][1] > 0 %}
+                <tr>
+                    <th></th>
+                    <th class="name">
+                        Name
+                    </th>
+                    <th class="distance">
+                        km
+                    </th>
+                </tr>
                 {% for i in range(0, [yesterdayleaderboard|length, 30] | min) %}
                     {% if yesterdayleaderboard[i][1]>0 %}
                         <tr>
@@ -93,7 +111,7 @@
                             </td>
                             <td class="distance">
                                 <a href="/users/viewprofile/{{yesterdayleaderboard[i][2]}}">
-                                    {{yesterdayleaderboard[i][1]}} km
+                                    {{yesterdayleaderboard[i][1]}}
                                 </a>
                             </td>
                         </tr>
