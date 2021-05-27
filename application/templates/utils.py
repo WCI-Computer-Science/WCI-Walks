@@ -318,10 +318,13 @@ def autoload_day_all(date): # Autoload all users with google fit connected
 def update_tick(context):
     with context:
         update_leaderboard_positions()
+        autoload_day_all(date.today())
 
+'''
 def medium_update_tick(context):
     with context:
         autoload_day_all(date.today())
+'''
 
 def long_update_tick(context):
     with context:
