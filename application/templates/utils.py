@@ -107,11 +107,11 @@ def haspayed(email):
 
 def walk_will_max_distance(distance, id):
     curdistance = _get_walk_distance(id)
-    return (distance + curdistance) > 42 or (distance + curdistance) < 0
+    return (distance + curdistance) > 100 or (distance + curdistance) < 0
 
 def cap_distance(distance, id):
     curdistance = _get_walk_distance(id)
-    return (42-curdistance if distance>0 else curdistance*-1) if walk_will_max_distance(distance, id) else distance
+    return (100-curdistance if distance>0 else curdistance*-1) if walk_will_max_distance(distance, id) else distance
 
 def _get_walk_distance(id):
     db = database.get_db()
@@ -131,7 +131,7 @@ def _get_walk_distance(id):
             return 0
 
 
-def walk_is_maxed(id, max=42):
+def walk_is_maxed(id, max=100):
     def _walk_is_maxed(form, field):
         if _get_walk_distance(id) >= max:
             raise ValidationError(

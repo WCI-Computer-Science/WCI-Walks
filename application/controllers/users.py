@@ -51,10 +51,10 @@ def info():
             validators.InputRequired(),
             validators.NumberRange(
                 min=0.01,
-                max=42,
+                max=100,
                 message="Invalid distance"
             ),
-            walk_is_maxed(current_user.get_id(), max=42),
+            walk_is_maxed(current_user.get_id(), max=100),
         ]
         if verify_walk_form(form, current_user.id)==True:
             with db.cursor() as cur:
@@ -85,10 +85,10 @@ def info():
             if not fit and walkwillmaxdistance:
                 if distance>0:
                     if request.form.get("extension", None) != None:
-                        return "Your walk was partly recorded. You can't go more than 42 km per day."
+                        return "Your walk was partly recorded. You can't go more than 100 km per day."
                     else:
                         flash(
-                            "Your walk was partly recorded. You can't go more than 42 km per day."
+                            "Your walk was partly recorded. You can't go more than 100 km per day."
                         )
                 else:
                     if request.form.get("extension", None) != None:
