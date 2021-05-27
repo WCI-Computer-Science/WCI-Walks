@@ -268,6 +268,7 @@ def edit_distance_update(distance, date, wrdsbusername):
             db.commit()
 
 def autoload_day(userid, username, date, cur):
+    print("Autoloading for " + username)
     distance = get_day_distance(userid, date)
     cur.execute(
             "SELECT distance FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
@@ -298,15 +299,21 @@ def autoload_day(userid, username, date, cur):
             (userid, username, round(distance, 1), date),
         )
         add_to_total(distance, cur)
+    print("Success")
 
 def autoload_day_all(date): # Autoload all users with google fit connected
     db = database.get_db()
+    print("Autoloading all")
     with db.cursor() as cur:
         cur.execute("SELECT id, username FROM users WHERE googlefit=True;")
         users = cur.fetchall()
         for userid, username in users:
-            dist = autoload_day(userid, username, date, cur)
+            try:
+                autoload_day(userid, username, date, cur)
+            except:
+                print("Something went wrong")
     db.commit()
+    print("Done autoloading all")
 
 def update_tick(context):
     with context:
