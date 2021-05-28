@@ -458,27 +458,27 @@ footer a:hover {
   color: white;
 }
 
-.email {
+.buttonrow {
   cursor: pointer;
   text-align: center;
 }
 
-#usersearchlist {
+#searchlist {
   margin: 45px auto 0 auto;
   width: 60%;
 }
 
-#usersearchlist a {
+#searchlist a {
   display: block;
   text-decoration: none;
   color: inherit;
 }
 
-#usersearchlist .name {
+#searchlist .name {
   text-align: left;
 }
 
-#usersearchlist .distance {
+#searchlist .distance {
   text-align: right;
 }
 

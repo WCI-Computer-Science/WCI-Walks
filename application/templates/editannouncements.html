@@ -1,0 +1,74 @@
+{% block scripts %}
+<script>
+  function addAnnouncement() {
+    let announcement = encodeURIComponent(document.getElementById('addannouncement').value);
+    if (announcement)
+        window.location.replace("/admin/addannouncement/" + announcement)
+  }
+
+  function confirmDelete(announcementID) {
+      window.location.replace("/admin/deleteannouncement/" + announcementID);
+  }
+
+  async function generateTable() {
+    let announcementlist = await fetch('/admin/getannouncementlist');
+    announcementlist = await announcementlist.json();
+
+    let table = document.getElementById('searchlist').getElementsByTagName('tbody')[0];
+    table.innerHTML = '';
+
+    if (announcementlist.length > 0)
+        for (i of announcementlist) {
+            let row = table.insertRow();
+
+            let data = row.insertCell();
+            let text = document.createTextNode(i["notice"]);
+            data.appendChild(text);
+            data.setAttribute('onclick', `confirmDelete("${i["id"]}")`);
+            data.classList.add('buttonrow');
+        }
+    else {
+        let row = table.insertRow();
+        let data = row.insertCell();
+        data.appendChild(document.createTextNode("No announcements"));
+    }
+  }
+
+  window.onload = () => {
+    generateTable();
+  }
+</script>
+{% endblock %}
+
+{% extends "utils/layout.html" %}
+{% block body %}
+<div class="contentw admindiv">
+  <h1>Edit Announcements</h1>
+  {% for message in get_flashed_messages() %}
+    <div class='message'><h3>{{ message }}</h3></div>
+  {% endfor %}
+  <h2>Add Announcement</h2>
+  <label for="addannouncement">Enter:</label>
+  <input id="addannouncement" name="announcement" type="text"><br />
+  <button id="fakesubmit" onclick="addAnnouncement()">Add</button><br />
+  <h2>Delete Announcement</h2>
+  <p>Click on an announcement below to delete it.</p>
+  <table id="searchlist">
+    <thead>
+        <tr>
+            <th>
+                Announcement
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                Loading...
+            </td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+{% endblock %}

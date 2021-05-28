@@ -16,18 +16,18 @@
     let userlist = await fetch('/admin/getpaymentlist?text=' + text);
     userlist = await userlist.json();
 
-    let table = document.getElementById('usersearchlist').getElementsByTagName('tbody')[0];
+    let table = document.getElementById('searchlist').getElementsByTagName('tbody')[0];
     table.innerHTML = '';
 
     if (userlist.length > 0)
         for (i of userlist) {
             let row = table.insertRow();
 
-            let emailData = row.insertCell();
-            let emailText = document.createTextNode(i+"@wrdsb.ca");
-            emailData.appendChild(emailText);
-            emailData.setAttribute('onclick', `confirmDelete("${i}")`);
-            emailData.classList.add('email');
+            let data = row.insertCell();
+            let text = document.createTextNode(i+"@wrdsb.ca");
+            data.appendChild(text);
+            data.setAttribute('onclick', `confirmDelete("${i}")`);
+            data.classList.add('buttonrow');
         }
     else {
         let row = table.insertRow();
@@ -58,10 +58,10 @@
   <p>Click on an email below to delete its payment.</p>
   <label for="deleteemail">Search bar:</label>
   <input id="deleteemail" name="email" type="text" oninput="generateTable()"><br />
-  <table id="usersearchlist">
+  <table id="searchlist">
     <thead>
         <tr>
-            <th class="email">
+            <th>
                 Email
             </th>
         </tr>

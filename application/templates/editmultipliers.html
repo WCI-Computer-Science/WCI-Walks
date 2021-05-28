@@ -1,0 +1,86 @@
+{% block scripts %}
+<script>
+  function addMultiplier() {
+    let date = encodeURIComponent(document.getElementById('adddate').value);
+    let factor = encodeURIComponent(document.getElementById('addfactor').value);
+    if (date && factor)
+        window.location.replace("/admin/addmultiplier?date=" + date + "&factor=" + factor)
+  }
+
+  function confirmDelete(date) {
+      window.location.replace("/admin/deletemultiplier?date=" + date);
+  }
+
+  async function generateTable() {
+    let multiplierlist = await fetch('/admin/getmultiplierlist');
+    multiplierlist = await multiplierlist.json();
+
+    let table = document.getElementById('searchlist').getElementsByTagName('tbody')[0];
+    table.innerHTML = '';
+
+    if (multiplierlist.length > 0)
+        for (i of multiplierlist) {
+            let row = table.insertRow();
+
+            let data = row.insertCell();
+            let text = document.createTextNode(i["multiplydate"]);
+            data.appendChild(text);
+            data.setAttribute('onclick', `confirmDelete("${i["multiplydate"]}")`);
+            data.classList.add('buttonrow');
+
+            data = row.insertCell();
+            text = document.createTextNode(i["factor"]);
+            data.appendChild(text);
+            data.setAttribute('onclick', `confirmDelete("${i["multiplydate"]}")`);
+            data.classList.add('buttonrow');
+        }
+    else {
+        let row = table.insertRow();
+        let data = row.insertCell();
+        data.appendChild(document.createTextNode("No multipliers"));
+    }
+  }
+
+  window.onload = () => {
+    generateTable();
+  }
+</script>
+{% endblock %}
+
+{% extends "utils/layout.html" %}
+{% block body %}
+<div class="contentw admindiv">
+  <h1>Edit Multipliers</h1>
+  {% for message in get_flashed_messages() %}
+    <div class='message'><h3>{{ message }}</h3></div>
+  {% endfor %}
+  <h2>Add Multiplier</h2>
+  <label for="adddate">Date:</label>
+  <input id="adddate" name="date" type="text"><br />
+  <label for="addfactor">Factor:</label>
+  <input id="addfactor" name="factor" type="text"><br />
+  <button id="fakesubmit" onclick="addMultiplier()">Add</button><br />
+  <h2>Delete Multiplier</h2>
+  <p>Click on a multiplier below to delete it.</p>
+  <table id="searchlist">
+    <thead>
+        <tr>
+            <th>
+                Date
+            </th>
+            <th>
+                Factor
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                Loading...
+            </td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+{% endblock %}

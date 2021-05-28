@@ -7,7 +7,14 @@ CREATE TABLE IF NOT EXISTS total (
 
 /* Any announcements */
 CREATE TABLE IF NOT EXISTS announcements (
+    id SERIAL PRIMARY KEY,
     notice TEXT NOT NULL
+);
+
+/* Days to multiply */
+CREATE TABLE IF NOT EXISTS multipliers (
+    multiplydate DATE PRIMARY KEY,
+    factor INT NOT NULL
 );
 
 /* Info stored for each user:

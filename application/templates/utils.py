@@ -34,7 +34,17 @@ def get_day_leaderboard(date):
 def get_announcements():
     db = database.get_db()
     with db.cursor() as cur:
-        cur.execute("SELECT * FROM announcements;")
+        cur.execute("SELECT id, notice FROM announcements;")
+        return cur.fetchall()
+
+
+def get_multipliers(date=None):
+    db = database.get_db()
+    with db.cursor() as cur:
+        if date:
+            cur.execute("SELECT multiplydate, factor FROM multipliers WHERE multiplydate=%s", (date,))
+        else:
+            cur.execute("SELECT multiplydate, factor FROM multipliers;")
         return cur.fetchall()
 
 
