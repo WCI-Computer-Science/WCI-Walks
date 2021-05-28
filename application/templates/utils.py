@@ -31,6 +31,13 @@ def get_day_leaderboard(date):
     return userdistances
 
 
+def get_announcements():
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute("SELECT * FROM announcements;")
+        return cur.fetchall()
+
+
 def get_credentials_from_wrdsbusername(wrdsbusername, cur=None):
     if cur is None:
         closecur = True

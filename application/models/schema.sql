@@ -5,6 +5,11 @@ CREATE TABLE IF NOT EXISTS total (
     distance NUMERIC(7,1)
 );
 
+/* Any announcements */
+CREATE TABLE IF NOT EXISTS announcements (
+    notice TEXT NOT NULL
+);
+
 /* Info stored for each user:
     id: used to identify each submission of walk
     email: ensure user is part of WRDSB

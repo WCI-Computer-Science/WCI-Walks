@@ -15,10 +15,14 @@
         {% endif %}
 </div>
 
-<div id='tempalert'>
-    <h2>Notice</h2>
-    <h3>All your distances today are worth triple!</h3>
-</div>
+{% if announcements | length > 0 %}
+    <div id='tempalert'>
+        <h2>Notice</h2>
+        {% for i in announcements %}
+            <h3>{{ i[0] }}</h3>
+        {% endfor %}
+    </div>
+{% endif %}
 
 <div class='columns contentw'>
     <div id='appinfo' class="column">

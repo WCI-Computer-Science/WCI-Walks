@@ -229,56 +229,61 @@ def authorize():
 
 @bp.route("/authorize/confirmlogin", methods=("GET", "POST"))
 def confirmlogin():
-    code = request.args.get("code")
-    token, refresh = oauth.get_access_token(code)
-    idinfo = oauth.get_id_info(token)
+    try:
+        code = request.args.get("code")
+        token, refresh = oauth.get_access_token(code)
+        idinfo = oauth.get_id_info(token)
 
-    if idinfo.get("email_verified") and idinfo.get("hd") == "wrdsb.ca":
-        userid = idinfo["sub"]
-        email = idinfo["email"]
-        username = idinfo["name"]
-    else:
-        flash("Email invalid. Are you using your WRDSB email?")
-        return redirect(url_for("users.login"))
-
-    db = database.get_db()
-    if isblacklisted(userid, email):
-        flash(
-            "You have been banned from WCI Walks and cannot create an account or log in. Please contact us if you think this is a mistake."
-        )
-        return redirect(url_for("users.login"))
-    if not(haspayed(email)) and not(isadmin(userid)):
-        flash(Markup(
-            "You need to pay the participation fee before you can track your walks! Please email <a href=\"mailto:haos8097@wrdsb.ca\" target=\"_blank\">Scott</a> if you've already done so."
-        ))
-        return redirect(url_for("users.login"))
-    with db.cursor() as cur:
-        if not user.User.exists(userid, cur):
-            current_user = user.User(
-                userid=userid,
-                email=email,
-                username=username
-            )
-            current_user.write_db(cur)
-            if refresh:
-                current_user.add_refresh(refresh, cur)
-            else:
-                return redirect(oauth.get_auth_url() + "&prompt=consent")
-                # This should only happen if the refresh token is lost
-                # due to deleting and re-adding user, server crash, etc
+        if idinfo.get("email_verified") and idinfo.get("hd") == "wrdsb.ca":
+            userid = idinfo["sub"]
+            email = idinfo["email"]
+            username = idinfo["name"]
         else:
-            current_user = user.User(userid=userid)
-            current_user.read_db(cur)
-            if not oauth.get_refresh(current_user.id):
+            flash("Email invalid. Are you using your WRDSB email?")
+            return redirect(url_for("users.login"))
+
+        db = database.get_db()
+        if isblacklisted(userid, email):
+            flash(
+                "You have been banned from WCI Walks and cannot create an account or log in. Please contact us if you think this is a mistake."
+            )
+            return redirect(url_for("users.login"))
+        if not(haspayed(email)) and not(isadmin(userid)):
+            flash(Markup(
+                "You need to pay the participation fee before you can track your walks! Please email <a href=\"mailto:haos8097@wrdsb.ca\" target=\"_blank\">Scott</a> if you've already done so."
+            ))
+            return redirect(url_for("users.login"))
+        with db.cursor() as cur:
+            if not user.User.exists(userid, cur):
+                current_user = user.User(
+                    userid=userid,
+                    email=email,
+                    username=username
+                )
+                current_user.write_db(cur)
                 if refresh:
                     current_user.add_refresh(refresh, cur)
                 else:
                     return redirect(oauth.get_auth_url() + "&prompt=consent")
-                    # Same situations as above
-        db.commit()
+                    # This should only happen if the refresh token is lost
+                    # due to deleting and re-adding user, server crash, etc
+            else:
+                current_user = user.User(userid=userid)
+                current_user.read_db(cur)
+                if not oauth.get_refresh(current_user.id):
+                    if refresh:
+                        current_user.add_refresh(refresh, cur)
+                    else:
+                        return redirect(oauth.get_auth_url() + "&prompt=consent")
+                        # Same situations as above
+            db.commit()
 
-    login_user(current_user)
-    return redirect(url_for("users.info"))
+        login_user(current_user)
+        return redirect(url_for("users.info"))
+
+    except:
+        # Probably entered URL by mistake
+        return redirect(url_for("users.login"))
 
 
 @bp.route("/logout", methods=("GET", "POST", "PUT", "PATCH", "DELETE"))
