@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from flask import current_app
 from wtforms.validators import ValidationError
@@ -43,9 +43,10 @@ def get_multipliers(date=None):
     with db.cursor() as cur:
         if date:
             cur.execute("SELECT multiplydate, factor FROM multipliers WHERE multiplydate=%s", (date,))
+            return cur.fetchone()
         else:
             cur.execute("SELECT multiplydate, factor FROM multipliers;")
-        return cur.fetchall()
+            return cur.fetchall()
 
 
 def get_credentials_from_wrdsbusername(wrdsbusername, cur=None):
@@ -332,6 +333,17 @@ def autoload_day_all(date): # Autoload all users with google fit connected
     db.commit()
     print("Done autoloading all")
 
+def multiply_by_factor(date=date.today()):
+    multiplier = get_multipliers(date)
+    if multiplier:
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute(
+                "UPDATE walks SET distance=distance*%s WHERE walkdate=%s;",
+                (multiplier["factor"], date)
+            )
+        db.commit()
+
 def update_tick(context):
     with context:
         update_leaderboard_positions()
@@ -345,4 +357,5 @@ def medium_update_tick(context):
 
 def long_update_tick(context):
     with context:
+        multiply_by_factor(date.today()-timedelta(days=1))
         update_total()

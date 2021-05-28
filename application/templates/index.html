@@ -115,7 +115,11 @@
                             </td>
                             <td class="distance">
                                 <a href="/users/viewprofile/{{yesterdayleaderboard[i][2]}}">
-                                    {{yesterdayleaderboard[i][1]}} x 3
+                                    {% if multiplier %}
+                                        {{yesterdayleaderboard[i][1]}} x {{multiplier}}
+                                    {% else %}
+                                        {{yesterdayleaderboard[i][1]}}
+                                    {% endif %}
                                 </a>
                             </td>
                         </tr>

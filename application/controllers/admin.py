@@ -17,6 +17,7 @@ from application.templates.utils import (
     get_multipliers,
     isadmin,
     update_total,
+    multiply_by_factor
 )
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")

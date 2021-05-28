@@ -6,7 +6,7 @@
         let userlist = await fetch('/admin/getuserlist?text=' + text);
         userlist = await userlist.json();
 
-        let table = document.getElementById('usersearchlist').getElementsByTagName('tbody')[0];
+        let table = document.getElementById('searchlist').getElementsByTagName('tbody')[0];
         table.innerHTML = '';
 
         if (userlist.length > 0)
