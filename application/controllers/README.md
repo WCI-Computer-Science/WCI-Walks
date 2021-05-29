@@ -24,7 +24,7 @@ The /users page allows a user to access their daily progress, personal statistic
 It has the following behaviour:
 1. User is logged in:  
 The user will be able to access their personal profile. If the user submits the distance from, the following occurs:  
-    1. The form is valid (a number n such that 0 < n <= 42):  
+    1. The form is valid (a number n such that 0 < n <= 300):  
     The distance is added to the database.
     2. The form is invalid:  
     An error is flashed.

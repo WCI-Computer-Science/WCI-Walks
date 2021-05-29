@@ -246,8 +246,8 @@ def verify_walk_form(form, id):
     except ValueError:
         return "Please submit a number."
     walkdistance = _get_walk_distance(id)
-    if walkdistance>=42 and int(form.distance.data)>0:
-        return "You can only go up to 42 km per day!"
+    if walkdistance>=300 and int(form.distance.data)>0:
+        return "You can only go up to 300 km per day!"
     if walkdistance<=0 and float(form.distance.data)<0:
         return "You can't go less that 0 km per day!"
     return True
