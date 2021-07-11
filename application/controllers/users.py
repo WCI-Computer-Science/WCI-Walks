@@ -19,7 +19,7 @@ from wtforms import (
 )
 
 from application.models import *
-from application.templates.utils import (
+from application.models.utils import (
     add_to_total,
     cap_distance,
     get_credentials_from_wrdsbusername,

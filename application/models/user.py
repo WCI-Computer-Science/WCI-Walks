@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from application.templates.utils import (
+from application.models.utils import (
     get_credentials_from_wrdsbusername,
     get_wrdsbusername_from_id,
     isadmin,

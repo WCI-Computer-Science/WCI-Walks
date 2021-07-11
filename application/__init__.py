@@ -18,9 +18,9 @@ def create_app():
 
     with app.app_context():
         from .models import database, loginmanager, oauth, user
+        from .models.utils import update_tick, long_update_tick
         from .controllers import index, users, admin
         from .controllers.errors import error404, error500
-        from .templates.utils import update_tick, long_update_tick
         scheduler = BackgroundScheduler()
         scheduler.add_job(lambda: update_tick(app.app_context()), 'cron', minute="*/5") # Thing that need to be polled
         scheduler.add_job(lambda: long_update_tick(app.app_context()), 'cron', hour="0") # Long function that could interupt normal functioning, like refreshing totals. Runs at 1am

@@ -6,7 +6,7 @@ from flask import Blueprint, abort, flash, redirect, render_template, request
 from flask_login import current_user, login_required
 
 from application.models import *
-from application.templates.utils import (
+from application.models.utils import (
     add_to_total,
     edit_distance_update,
     fancy_float,

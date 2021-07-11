@@ -3,7 +3,7 @@ import datetime
 from flask import Blueprint, render_template, current_app
 
 from application.models import database
-from application.templates.utils import (
+from application.models.utils import (
     fancy_float,
     get_announcements,
     get_multipliers,
