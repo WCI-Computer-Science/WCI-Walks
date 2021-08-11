@@ -112,6 +112,35 @@ def info():
         data=data,
     )
 
+# Get information about the team you're on, if you're not on a team, put buttons to join a team and create a team
+@bp.route("/teams")
+@login_required
+def getteampage():
+    return render_template(
+        "teampage.html",
+    )
+
+# Page that asks for a join code for a team
+@bp.route("/teams/join", methods=("GET", "POST"))
+@login_required
+def jointeam():
+    return render_template(
+        "jointeam.html",
+    )
+
+# Page that lets you create a team
+@bp.route("/teams/create", methods=("GET", "POST"))
+@login_required
+def newteam():
+    return render_template(
+        "createteam.html",
+    )
+
+# Page that lets you leave the team you're on, asks for confirmation, then redirects you back to the main team page
+@bp.route("/teams/leave", methods=("GET", "POST"))
+@login_required
+def leaveteam():
+    return redirect("/users/teams")
 
 @bp.route("/togglegooglefit")
 @login_required

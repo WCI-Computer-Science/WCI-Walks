@@ -5,7 +5,6 @@
     function genchart() {
         var ctx = document.getElementById('myChart');
         {% if labels|length > 0 %}
-            console.log("ok");
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
