@@ -22,6 +22,7 @@ from application.models import *
 from application.models.utils import (
     add_to_total,
     cap_distance,
+    create_team,
     get_credentials_from_wrdsbusername,
     haspayed,
     isadmin,
@@ -132,9 +133,8 @@ def jointeam():
 @bp.route("/teams/create", methods=("GET", "POST"))
 @login_required
 def newteam():
-    return render_template(
-        "createteam.html",
-    )
+    create_team(current_user.get_id())
+    return redirect("/users/teams")
 
 # Page that lets you leave the team you're on, asks for confirmation, then redirects you back to the main team page
 @bp.route("/teams/leave", methods=("GET", "POST"))

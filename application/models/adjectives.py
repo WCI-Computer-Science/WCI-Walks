@@ -1,0 +1,1 @@
+adjectives = ['Awesome', 'Brilliant', 'Cool', 'Dexterous', 'Eager', 'Fabulous', 'Ghostly', 'Happy']

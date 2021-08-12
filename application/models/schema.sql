@@ -78,3 +78,16 @@ CREATE TABLE IF NOT EXISTS walks (
     walkdate DATE NOT NULL,
     trackedwithfit BOOLEAN DEFAULT FALSE
 );
+
+/* Info about each team:
+    teamname: randomly generated string of an adjective and a noun
+    teamid: randomly generated string to identify the team
+    joincode: 6-character randomly generated string, for users to join the team, can be NULL to indicate that no one can join the team
+    members: comma-seperated string of user ids who are on the team
+*/
+CREATE TABLE IF NOT EXISTS teams (
+    teamname TEXT UNIQUE NOT NULL,
+    teamid TEXT UNIQUE NOT NULL,
+    joincode TEXT,
+    members TEXT NOT NULL
+);

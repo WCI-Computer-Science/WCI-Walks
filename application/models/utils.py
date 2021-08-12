@@ -1,10 +1,12 @@
 from datetime import date, timedelta
 
 from flask import current_app
+import random
 from wtforms.validators import ValidationError
 
 from application.models import database
 from application.models.fitapi import get_day_distance
+from application.models import nouns, adjectives
 
 
 def get_all_time_leaderboard():
@@ -199,29 +201,6 @@ def fancy_float(n):
         return n
     except ValueError:
         return 0
-"""
-def replace_walk_distances(distances, dates, olddistances, user, id):
-    db = database.get_db()
-    with db.cursor() as cur:
-        for i in range(len(dates)):
-            if distances[i] != olddistances[i]:
-                user.update_walk(
-                    distances[i],
-                    dates[i],
-                    None,
-                    cur,
-                    replace=True,
-                    id=id
-                )
-                print(
-                    "Updated",
-                    user.id,
-                    "walk on",
-                    dates[i],
-                    "to be",
-                    distances[i]
-                )
-    db.commit()"""
 
 def update_leaderboard_positions():
     db = database.get_db()
@@ -344,16 +323,38 @@ def multiply_by_factor(date=date.today()):
             )
         db.commit()
 
+def generate_team_name(cur):
+    loopcount = 0
+    while True: # Loop until we find a name that's not in use
+        pendingchoice = random.choice(adjectives.adjectives) + " " + random.choice(nouns.nouns)
+        cur.execute(
+            "SELECT teamname FROM teams WHERE teamname=%s LIMIT 1",
+            (pendingchoice,)
+        )
+        if cur.fetchone() == None:
+            return pendingchoice
+        print(f"WARNING: Skipping {pendingchoice} as a team name, since it's in use.")
+        loopcount += 1
+        if loopcount > 26:
+            raise Exception("Couldn't find a team name") # Return an error, to prevent holding the server up forever
+
+
+def generate_team_id():
+    return random.randint(2**20, 2**32)
+
+def create_team(userid):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "INSERT INTO teams (teamname, teamid, members) VALUES (%s, %s, %s)",
+            (generate_team_name(cur), generate_team_id(), userid + ",")
+        )
+    db.commit()
+
 def update_tick(context):
     with context:
         update_leaderboard_positions()
         autoload_day_all(date.today())
-
-'''
-def medium_update_tick(context):
-    with context:
-        autoload_day_all(date.today())
-'''
 
 def long_update_tick(context):
     with context:

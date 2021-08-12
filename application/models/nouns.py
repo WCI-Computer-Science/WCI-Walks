@@ -1,0 +1,1 @@
+nouns = ['Aardvarks', 'Birds', 'Cats', 'Dogs', 'Elephants', 'Fish', 'Goats', 'Horses', 'Iguanas', 'Jaguars', 'Kangaroos', 'Leopards', 'Magpies', 'Newts', 'Octopi', 'Penguins', 'Quails', 'Rabbits', 'Swans', 'Tigers', 'Turkeys', 'Vultures', 'Walruses', 'Deer', 'Yaks', 'Zebras']
