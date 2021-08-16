@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS multipliers (
     active: whether a user is active
     refreshtoken: OAuth refresh token
     googlefit: whether a user is connected with Google Fit
+    teamid: the ID of the team the user's on
  */
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
@@ -39,7 +40,8 @@ CREATE TABLE IF NOT EXISTS users (
     liked TEXT,
     active SMALLINT DEFAULT 1,
     refreshtoken TEXT,
-    googlefit BOOLEAN DEFAULT FALSE
+    googlefit BOOLEAN DEFAULT FALSE,
+    teamid INT
 );
 
 /* Info stored to see who is an admin:

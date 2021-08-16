@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 from flask import current_app
-import random
+import random, string
 from wtforms.validators import ValidationError
 
 from application.models import database
@@ -219,6 +219,16 @@ def update_leaderboard_positions():
                 )
     db.commit()
 
+def remove_empty_teams():
+    print("Removing empty teams...")
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "DELETE FROM teams WHERE members=''"
+        )
+        print(f"Removed {cur.rowcount} empty teams.")
+    db.commit()
+
 def verify_walk_form(form, id):
     try:
         float(form.distance.data)
@@ -338,19 +348,158 @@ def generate_team_name(cur):
         if loopcount > 26:
             raise Exception("Couldn't find a team name") # Return an error, to prevent holding the server up forever
 
+
 def create_team(userid):
+    if getteamname(userid) is not None:
+        return # Prevent creating a team if the user is on a team
+    db = database.get_db()
+    with db.cursor() as cur:
+        teamname = generate_team_name(cur)
+        cur.execute(
+            "INSERT INTO teams (teamname, members) VALUES (%s, %s)",
+            (teamname, userid)
+        )
+        # Get the team id
+        cur.execute(
+            "SELECT id FROM teams WHERE teamname=%s",
+            (teamname,)
+        )
+        teamid = cur.fetchone()[0]
+        cur.execute(
+            "UPDATE users SET teamid=%s WHERE id=%s",
+            (teamid, userid)
+        )
+    db.commit()
+
+
+def getteamname(userid, joincode=False):
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "INSERT INTO teams (teamname, members) VALUES (%s, %s)",
-            (generate_team_name(cur), userid + ",")
+            "SELECT teamid FROM users WHERE id=%s LIMIT 1",
+            (userid,)
+        )
+        teamid = cur.fetchone()
+        if teamid is None:
+            return None
+        teamid = teamid[0]
+        cur.execute(
+            "SELECT teamname, joincode FROM teams WHERE id=%s LIMIT 1",
+            (teamid,)
+        )
+        res = cur.fetchone()
+        return (((res[0]) if not joincode else (res[:2])) if res is not None else None)
+
+
+def join_team(userid, joincode=None):
+    # If joincode is None, we need to leave the team we're on, otherwise, join the team
+    # Check that we're on a team/not on a team
+    teamname = getteamname(userid)
+    if teamname is None:
+        if joincode is None:
+            print("A")
+            return False
+    else:
+        if joincode is not None:
+            print("B")
+            return False
+    db = database.get_db()
+    with db.cursor() as cur:
+        # Get the members list of the team we're on/joining
+        cur.execute(
+            "SELECT members FROM teams WHERE "
+            + ("joincode=%s" if joincode is not None else "teamname=%s")
+            + " LIMIT 1",
+            ((joincode if joincode is not None else teamname),)
+        )
+        members = cur.fetchone()
+        if members is None:
+            # If there is no team that matches the requirements, fail no matter what
+            print("C")
+            return False
+        members = members[0].split(",")
+        if joincode is None:
+            # If we're leaving a team, remove us from the members list
+            members.remove(userid)
+        else:
+            # Otherwise, add us to the members list
+            members.append(userid)
+
+        # Write the members list back to the database
+        cur.execute(
+            "UPDATE teams SET members=%s WHERE "
+            + ("joincode=%s" if joincode is not None else "teamname=%s"),
+            (",".join(members), (joincode if joincode is not None else teamname),)
+        )
+
+        # If we're joining a team, get the teamid
+        if joincode is not None:
+            cur.execute(
+                "SELECT id FROM teams WHERE joincode=%s LIMIT 1",
+                (joincode,)
+            )
+            teamid = cur.fetchone()
+            if teamid is None:
+                print("D")
+                return False
+            teamid = teamid[0]
+        # Otherwise, set the teamid to None
+        else:
+            teamid = None
+        
+        # Write the new teamid to users
+        cur.execute(
+            "UPDATE users SET teamid=%s WHERE id=%s",
+            (teamid, userid)
         )
     db.commit()
+    return True
+        
+
+def new_join_code(userid, remove=False):
+    teamname = getteamname(userid)
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "UPDATE teams SET joincode=%s WHERE teamname=%s",
+            (
+                (
+                    "".join([ random.choice(
+                        string.ascii_uppercase
+                        + string.ascii_lowercase 
+                        + string.digits
+                        ) for i in range(6)])
+                    if not remove else None
+                ),
+                teamname,
+            )
+        )
+    db.commit()
+
+
+def get_team_members(userid):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT teamid FROM users WHERE id=%s LIMIT 1",
+            (userid,)
+        )
+        teamid = cur.fetchone()
+        if teamid is None:
+            return None
+        teamid = teamid[0]
+        cur.execute(
+            "SELECT members FROM teams WHERE id=%s LIMIT 1",
+            (teamid,)
+        )
+        res = cur.fetchone()
+        return res[0].split(",") if res is not None else None
 
 def update_tick(context):
     with context:
         update_leaderboard_positions()
-        autoload_day_all(date.today())
+        remove_empty_teams()
+#        autoload_day_all(date.today())
 
 def long_update_tick(context):
     with context:

@@ -27,6 +27,8 @@ from application.models.utils import (
     haspayed,
     isadmin,
     isblacklisted,
+    join_team,
+    new_join_code,
     verify_walk_form,
     walk_is_maxed,
     walk_will_max_distance
@@ -122,24 +124,40 @@ def getteampage():
     )
 
 # Page that asks for a join code for a team
-@bp.route("/teams/join", methods=("GET", "POST"))
+@bp.route("/teams/join", methods=("POST",))
 @login_required
 def jointeam():
-    return render_template(
-        "jointeam.html",
-    )
+    if not join_team(current_user.get_id(), joincode=request.form.get("joincode", None)):
+        # The join code was invalid, flash an error
+        flash("Sorry, that's not a valid join code. Please try again.")
+    return redirect("/users/teams")
 
 # Page that lets you create a team
-@bp.route("/teams/create", methods=("GET", "POST"))
+@bp.route("/teams/create")
 @login_required
 def newteam():
     create_team(current_user.get_id())
     return redirect("/users/teams")
 
-# Page that lets you leave the team you're on, asks for confirmation, then redirects you back to the main team page
+# Page that lets you leave the team you're on
 @bp.route("/teams/leave", methods=("GET", "POST"))
 @login_required
 def leaveteam():
+    join_team(current_user.get_id())
+    return redirect("/users/teams")
+
+# Page to generate a new join code
+@bp.route("/teams/newjoincode")
+@login_required
+def newjoincode():
+    new_join_code(current_user.get_id())
+    return redirect("/users/teams")
+
+# Page to generate a new join code
+@bp.route("/teams/removejoincode")
+@login_required
+def removejoincode():
+    new_join_code(current_user.get_id(), remove=True)
     return redirect("/users/teams")
 
 @bp.route("/togglegooglefit")

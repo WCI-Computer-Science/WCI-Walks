@@ -2,7 +2,9 @@ from datetime import timedelta
 
 from application.models.utils import (
     get_credentials_from_wrdsbusername,
+    get_team_members,
     get_wrdsbusername_from_id,
+    getteamname,
     isadmin,
 )
 
@@ -212,6 +214,13 @@ class User:
 
     def is_admin(self):
         return isadmin(self.id)
+
+    def team_name(self, joincode=False):
+        return getteamname(self.id, joincode=joincode)
+
+    def alone_on_team(self):
+        res = get_team_members(self.id)
+        return len(res) == 1 if res is not None else False
 
     # Static methods
     @staticmethod
