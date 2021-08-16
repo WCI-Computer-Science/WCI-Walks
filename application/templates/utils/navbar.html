@@ -23,6 +23,15 @@
                     <li>
                         <a href="/users">Profile</a>
                     </li>
+                    {% if current_user.team_name() != None %}
+                        <li>
+                            <a href="/users/teams">Your Team</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="/users/teams">Teams</a>
+                        </li>
+                    {% endif %}
                     {% if current_user.is_admin() %}
                         <li>
                             <a href="/admin">Admin</a>

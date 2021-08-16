@@ -397,11 +397,9 @@ def join_team(userid, joincode=None):
     teamname = getteamname(userid)
     if teamname is None:
         if joincode is None:
-            print("A")
             return False
     else:
         if joincode is not None:
-            print("B")
             return False
     db = database.get_db()
     with db.cursor() as cur:
@@ -415,7 +413,6 @@ def join_team(userid, joincode=None):
         members = cur.fetchone()
         if members is None:
             # If there is no team that matches the requirements, fail no matter what
-            print("C")
             return False
         members = members[0].split(",")
         if joincode is None:
@@ -440,7 +437,6 @@ def join_team(userid, joincode=None):
             )
             teamid = cur.fetchone()
             if teamid is None:
-                print("D")
                 return False
             teamid = teamid[0]
         # Otherwise, set the teamid to None
