@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS walks (
 */
 CREATE TABLE IF NOT EXISTS teams (
     teamname TEXT UNIQUE NOT NULL,
-    teamid TEXT UNIQUE NOT NULL,
+    id SERIAL PRIMARY KEY,
     joincode TEXT,
     members TEXT NOT NULL
 );

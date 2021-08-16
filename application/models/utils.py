@@ -338,16 +338,12 @@ def generate_team_name(cur):
         if loopcount > 26:
             raise Exception("Couldn't find a team name") # Return an error, to prevent holding the server up forever
 
-
-def generate_team_id():
-    return random.randint(2**20, 2**32)
-
 def create_team(userid):
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "INSERT INTO teams (teamname, teamid, members) VALUES (%s, %s, %s)",
-            (generate_team_name(cur), generate_team_id(), userid + ",")
+            "INSERT INTO teams (teamname, members) VALUES (%s, %s)",
+            (generate_team_name(cur), userid + ",")
         )
     db.commit()
 
