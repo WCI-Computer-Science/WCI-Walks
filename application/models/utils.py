@@ -423,7 +423,7 @@ def join_team(userid, joincode=None):
                 return False # Fail if team doesn't exist
             # Add user to member table
             cur.execute(
-                "INSERT INTO team_members (id, memberid) VALUES (%s, %s)"
+                "INSERT INTO team_members (id, memberid) VALUES (%s, %s)",
                 (teamid[0], userid)
             )
             # Set user's teamid
@@ -438,17 +438,24 @@ def join_team(userid, joincode=None):
 
 def new_join_code(userid, remove=False):
     teamname = getteamname(userid)
+    if not teamname:
+        return
     db = database.get_db()
     with db.cursor() as cur:
+        cur.execute(
+            "SELECT id FROM teams WHERE teamname=%s LIMIT 1", (teamname,)
+        )
+        teamid = cur.fetchone()[0]
         cur.execute(
             "UPDATE teams SET joincode=%s WHERE teamname=%s",
             (
                 (
-                    "".join([ random.choice(
+                    "".join([
+                        random.choice(
                         string.ascii_uppercase
                         + string.ascii_lowercase 
-                        + string.digits
-                        ) for i in range(6)])
+                        ) for i in range(5)
+                    ]) + str(teamid)
                     if not remove else None
                 ),
                 teamname,
