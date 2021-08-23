@@ -119,9 +119,16 @@ def info():
 @bp.route("/teams")
 @login_required
 def getteampage():
-    return render_template(
-        "teampage.html",
-    )
+    teamdata = current_user.team_name(joincode=True)
+    if teamdata is None: # User is not in a team, send them to teamjoin
+        return render_template("teamjoin.html")
+    else: # User is in a team, send them to their team's homepage
+        return render_template (
+            "teampage.html",
+            teamname=teamdata[0],
+            teamdata=current_user.team_name(joincode=True),
+            members=get_team_member_names(userid=current_user.get_id())
+        )
 
 # Page that asks for a join code for a team
 @bp.route("/teams/join", methods=("POST",))

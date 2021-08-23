@@ -1,0 +1,16 @@
+{% extends "utils/layout.html" %}
+{% block body %}
+<div id="jointeam" class="admindiv contentw">
+        <h1>Teams</h1>
+        {% for message in get_flashed_messages() %}
+            <div class='message'><p>{{ message }}</p></div>
+        {% endfor %}
+        <form action="/users/teams/join" method="post">
+            <label for="joincode">Join Code:</label>
+            <input id="joincode" name="joincode" type="text" minlength="6" required><br />
+            <input type="submit" value="Join Team">
+        </form>
+        <br /><br />
+        <a href="/users/teams/create" class="button adminbutton">Create Team</a><br />
+</div>
+{% endblock %}

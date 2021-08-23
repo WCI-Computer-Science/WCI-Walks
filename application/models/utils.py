@@ -224,7 +224,12 @@ def remove_empty_teams():
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "DELETE FROM teams WHERE members=''"
+            """
+            DELETE FROM teams
+            WHERE id NOT IN (
+                SELECT id FROM team_members
+            )
+            """
         )
         print(f"Removed {cur.rowcount} empty teams.")
     db.commit()
@@ -464,22 +469,67 @@ def new_join_code(userid, remove=False):
     db.commit()
 
 
-def get_team_members(userid):
+def get_team_members(userid=None, teamid=None):
     db = database.get_db()
     with db.cursor() as cur:
-        cur.execute(
-            """
-            SELECT t_m.memberid
-            FROM users u
-            INNER JOIN team_members t_m
-            ON u.teamid=t_m.id
-            WHERE u.id=%s
-            """,
-            (userid,)
-        )
+        if userid:
+            cur.execute(
+                """
+                SELECT t_m.memberid
+                FROM users u
+                INNER JOIN team_members t_m
+                ON u.teamid=t_m.id
+                WHERE u.id=%s
+                """,
+                (userid,)
+            )
+        elif teamid:
+            cur.execute(
+                "SELECT memberid FROM team_members WHERE id=%s", (teamid,)
+            )
+        else:
+            return []
         members = cur.fetchall()
         # If no members in team, empty list is returned
         return [m[0] for m in members]
+
+
+def get_team_member_names(userid=None, teamid=None):
+    db = database.get_db()
+    with db.cursor() as cur:
+        if userid:
+            cur.execute(
+                """
+                SELECT u.username, u.distance, u.wrdsbusername
+                FROM users u
+                INNER JOIN (
+                    SELECT t_m.memberid mid
+                    FROM users u
+                    INNER JOIN team_members t_m
+                    ON u.teamid=t_m.id
+                    WHERE u.id=%s
+                ) m
+                ON u.id=m.mid
+                """,
+                (userid,)
+            )
+        elif teamid:
+            cur.execute(
+                """
+                SELECT u.username, u.distance, u.wrdsbusername
+                FROM users u
+                INNER JOIN (
+                    SELECT memberid mid FROM team_members WHERE id=%s
+                ) m
+                ON u.id=m.mid
+                """,
+                (teamid,)
+            )
+        else:
+            return []
+        res = cur.fetchall()
+        # If no members in team, empty list is returned
+        return [[i[0], fancy_float(i[1]), i[2]] for i in res]
 
 def update_tick(context):
     with context:

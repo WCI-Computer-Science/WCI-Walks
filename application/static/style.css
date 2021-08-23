@@ -553,6 +553,13 @@ footer a:hover {
   }
 }
 
+/* Teams formatting */
+
+.teammembers a {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* Privacy Policy and Terms of Service formatting */
 
 .legal {

@@ -1,41 +1,43 @@
 {% extends "utils/layout.html" %}
-{% set teamdata = current_user.team_name(joincode=True) %}
+
 {% block scripts %}
+{% if teamdata is defined %}
 <script>
     function confirmLeave() {
-      if (window.confirm("Leave the {% if teamdata != None %}{{ teamdata[0] }}{% endif %}?\n\nYou won't be able to re-join unless you have the join code.{% if current_user.alone_on_team() %}\n\nLeaving the team could cause the team to be deleted.{%endif%}"))
+      if (window.confirm("Leave {% if teamdata != None %}{{ teamdata[0] }}{% endif %}?\nYou won't be able to re-join unless you have the join code.{% if current_user.alone_on_team() %}\nLeaving the team could cause the team to be deleted.{%endif%}"))
           window.location.replace("/users/teams/leave");
   }
 </script>
+{% endif %}
 {% endblock %}
+
 {% block body %}
 <div id="jointeam" class="admindiv contentw">
-    {% if teamdata == None %}
-    <h1>Teams</h1>
-    {% for message in get_flashed_messages() %}
-        <div class='message'><p>{{ message }}</p></div>
-    {% endfor %}
-    <form action="/users/teams/join" method="post">
-        <label for="joincode">Join Code:</label>
-        <input id="joincode" name="joincode" type="text" minlength="6" maxlength="6" required><br />
-        <input type="submit" value="Join Team">
-    </form>
-    <br /><br />
-    <a href="/users/teams/create" class="button adminbutton">Create a team</a><br />
-    {% else %}
-    <h1>{{ teamdata[0] }}</h1>
-    <h3>Your team</h3>
-    <h4>
-    {% if teamdata[1] != None %}
-        Join code: {{ teamdata[1] }}<br />
-        <a href="/users/teams/newjoincode" class="button adminbutton">Generate a new join code</a>
-        <a href="/users/teams/removejoincode" class="button adminbutton">Remove join code</a>
-    {% else %}
-        <a href="/users/teams/newjoincode" class="button adminbutton">Create a join code</a>
+    <h1>{{ teamname }}</h1>
+    {% if teamdata is defined %}
+        <div class="teaminfo">
+            <h3>Your team</h3>
+            <h4>
+            {% if teamdata[1] != None %}
+                Join code: {{ teamdata[1] }}<br />
+                <a href="/users/teams/newjoincode" class="button adminbutton">New Join Code</a>
+                <a href="/users/teams/removejoincode" class="button adminbutton">Remove Join Code</a>
+            {% else %}
+                <a href="/users/teams/newjoincode" class="button adminbutton">Create Join Code</a>
+            {% endif %}
+            </h4>
+        </div>
     {% endif %}
-    </h4>
-    <br /><br />
-    <a onclick="confirmLeave()" class="button adminbutton">Leave your team</a><br />
+    <div class="teammembers">
+        <h3>Members</h3>
+        <ul>
+        {% for m in members %}
+            <li><a href="/users/viewprofile/{{ m[2] }}">{{ m[0] }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% if teamdata is defined %}
+        <a onclick="confirmLeave()" class="button adminbutton">Leave Team</a><br />
     {% endif %}
 </div>
 {% endblock %}

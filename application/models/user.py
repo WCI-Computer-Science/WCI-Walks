@@ -219,7 +219,7 @@ class User:
         return getteamname(self.id, joincode=joincode)
 
     def alone_on_team(self):
-        res = get_team_members(self.id)
+        res = get_team_members(userid=self.id)
         # Return true if user's team is empty (which shouldn't happen)
         return len(res) <= 1
 
