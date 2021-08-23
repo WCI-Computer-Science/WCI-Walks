@@ -18,11 +18,13 @@ CREATE TABLE IF NOT EXISTS multipliers (
 );
 
 /* Info stored for each user:
-    id: used to identify each submission of walk
-    email: ensure user is part of WRDSB
+    id: used to identify each user
+    email: ensure user exists and is part of WRDSB
     username: student's name
     wrdsbusername: email without the @wrdsb.ca
     distance: student's total distance
+    position: position on leaderboard
+    likes, likediff, liked: part of liking system
     active: whether a user is active
     refreshtoken: OAuth refresh token
     googlefit: whether a user is connected with Google Fit
@@ -82,14 +84,23 @@ CREATE TABLE IF NOT EXISTS walks (
 );
 
 /* Info about each team:
+    id: used to identify the team
     teamname: randomly generated string of an adjective and a noun
-    teamid: randomly generated string to identify the team
+    distance: sum of users' distances
     joincode: 6-character randomly generated string, for users to join the team, can be NULL to indicate that no one can join the team
-    members: comma-seperated string of user ids who are on the team
 */
 CREATE TABLE IF NOT EXISTS teams (
-    teamname TEXT UNIQUE NOT NULL,
     id SERIAL PRIMARY KEY,
-    joincode TEXT,
-    members TEXT NOT NULL
+    teamname TEXT UNIQUE NOT NULL,
+    distance NUMERIC(7,1) NOT NULL DEFAULT 0,
+    joincode TEXT
+);
+
+/* Members who are part of each team:
+    id: identify the team
+    memberid: identify the user who is a member
+*/
+CREATE TABLE IF NOT EXISTS team_members (
+    id INT NOT NULL,
+    memberid TEXT UNIQUE NOT NULL
 );

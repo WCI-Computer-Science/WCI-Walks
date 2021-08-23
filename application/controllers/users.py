@@ -88,7 +88,7 @@ def info():
                     )
                 else:
                     flash(
-                        "You walk was partly recorded. You can't go less than 0 km per day"
+                        "You walk was partly recorded. You can't go less than 0 km per day."
                     )
             else:
                 flash(

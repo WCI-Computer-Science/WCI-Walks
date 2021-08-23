@@ -355,16 +355,20 @@ def create_team(userid):
     db = database.get_db()
     with db.cursor() as cur:
         teamname = generate_team_name(cur)
+        # Create the team
         cur.execute(
-            "INSERT INTO teams (teamname, members) VALUES (%s, %s)",
-            (teamname, userid)
+            "INSERT INTO teams (teamname) VALUES (%s)", (teamname,)
         )
         # Get the team id
         cur.execute(
-            "SELECT id FROM teams WHERE teamname=%s",
-            (teamname,)
+            "SELECT id FROM teams WHERE teamname=%s LIMIT 1", (teamname,)
         )
         teamid = cur.fetchone()[0]
+        # Add user into team
+        cur.execute(
+            "INSERT INTO team_members (id, memberid) VALUES (%s, %s)",
+            (teamid, userid)
+        )
         cur.execute(
             "UPDATE users SET teamid=%s WHERE id=%s",
             (teamid, userid)
@@ -395,59 +399,39 @@ def join_team(userid, joincode=None):
     # If joincode is None, we need to leave the team we're on, otherwise, join the team
     # Check that we're on a team/not on a team
     teamname = getteamname(userid)
-    if teamname is None:
-        if joincode is None:
-            return False
-    else:
-        if joincode is not None:
-            return False
+    if (teamname is None) == (joincode is None):
+        return False
     db = database.get_db()
+
     with db.cursor() as cur:
-        # Get the members list of the team we're on/joining
-        cur.execute(
-            "SELECT members FROM teams WHERE "
-            + ("joincode=%s" if joincode is not None else "teamname=%s")
-            + " LIMIT 1",
-            ((joincode if joincode is not None else teamname),)
-        )
-        members = cur.fetchone()
-        if members is None:
-            # If there is no team that matches the requirements, fail no matter what
-            return False
-        members = members[0].split(",")
-        if joincode is None:
-            # If we're leaving a team, remove us from the members list
-            members.remove(userid)
-        else:
-            # Otherwise, add us to the members list
-            members.append(userid)
-
-        # Write the members list back to the database
-        cur.execute(
-            "UPDATE teams SET members=%s WHERE "
-            + ("joincode=%s" if joincode is not None else "teamname=%s"),
-            (",".join(members), (joincode if joincode is not None else teamname),)
-        )
-
-        # If we're joining a team, get the teamid
-        if joincode is not None:
+        if joincode is None: # If we're leaving a team
+            # Remove user from member table
             cur.execute(
-                "SELECT id FROM teams WHERE joincode=%s LIMIT 1",
-                (joincode,)
+                "DELETE FROM team_members WHERE memberid=%s", (userid,)
+            )
+            # Set user's teamid to NULL
+            cur.execute(
+                "UPDATE users SET teamid=NULL where id=%s", (userid,)
+            )
+        else: # If we're joining a team
+            # Get team id of joincode
+            cur.execute(
+                "SELECT id FROM teams WHERE joincode=%s LIMIT 1", (joincode,)
             )
             teamid = cur.fetchone()
             if teamid is None:
-                return False
-            teamid = teamid[0]
-        # Otherwise, set the teamid to None
-        else:
-            teamid = None
+                return False # Fail if team doesn't exist
+            # Add user to member table
+            cur.execute(
+                "INSERT INTO team_members (id, memberid) VALUES (%s, %s)"
+                (teamid[0], userid)
+            )
+            # Set user's teamid
+            cur.execute(
+                "UPDATE users SET teamid=%s WHERE id=%s",
+                (teamid[0], userid)
+            )
         
-        # Write the new teamid to users
-        cur.execute(
-            "UPDATE users SET teamid=%s WHERE id=%s",
-            (teamid, userid)
-        )
     db.commit()
     return True
         
@@ -477,19 +461,18 @@ def get_team_members(userid):
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT teamid FROM users WHERE id=%s LIMIT 1",
+            """
+            SELECT t_m.memberid
+            FROM users u
+            INNER JOIN team_members t_m
+            ON u.teamid=t_m.id
+            WHERE u.id=%s
+            """,
             (userid,)
         )
-        teamid = cur.fetchone()
-        if teamid is None:
-            return None
-        teamid = teamid[0]
-        cur.execute(
-            "SELECT members FROM teams WHERE id=%s LIMIT 1",
-            (teamid,)
-        )
-        res = cur.fetchone()
-        return res[0].split(",") if res is not None else None
+        members = cur.fetchall()
+        # If no members in team, empty list is returned
+        return [m[0] for m in members]
 
 def update_tick(context):
     with context:

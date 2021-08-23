@@ -220,7 +220,8 @@ class User:
 
     def alone_on_team(self):
         res = get_team_members(self.id)
-        return len(res) == 1 if res is not None else False
+        # Return true if user's team is empty (which shouldn't happen)
+        return len(res) <= 1
 
     # Static methods
     @staticmethod
