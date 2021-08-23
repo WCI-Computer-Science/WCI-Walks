@@ -393,11 +393,22 @@ def getteamname(userid, joincode=False):
             return None
         teamid = teamid[0]
         cur.execute(
-            "SELECT teamname, joincode FROM teams WHERE id=%s LIMIT 1",
+            "SELECT teamname, distance, joincode FROM teams WHERE id=%s LIMIT 1",
             (teamid,)
         )
         res = cur.fetchone()
-        return (((res[0]) if not joincode else (res[:2])) if res is not None else None)
+        return ((res[0], round(float(res[1]), 1)) if not joincode else (res[:3])) if res is not None else None
+
+
+def getteamname_from_id(teamid):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT teamname, distance FROM teams WHERE id=%s LIMIT 1",
+            (teamid,)
+        )
+        res = cur.fetchone()
+        return (res[0], round(float(res[1]), 1)) if res is not None else None
 
 
 def join_team(userid, joincode=None):

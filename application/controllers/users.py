@@ -125,7 +125,7 @@ def getteampage():
     else: # User is in a team, send them to their team's homepage
         return render_template (
             "teampage.html",
-            teamname=teamdata[0],
+            yourteam=True,
             teamdata=current_user.team_name(joincode=True),
             members=get_team_member_names(userid=current_user.get_id())
         )

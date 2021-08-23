@@ -13,21 +13,24 @@
 
 {% block body %}
 <div id="jointeam" class="admindiv contentw">
-    <h1>{{ teamname }}</h1>
-    {% if teamdata is defined %}
-        <div class="teaminfo">
+    <h1>{{ teamdata[0] }}</h1>
+    <div class="teaminfo">
+        {% if yourteam is defined %}
             <h3>Your team</h3>
             <h4>
-            {% if teamdata[1] != None %}
-                Join code: {{ teamdata[1] }}<br />
+            {% if teamdata[2] != None %}
+                Join code: {{ teamdata[2] }}<br />
                 <a href="/users/teams/newjoincode" class="button adminbutton">New Join Code</a>
                 <a href="/users/teams/removejoincode" class="button adminbutton">Remove Join Code</a>
             {% else %}
                 <a href="/users/teams/newjoincode" class="button adminbutton">Create Join Code</a>
             {% endif %}
             </h4>
-        </div>
-    {% endif %}
+        {% else %}
+            <h3>Competing team</h3>
+        {% endif %}
+        <h4>Distance: {{ teamdata[1] }}</h4>
+    </div>
     <div class="teammembers">
         <h3>Members</h3>
         <ul>
@@ -36,8 +39,8 @@
         {% endfor %}
         </ul>
     </div>
-    {% if teamdata is defined %}
-        <a onclick="confirmLeave()" class="button adminbutton">Leave Team</a><br />
+    {% if yourteam is defined %}
+        <a onclick="confirmLeave()" class="button adminbutton fixwidth">Leave Team</a><br />
     {% endif %}
 </div>
 {% endblock %}

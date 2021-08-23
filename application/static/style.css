@@ -555,9 +555,45 @@ footer a:hover {
 
 /* Teams formatting */
 
+#jointeam {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+#jointeam .fixwidth {
+  width: 153px;
+}
+
+.teaminfo {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.teammembers {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.teammembers li {
+  padding-bottom: 10px;
+}
+
 .teammembers a {
   text-decoration: none;
   color: inherit;
+  font-size: 1.2em;
+}
+
+@media (min-width: 600px) {
+  .teaminfo {
+    grid-column-start: 1;
+    grid-column-end: 2;
+  }
+
+  .teammembers {
+    grid-column-start: 2;
+    grid-column-end: 3;
+  }
 }
 
 /* Privacy Policy and Terms of Service formatting */
