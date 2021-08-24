@@ -1,6 +1,7 @@
 import datetime, sys, requests
 
 from flask import (
+    abort,
     Blueprint,
     flash,
     Markup,
@@ -27,6 +28,7 @@ from application.models.utils import (
     haspayed,
     isadmin,
     isblacklisted,
+    getteamname_from_id,
     join_team,
     new_join_code,
     verify_walk_form,
@@ -126,9 +128,24 @@ def getteampage():
         return render_template (
             "teampage.html",
             yourteam=True,
-            teamdata=current_user.team_name(joincode=True),
+            teamdata=teamdata,
             members=get_team_member_names(userid=current_user.get_id())
         )
+
+@bp.route("/viewteam/<teamid>")
+@login_required
+def viewteam(teamid):
+    # If user is part of that team, redirect them to main teams page
+    if str(current_user.team_id()) == teamid:
+        return redirect("/users/teams")
+    teamdata = getteamname_from_id(teamid)
+    if teamdata is None: # Ensure team exists
+        abort(404)
+    return render_template(
+        "teampage.html",
+        teamdata=teamdata,
+        members=get_team_member_names(teamid=teamid)
+    )
 
 # Page that asks for a join code for a team
 @bp.route("/teams/join", methods=("POST",))

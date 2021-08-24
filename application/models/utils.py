@@ -400,6 +400,19 @@ def getteamname(userid, joincode=False):
         return ((res[0], round(float(res[1]), 1)) if not joincode else (res[:3])) if res is not None else None
 
 
+def getteamid(userid):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT teamid FROM users WHERE id=%s LIMIT 1",
+            (userid,)
+        )
+        teamid = cur.fetchone()
+        if teamid is None:
+            return None
+        return teamid[0]
+
+
 def getteamname_from_id(teamid):
     db = database.get_db()
     with db.cursor() as cur:

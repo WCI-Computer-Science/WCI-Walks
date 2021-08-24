@@ -5,6 +5,7 @@ from application.models.utils import (
     get_team_members,
     get_wrdsbusername_from_id,
     getteamname,
+    getteamid,
     isadmin,
 )
 
@@ -217,6 +218,9 @@ class User:
 
     def team_name(self, joincode=False):
         return getteamname(self.id, joincode=joincode)
+    
+    def team_id(self):
+        return getteamid(self.id)
 
     def alone_on_team(self):
         res = get_team_members(userid=self.id)

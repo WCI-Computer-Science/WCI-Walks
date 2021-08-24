@@ -17,6 +17,11 @@
     <div class="teaminfo">
         {% if yourteam is defined %}
             <h3>Your team</h3>
+        {% else %}
+            <h3>Competing team</h3>
+        {% endif %}
+        <h4>Distance: {{ teamdata[1] }}</h4>
+        {% if yourteam is defined %}
             <h4>
             {% if teamdata[2] != None %}
                 Join code: {{ teamdata[2] }}<br />
@@ -26,10 +31,7 @@
                 <a href="/users/teams/newjoincode" class="button adminbutton">Create Join Code</a>
             {% endif %}
             </h4>
-        {% else %}
-            <h3>Competing team</h3>
         {% endif %}
-        <h4>Distance: {{ teamdata[1] }}</h4>
     </div>
     <div class="teammembers">
         <h3>Members</h3>
