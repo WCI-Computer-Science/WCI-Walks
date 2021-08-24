@@ -15,8 +15,7 @@ def get_all_time_leaderboard():
         cur.execute("SELECT username, distance, wrdsbusername, position, id FROM users;")
         userdistances = cur.fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
-    userdistances = [[i[0], fancy_float(i[1]), i[2], i[3], i[4]] for i in userdistances]
-    return userdistances
+    return [[i[0], fancy_float(i[1]), i[2], i[3], i[4]] for i in userdistances]
 
 
 def get_day_leaderboard(date):
@@ -29,8 +28,41 @@ def get_day_leaderboard(date):
         userdistances = cur.fetchall()
     userdistances.sort(key=lambda user: user[1], reverse=True)
     userdistances = list(map(_convert_id_to_wrdsbusername, userdistances))
-    userdistances = [[i[0], fancy_float(i[1]), i[2]] for i in userdistances]
-    return userdistances
+    return [[i[0], fancy_float(i[1]), i[2]] for i in userdistances]
+
+
+def get_all_time_team_leaderboard():
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute("SELECT teamname, distance, id FROM teams;")
+        teamdistances = cur.fetchall()
+    teamdistances.sort(key=lambda team: team[1], reverse=True)
+    return [[i[0], fancy_float(i[1]), i[2]] for i in teamdistances]
+
+
+#TODO: use caching to make this faster
+def get_day_team_leaderboard(date):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            """
+            SELECT t.teamname, td.distance, t.id
+            FROM teams t
+            INNER JOIN (
+                SELECT u.teamid teamid, SUM(w.distance) distance
+                FROM users u
+                INNER JOIN walks w
+                ON u.id=w.id
+                WHERE w.walkdate=%s
+                GROUP BY u.teamid
+            ) td
+            ON t.id=td.teamid
+            """,
+            (date,)
+        )
+        teamdistances = cur.fetchall()
+    teamdistances.sort(key=lambda team: team[1], reverse=True)
+    return [[i[0], fancy_float(i[1]), i[2]] for i in teamdistances]
 
 
 def get_announcements():
@@ -190,8 +222,52 @@ def update_total():
     return True
 
 
+def update_team_total(teamid=None):
+    print("Starting to update team totals")
+    db = database.get_db()
+    with db.cursor() as cur:
+        if teamid is None:
+            cur.execute(
+                """
+                UPDATE teams t
+                SET distance=s.d
+                FROM (
+                    SELECT teamid, SUM(distance) d
+                    FROM users
+                    GROUP BY teamid
+                ) s
+                WHERE t.id=s.teamid
+                """
+            )
+        else:
+            cur.execute(
+                """
+                UPDATE teams t
+                SET distance=s.d
+                FROM (
+                    SELECT teamid, SUM(distance) d
+                    FROM users
+                    GROUP BY teamid
+                ) s
+                WHERE t.id=s.teamid
+                AND s.teamid=%s
+                """,
+                (teamid,)
+            )
+    db.commit()
+    print("Done updating team totals!")
+
+
 def add_to_total(num, cur):
     cur.execute("UPDATE total SET distance=distance+%s", (num,))
+
+
+def add_to_team(num, teamid, cur):
+    cur.execute(
+        "UPDATE teams SET distance=distance+%s WHERE id=%s",
+        (num, teamid)
+    )
+
 
 def fancy_float(n):
     try:
@@ -277,6 +353,7 @@ def edit_distance_update(distance, date, wrdsbusername):
                 (distancechange, userid)
             )
             add_to_total(distancechange, cur)
+            add_to_team(distance, getteamid(userid), cur)
             db.commit()
 
 def autoload_day(userid, username, date, cur):
@@ -298,6 +375,7 @@ def autoload_day(userid, username, date, cur):
                 (round(distance, 1), userid, date)
             )
             add_to_total(distance-float(walk[0]), cur)
+            add_to_team(distance-float(walk[0]), getteamid(userid), cur)
     elif round(distance, 1) > 0:
         cur.execute(
             "UPDATE users SET distance=distance+%s WHERE id=%s;",
@@ -311,6 +389,7 @@ def autoload_day(userid, username, date, cur):
             (userid, username, round(distance, 1), date),
         )
         add_to_total(distance, cur)
+        add_to_team(distance, getteamid(userid), cur)
     print("Success")
 
 def autoload_day_all(date): # Autoload all users with google fit connected
@@ -323,7 +402,7 @@ def autoload_day_all(date): # Autoload all users with google fit connected
             try:
                 autoload_day(userid, username, date, cur)
             except:
-                print("Something went wrong")
+                print("Something went wrong. Possibly revoked access token.")
     db.commit()
     print("Done autoloading all")
 
@@ -378,6 +457,8 @@ def create_team(userid):
             "UPDATE users SET teamid=%s WHERE id=%s",
             (teamid, userid)
         )
+        # Initialize the team distance
+        update_team_total(teamid=teamid)
     db.commit()
 
 
@@ -438,6 +519,8 @@ def join_team(userid, joincode=None):
             cur.execute(
                 "DELETE FROM team_members WHERE memberid=%s", (userid,)
             )
+            # Get user's teamid
+            teamid = getteamid(userid)
             # Set user's teamid to NULL
             cur.execute(
                 "UPDATE users SET teamid=NULL where id=%s", (userid,)
@@ -450,17 +533,19 @@ def join_team(userid, joincode=None):
             teamid = cur.fetchone()
             if teamid is None:
                 return False # Fail if team doesn't exist
+            teamid = teamid[0]
             # Add user to member table
             cur.execute(
                 "INSERT INTO team_members (id, memberid) VALUES (%s, %s)",
-                (teamid[0], userid)
+                (teamid, userid)
             )
             # Set user's teamid
             cur.execute(
                 "UPDATE users SET teamid=%s WHERE id=%s",
-                (teamid[0], userid)
+                (teamid, userid)
             )
-        
+        # Either way, update team distance
+        update_team_total(teamid=teamid)
     db.commit()
     return True
         
@@ -565,3 +650,4 @@ def long_update_tick(context):
     with context:
         multiply_by_factor(date.today()-timedelta(days=1))
         update_total()
+        update_team_total()

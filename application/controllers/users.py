@@ -22,6 +22,7 @@ from wtforms import (
 from application.models import *
 from application.models.utils import (
     add_to_total,
+    add_to_team,
     cap_distance,
     create_team,
     get_credentials_from_wrdsbusername,
@@ -78,6 +79,7 @@ def info():
                 current_user.update_walk(distance, date, walk, cur)
 
                 add_to_total(distance, cur)
+                add_to_team(distance, current_user.team_id(), cur)
 
                 current_user.add_distance(distance)
                 current_user.update_distance_db(cur)

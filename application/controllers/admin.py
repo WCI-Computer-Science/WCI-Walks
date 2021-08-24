@@ -8,6 +8,8 @@ from flask_login import current_user, login_required
 from application.models import *
 from application.models.utils import (
     add_to_total,
+    add_to_team,
+    getteamid,
     edit_distance_update,
     fancy_float,
     get_all_time_leaderboard,
@@ -293,6 +295,7 @@ def deleteuser(wrdsbusername):
                 if request.form.get("unpay") == "on":
                     cur.execute("DELETE FROM payed WHERE email=%s", (user["email"],))
                 add_to_total(-user["distance"], cur)
+                add_to_team(-user["distance"], getteamid(user["id"]), cur)
                 cur.execute("DELETE FROM users WHERE id=%s;", (user["id"],))
                 cur.execute("DELETE FROM walks WHERE id=%s;", (user["id"],))
             db.commit()
