@@ -43,13 +43,12 @@
 
 {% block body %}
 <div id="profile" class="profilediv contentw">
-    <h1>Welcome back, {{ username }}.
-    {% if current_user.get_leaderboard_position() not in ["", None] or (current_user.get_likes()!=0 or current_user.get_new_likes()!=0) %}<h3>{% endif %}
+    <h1>Welcome back, {{ username }}.</h1>
+    <h3>Distance: {{ distance }} <br /><br />
     {% if current_user.get_leaderboard_position() not in ["", None] %}You are currently position {{current_user.get_leaderboard_position()}} on the leaderboard.{% endif %}
     {% if current_user.get_leaderboard_position() not in ["", None] and (current_user.get_likes()!=0 or current_user.get_new_likes()!=0) %}<br />{% endif %}
     {% if current_user.get_likes()!=0 or current_user.get_new_likes()!=0 %}You have {% if current_user.get_likes()>=0 %}{{ current_user.get_likes() }}{% else %}0{% endif %} like{% if current_user.get_likes()>1 %}s{% endif %}{% if current_user.get_new_likes()!=0 %} ({% if current_user.get_new_likes()>0 %}+{% endif %}{{current_user.get_new_likes(clear=True)}} since last time){% endif %}.{% endif %}
-    {% if current_user.get_leaderboard_position() not in ["", None] or (current_user.get_likes()!=0 or current_user.get_new_likes()!=0) %}</h3>{% endif %}
-    </h1>
+    </h3>
     <div id="distancediv">
         {% if not current_user.connected_with_googlefit(current_user.id) %}
             {% for message in get_flashed_messages() %}
