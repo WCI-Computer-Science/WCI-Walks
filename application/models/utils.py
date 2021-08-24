@@ -353,7 +353,7 @@ def edit_distance_update(distance, date, wrdsbusername):
                 (distancechange, userid)
             )
             add_to_total(distancechange, cur)
-            add_to_team(distance, getteamid(userid), cur)
+            add_to_team(distancechange, getteamid(userid), cur)
             db.commit()
 
 def autoload_day(userid, username, date, cur):

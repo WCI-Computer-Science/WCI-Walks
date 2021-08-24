@@ -40,7 +40,13 @@ def updatetotal():
     update_total()
     return render_template("updatetotalsuccess.html")
 
-
+@bp.route("/updateteamtotal")
+@login_required
+def updateteamtotal():
+    if not current_user.is_admin():
+        abort(403)
+    update_team_total()
+    return render_template("updatetotalsuccess.html")
 
 @bp.route("/getuserlist")
 @login_required
