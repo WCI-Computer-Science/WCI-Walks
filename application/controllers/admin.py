@@ -10,9 +10,16 @@ from application.models.utils import (
     add_to_total,
     add_to_team,
     getteamid,
+    join_team,
     edit_distance_update,
     fancy_float,
+    create_team,
+    delete_team,
     get_all_time_leaderboard,
+    get_all_time_team_leaderboard,
+    get_team_member_names,
+    getteamname_from_id,
+    new_join_code,
     get_credentials_from_wrdsbusername,
     get_edit_distance_data,
     get_announcements,
@@ -58,6 +65,20 @@ def getuserlist():
     userlist.sort(key=lambda user: user[0])
     return json.dumps(userlist)
 
+@bp.route("/getteamlist")
+@login_required
+def getteamlist():
+    if not current_user.is_admin():
+        abort(403)
+    return json.dumps(get_all_time_team_leaderboard())
+
+@bp.route("/getteammemberlist/<teamid>")
+@login_required
+def getteammemberlist(teamid):
+    if not current_user.is_admin():
+        abort(403)
+    return json.dumps(get_team_member_names(teamid=teamid))
+
 @bp.route("/getpaymentlist")
 @login_required
 def getpaymentlist():
@@ -99,6 +120,13 @@ def searchforuser():
         abort(403)
     return render_template("searchforuser.html")
 
+@bp.route("/searchforteam")
+@login_required
+def searchforteam():
+    if not current_user.is_admin():
+        abort(403)
+    return render_template("searchforteam.html")
+
 @bp.route("/editpayments")
 @login_required
 def editpayments():
@@ -119,6 +147,77 @@ def editmultipliers():
     if not current_user.is_admin():
         abort(403)
     return render_template("editmultipliers.html")
+
+
+
+# Page that lets you create a team
+@bp.route("/teams/create")
+@login_required
+def newteam():
+    if not current_user.is_admin():
+        abort(403)
+    create_team(current_user.get_id())
+    return redirect("/users/teams")
+
+# Page that lets you edit team name and members
+@bp.route("/teams/edit/<teamid>", methods=("GET", "POST"))
+@login_required
+def editteam(teamid):
+    if not current_user.is_admin():
+        abort(403)
+    
+    if request.method == "POST":
+        new_name = request.form.get("name")
+        if new_name:
+            db = database.get_db()
+            with db.cursor() as cur:
+                cur.execute(
+                    "UPDATE teams SET teamname=%s WHERE id=%s",
+                    (new_name, teamid)
+                )
+            db.commit()
+            flash("Successfully updated team name!")
+
+    return render_template(
+        "teamedit.html",
+        teamid=teamid,
+        teamdata=getteamname_from_id(teamid)
+    )
+
+# Endpoint that deletes a team
+@bp.route("/teams/delete/<teamid>")
+@login_required
+def deleteteam(teamid):
+    if not current_user.is_admin():
+        abort(403)
+    delete_team(teamid)
+    return redirect("/users/teams")
+
+# Endpoint to generate a new join code
+@bp.route("/removeteammember/<teamid>/<wrdsbusername>")
+@login_required
+def removeteammember(teamid, wrdsbusername):
+    join_team(get_credentials_from_wrdsbusername(wrdsbusername)[0])
+    flash("Successfully removed team member!")
+    return redirect("/admin/teams/edit/" + teamid)
+
+# Page to generate a new join code
+@bp.route("/teams/newjoincode/<teamid>")
+@login_required
+def newjoincode(teamid):
+    if not current_user.is_admin():
+        abort(403)
+    new_join_code(teamid)
+    return redirect("/users/viewteam/"+str(teamid))
+
+# Page to generate a new join code
+@bp.route("/teams/removejoincode/<teamid>")
+@login_required
+def removejoincode(teamid):
+    if not current_user.is_admin():
+        abort(403)
+    new_join_code(teamid, remove=True)
+    return redirect("/users/viewteam/"+str(teamid))
 
 
 
@@ -280,7 +379,7 @@ def deleteuser(wrdsbusername):
     if request.method == "POST":
         if isadmin(user["id"]):
             flash(
-                "You can't delete the account of an active admin! Have Tristan or Scott revoke their admin powers first."
+                "You can't delete the account of an active admin! Have an admin revoke their admin powers first."
             )
         elif request.form.get("confirm") == wrdsbusername:
             db = database.get_db()
@@ -304,6 +403,7 @@ def deleteuser(wrdsbusername):
                 add_to_team(-user["distance"], getteamid(user["id"]), cur)
                 cur.execute("DELETE FROM users WHERE id=%s;", (user["id"],))
                 cur.execute("DELETE FROM walks WHERE id=%s;", (user["id"],))
+                join_team(user["id"])
             db.commit()
             return redirect("/admin"), 303
         else:

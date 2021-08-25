@@ -14,6 +14,28 @@
 {% block body %}
 <div id="jointeam" class="admindiv contentw">
     <h1>{{ teamdata[0] }}</h1>
+    {% if current_user is defined and current_user.is_authenticated and current_user.is_admin() %}
+    <div id="teamadmin">
+        {% if teamdata[2] != None and yourteam is not defined %}
+            <h4>Join code: {{ teamdata[2] }}</h4>
+        {% endif %}
+        <span class="admincontrol" style="float:right">
+            <a href="/admin/teams/edit/{{teamid}}" class="button adminbutton">Edit</a>
+        </span>
+        {% if teamdata[2] != None %}
+            <span class="admincontrol" style="float:right">
+                <a href="/admin/teams/removejoincode/{{teamid}}" class="button adminbutton">Remove Join Code</a>
+            </span>
+            <span class="admincontrol" style="float:right">
+                <a href="/admin/teams/newjoincode/{{teamid}}" class="button adminbutton">New Join Code</a>
+            </span>
+        {% else %}
+            <span class="admincontrol" style="float:right">
+                <a href="/admin/teams/newjoincode/{{teamid}}" class="button adminbutton">Create Join Code</a>
+            </span>
+        {% endif %}
+    </div>
+    {% endif %}
     <div class="teaminfo">
         {% if yourteam is defined %}
             <h3>Your team</h3>
@@ -22,15 +44,9 @@
         {% endif %}
         <h4>Distance: {{ teamdata[1] }}</h4>
         {% if yourteam is defined %}
-            <h4>
             {% if teamdata[2] != None %}
-                Join code: {{ teamdata[2] }}<br />
-                <a href="/users/teams/newjoincode" class="button adminbutton">New Join Code</a>
-                <a href="/users/teams/removejoincode" class="button adminbutton">Remove Join Code</a>
-            {% else %}
-                <a href="/users/teams/newjoincode" class="button adminbutton">Create Join Code</a>
+            <h4>Join code: {{ teamdata[2] }}<br /></h4>
             {% endif %}
-            </h4>
         {% endif %}
     </div>
     <div class="teammembers">

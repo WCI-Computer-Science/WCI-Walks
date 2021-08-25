@@ -1,0 +1,70 @@
+{% extends "utils/layout.html" %}
+{% block scripts %}
+<script>
+    async function generateTable() {
+        let teamlist = await fetch('/admin/getteamlist');
+        teamlist = await teamlist.json();
+        
+        let table = document.getElementById('searchlist').getElementsByTagName('tbody')[0];
+        table.innerHTML = '';
+
+        if (teamlist.length > 0)
+            for (i of teamlist) {
+                let row = table.insertRow();
+                let endpoint = '/users/viewteam/' + i[2];
+
+                let nameData = row.insertCell();
+                let nameLink = document.createElement('a');
+                let nameText = document.createTextNode(i[0]);
+                nameLink.appendChild(nameText);
+                nameLink.href = endpoint;
+                nameData.appendChild(nameLink);
+                nameData.classList.add('name');
+
+                let distanceData = row.insertCell();
+                let distanceLink = document.createElement('a');
+                let distanceText = document.createTextNode(i[1]);
+                distanceLink.appendChild(distanceText);
+                distanceLink.href = endpoint;
+                distanceData.appendChild(distanceLink);
+                distanceData.classList.add('distance');
+
+            }
+        else {
+            let row = table.insertRow();
+            let data = row.insertCell();
+            data.appendChild(document.createTextNode("No matches found!"));
+        }
+    }
+
+    window.onload = () => {
+        generateTable();
+    }
+
+</script>
+{% endblock %}
+{% block body %}
+<div class="contentw admindiv">
+    <h1>Search For Team</h1>
+    <table id="searchlist">
+        <thead>
+            <tr>
+                <th class="name">
+                    Name
+                </th>
+                <th class="distance">
+                    Distance walked
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    Loading...
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+

@@ -132,6 +132,7 @@ def getteampage():
             "teampage.html",
             yourteam=True,
             teamdata=teamdata,
+            teamid=current_user.team_id(),
             members=get_team_member_names(userid=current_user.get_id())
         )
 
@@ -147,6 +148,7 @@ def viewteam(teamid):
     return render_template(
         "teampage.html",
         teamdata=teamdata,
+        teamid=teamid,
         members=get_team_member_names(teamid=teamid)
     )
 
@@ -159,32 +161,11 @@ def jointeam():
         flash("Sorry, that's not a valid join code. Please try again.")
     return redirect("/users/teams")
 
-# Page that lets you create a team
-@bp.route("/teams/create")
-@login_required
-def newteam():
-    create_team(current_user.get_id())
-    return redirect("/users/teams")
-
 # Page that lets you leave the team you're on
 @bp.route("/teams/leave", methods=("GET", "POST"))
 @login_required
 def leaveteam():
     join_team(current_user.get_id())
-    return redirect("/users/teams")
-
-# Page to generate a new join code
-@bp.route("/teams/newjoincode")
-@login_required
-def newjoincode():
-    new_join_code(current_user.get_id())
-    return redirect("/users/teams")
-
-# Page to generate a new join code
-@bp.route("/teams/removejoincode")
-@login_required
-def removejoincode():
-    new_join_code(current_user.get_id(), remove=True)
     return redirect("/users/teams")
 
 @bp.route("/togglegooglefit")

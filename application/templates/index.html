@@ -173,29 +173,27 @@
                     </th>
                 </tr>
                 {% for i in range(0, [alltimeteamleaderboard|length, 30] | min) %}
-                    {% if alltimeteamleaderboard[i][1]>0 %} 
-                        <tr>
-                            <td class="rank">
-                                <a href="/users/viewprofile/{{alltimeteamleaderboard[i][2]}}">
-                                    {{i+1}}.
-                                </a>
-                            </td>
-                            {% if alltimeteamleaderboard[i][0]|length > 16 %}
-                                <td class="name small">
-                            {% else %}
-                                <td class="name">
-                            {% endif %}
-                                <a href="/users/viewteam/{{alltimeteamleaderboard[i][2]}}">
-                                    {{alltimeteamleaderboard[i][0]}}
-                                </a>
-                            </td>
-                            <td class="distance">
-                                <a href="/users/viewteam/{{alltimeteamleaderboard[i][2]}}">
-                                    {{alltimeteamleaderboard[i][1]}}
-                                </a>
-                            </td>
-                        </tr>
-                    {% endif %}
+                    <tr>
+                        <td class="rank">
+                            <a href="/users/viewteam/{{alltimeteamleaderboard[i][2]}}">
+                                {{i+1}}.
+                            </a>
+                        </td>
+                        {% if alltimeteamleaderboard[i][0]|length > 16 %}
+                            <td class="name small">
+                        {% else %}
+                            <td class="name">
+                        {% endif %}
+                            <a href="/users/viewteam/{{alltimeteamleaderboard[i][2]}}">
+                                {{alltimeteamleaderboard[i][0]}}
+                            </a>
+                        </td>
+                        <td class="distance">
+                            <a href="/users/viewteam/{{alltimeteamleaderboard[i][2]}}">
+                                {{alltimeteamleaderboard[i][1]}}
+                            </a>
+                        </td>
+                    </tr>
                 {% endfor %}
             {% else %}
                 <tr><td>No team has walked yet.</td></tr>
@@ -217,33 +215,31 @@
                     </th>
                 </tr>
                 {% for i in range(0, [yesterdayteamleaderboard|length, 30] | min) %}
-                    {% if yesterdayteamleaderboard[i][1]>0 %}
-                        <tr>
-                            <td class="rank">
-                                <a href="/users/viewprofile/{{yesterdayteamleaderboard[i][2]}}">
-                                    {{i+1}}.
-                                </a>
-                            </td>
-                            {% if yesterdayteamleaderboard[i][0]|length > 16 %}
-                                <td class="name small">
-                            {% else %}
-                                <td class="name">
-                            {% endif %}
-                                <a href="/users/viewprofile/{{yesterdayteamleaderboard[i][2]}}">
-                                    {{yesterdayteamleaderboard[i][0]}}
-                                </a>
-                            </td>
-                            <td class="distance">
-                                <a href="/users/viewprofile/{{yesterdayteamleaderboard[i][2]}}">
-                                    {% if multiplier %}
-                                        {{yesterdayteamleaderboard[i][1]}} x {{multiplier}}
-                                    {% else %}
-                                        {{yesterdayteamleaderboard[i][1]}}
-                                    {% endif %}
-                                </a>
-                            </td>
-                        </tr>
-                    {% endif %}
+                    <tr>
+                        <td class="rank">
+                            <a href="/users/viewteam/{{yesterdayteamleaderboard[i][2]}}">
+                                {{i+1}}.
+                            </a>
+                        </td>
+                        {% if yesterdayteamleaderboard[i][0]|length > 16 %}
+                            <td class="name small">
+                        {% else %}
+                            <td class="name">
+                        {% endif %}
+                            <a href="/users/viewteam/{{yesterdayteamleaderboard[i][2]}}">
+                                {{yesterdayteamleaderboard[i][0]}}
+                            </a>
+                        </td>
+                        <td class="distance">
+                            <a href="/users/viewteam/{{yesterdayteamleaderboard[i][2]}}">
+                                {% if multiplier %}
+                                    {{yesterdayteamleaderboard[i][1]}} x {{multiplier}}
+                                {% else %}
+                                    {{yesterdayteamleaderboard[i][1]}}
+                                {% endif %}
+                            </a>
+                        </td>
+                    </tr>
                 {% endfor %}
             {% else %}
                 <tr><td>No team has walked today yet.</td></tr>

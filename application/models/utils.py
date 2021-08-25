@@ -254,6 +254,15 @@ def update_team_total(teamid=None):
                 """,
                 (teamid,)
             )
+        cur.execute(
+            """
+            UPDATE teams
+            SET distance=0
+            WHERE id NOT IN (
+                SELECT id FROM team_members
+            )
+            """
+        )
     db.commit()
     print("Done updating team totals!")
 
@@ -295,20 +304,20 @@ def update_leaderboard_positions():
                 )
     db.commit()
 
-def remove_empty_teams():
+"""def remove_empty_teams():
     print("Removing empty teams...")
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            """
+            \"""
             DELETE FROM teams
             WHERE id NOT IN (
                 SELECT id FROM team_members
             )
-            """
+            \"""
         )
         print(f"Removed {cur.rowcount} empty teams.")
-    db.commit()
+    db.commit()"""
 
 def verify_walk_form(form, id):
     try:
@@ -462,6 +471,23 @@ def create_team(userid):
     db.commit()
 
 
+def delete_team(teamid):
+    db = database.get_db()
+    with db.cursor() as cur:
+        # Remove team members
+        cur.execute(
+            "DELETE FROM team_members WHERE id=%s", (teamid,)
+        )
+        cur.execute(
+            "UPDATE users SET teamid=NULL where teamid=%s", (teamid,)
+        )
+        # Remove team
+        cur.execute(
+            "DELETE FROM teams WHERE id=%s", (teamid,)
+        )
+    db.commit()
+
+
 def getteamname(userid, joincode=False):
     db = database.get_db()
     with db.cursor() as cur:
@@ -498,11 +524,11 @@ def getteamname_from_id(teamid):
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT teamname, distance FROM teams WHERE id=%s LIMIT 1",
+            "SELECT teamname, distance, joincode FROM teams WHERE id=%s LIMIT 1",
             (teamid,)
         )
         res = cur.fetchone()
-        return (res[0], round(float(res[1]), 1)) if res is not None else None
+        return (res[0], round(float(res[1]), 1), res[2]) if res is not None else None
 
 
 def join_team(userid, joincode=None):
@@ -550,18 +576,14 @@ def join_team(userid, joincode=None):
     return True
         
 
-def new_join_code(userid, remove=False):
-    teamname = getteamname(userid)
+def new_join_code(teamid, remove=False):
+    teamname = getteamname_from_id(teamid)
     if not teamname:
         return
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT id FROM teams WHERE teamname=%s LIMIT 1", (teamname,)
-        )
-        teamid = cur.fetchone()[0]
-        cur.execute(
-            "UPDATE teams SET joincode=%s WHERE teamname=%s",
+            "UPDATE teams SET joincode=%s WHERE id=%s",
             (
                 (
                     "".join([
@@ -572,7 +594,7 @@ def new_join_code(userid, remove=False):
                     ]) + str(teamid)
                     if not remove else None
                 ),
-                teamname,
+                teamid,
             )
         )
     db.commit()
@@ -643,7 +665,6 @@ def get_team_member_names(userid=None, teamid=None):
 def update_tick(context):
     with context:
         update_leaderboard_positions()
-        remove_empty_teams()
 #        autoload_day_all(date.today())
 
 def long_update_tick(context):

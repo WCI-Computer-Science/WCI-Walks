@@ -645,16 +645,34 @@ footer a:hover {
 
 #jointeam .fixwidth {
   width: 153px;
+  grid-row-start: 5;
+  grid-row-start: 6;
+}
+
+#jointeam h1 {
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+#teamadmin {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
 }
 
 .teaminfo {
   grid-column-start: 1;
   grid-column-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
 }
 
 .teammembers {
   grid-column-start: 1;
   grid-column-end: 3;
+  grid-row-start: 4;
+  grid-row-end: 5;
 }
 
 .teammembers li {
@@ -676,6 +694,8 @@ footer a:hover {
   .teammembers {
     grid-column-start: 2;
     grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
   }
 }
 
