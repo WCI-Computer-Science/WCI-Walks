@@ -665,7 +665,7 @@ def get_team_member_names(userid=None, teamid=None):
 def update_tick(context):
     with context:
         update_leaderboard_positions()
-#        autoload_day_all(date.today())
+        autoload_day_all(date.today())
 
 def long_update_tick(context):
     with context:
