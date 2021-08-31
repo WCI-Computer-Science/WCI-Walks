@@ -374,8 +374,11 @@ def edit_distance_update(distance, date, wrdsbusername):
             add_to_team(distancechange, getteamid(userid), cur)
             db.commit()
 
-def autoload_day(userid, username, date, cur):
+def autoload_day(userid, username, email, date, cur):
     print("Autoloading for " + username)
+    if not haspayed(email):
+        print("Isn't eligible (not in payed table)")
+        return
     distance = get_day_distance(userid, date)
     cur.execute(
             "SELECT distance FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
@@ -414,11 +417,11 @@ def autoload_day_all(date): # Autoload all users with google fit connected
     db = database.get_db()
     print("Autoloading all")
     with db.cursor() as cur:
-        cur.execute("SELECT id, username FROM users WHERE googlefit=True;")
+        cur.execute("SELECT id, username, email FROM users WHERE googlefit=True;")
         users = cur.fetchall()
-        for userid, username in users:
+        for userid, username, email in users:
             try:
-                autoload_day(userid, username, date, cur)
+                autoload_day(userid, username, email, date, cur)
             except:
                 print("Something went wrong. Possibly revoked access token.")
     db.commit()
