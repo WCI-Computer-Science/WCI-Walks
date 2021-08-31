@@ -210,6 +210,15 @@ def update_total():
                 WHERE u.id=t.id;
                 """
             )
+            cur.execute(
+                """
+                UPDATE users
+                SET distance=0
+                WHERE id NOT IN (
+                    SELECT id FROM walks
+                )
+                """
+            )
             cur.execute("DELETE FROM walks WHERE distance=0;")
         db.commit()
         print("Done updating user totals.\nStarting to update global total!")
