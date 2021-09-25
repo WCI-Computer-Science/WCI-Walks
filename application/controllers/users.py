@@ -284,9 +284,9 @@ def confirmlogin():
             idinfo = oauth.get_id_info(token)
 
             if idinfo.get("email_verified") and idinfo.get("hd") == "wrdsb.ca":
-                userid = idinfo["sub"]
                 email = idinfo["email"]
                 username = idinfo["name"]
+                userid = email.split("@")[0] + idinfo["given_name"].lower()
             else:
                 flash("Email invalid. Are you using your WRDSB email?")
                 return redirect(url_for("users.login"))
@@ -296,9 +296,9 @@ def confirmlogin():
             idinfo = oauth.backup_get_id_info(token)
         
             if idinfo.get("email_verified") and idinfo.get("email")[-8:] == "wrdsb.ca":
-                userid = idinfo["sub"]
                 email = idinfo["email"]
                 username = idinfo["name"]
+                userid = email.split("@")[0] + idinfo["given_name"].lower()
             else:
                 flash("Email invalid. Are you using your WRDSB email?")
                 return redirect(url_for("users.login"))
