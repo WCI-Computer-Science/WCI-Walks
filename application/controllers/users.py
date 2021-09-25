@@ -264,6 +264,11 @@ def authorize():
     if current_user.is_authenticated:
         return redirect(url_for("users.info"))
 
+    # Backup Auth ###
+    if current_app.config.get("USE_BACKUP"):
+        backup_auth_url = oauth.backup_get_auth_url()
+        return redirect(backup_auth_url)
+
     auth_url = oauth.get_auth_url()
     return redirect(auth_url)
 
@@ -272,16 +277,31 @@ def authorize():
 def confirmlogin():
     try:
         code = request.args.get("code")
-        token, refresh = oauth.get_access_token(code)
-        idinfo = oauth.get_id_info(token)
 
-        if idinfo.get("email_verified") and idinfo.get("hd") == "wrdsb.ca":
-            userid = idinfo["sub"]
-            email = idinfo["email"]
-            username = idinfo["name"]
+        # Normal Auth
+        if not current_app.config.get("USE_BACKUP"):
+            token, refresh = oauth.get_access_token(code)
+            idinfo = oauth.get_id_info(token)
+
+            if idinfo.get("email_verified") and idinfo.get("hd") == "wrdsb.ca":
+                userid = idinfo["sub"]
+                email = idinfo["email"]
+                username = idinfo["name"]
+            else:
+                flash("Email invalid. Are you using your WRDSB email?")
+                return redirect(url_for("users.login"))
+        # Backup auth
         else:
-            flash("Email invalid. Are you using your WRDSB email?")
-            return redirect(url_for("users.login"))
+            token, refresh = oauth.backup_get_access_token(code)
+            idinfo = oauth.backup_get_id_info(token)
+        
+            if idinfo.get("email_verified") and idinfo.get("email")[-8:] == "wrdsb.ca":
+                userid = idinfo["sub"]
+                email = idinfo["email"]
+                username = idinfo["name"]
+            else:
+                flash("Email invalid. Are you using your WRDSB email?")
+                return redirect(url_for("users.login"))
 
         db = database.get_db()
         if isblacklisted(userid, email):
@@ -304,7 +324,7 @@ def confirmlogin():
                 current_user.write_db(cur)
                 if refresh:
                     current_user.add_refresh(refresh, cur)
-                else:
+                elif not current_app.config.get("USE_BACKUP"):
                     return redirect(oauth.get_auth_url() + "&prompt=consent")
                     # This should only happen if the refresh token is lost
                     # due to deleting and re-adding user, server crash, etc
@@ -314,7 +334,7 @@ def confirmlogin():
                 if not oauth.get_refresh(current_user.id):
                     if refresh:
                         current_user.add_refresh(refresh, cur)
-                    else:
+                    elif not current_app.config.get("USE_BACKUP"):
                         return redirect(oauth.get_auth_url() + "&prompt=consent")
                         # Same situations as above
             db.commit()

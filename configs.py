@@ -40,3 +40,19 @@ OAUTH_SCOPES = [
     "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/fitness.location.read"
 ]
+
+
+# For backup authentication service. Currently: auth0.com
+# Should be used only until Google Cloud works again.
+USE_BACKUP = True # Whether the backup auth servcce should be used
+BACKUP_OAUTH_SCOPES = [
+    "openid",
+    "profile",
+    "email"
+]
+try:
+    BACKUP_CLIENT_ID = os.environ["BACKUP_CLIENT_ID"]
+    BACKUP_CLIENT_SECRET = os.environ["BACKUP_CLIENT_SECRET"]
+except:
+    BACKUP_CLIENT_ID = ""
+    BACKUP_CLIENT_SECRET = ""
