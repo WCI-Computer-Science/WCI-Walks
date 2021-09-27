@@ -24,7 +24,7 @@
             let row = table.insertRow();
 
             let data = row.insertCell();
-            let text = document.createTextNode(i+"@wrdsb.ca");
+            let text = document.createTextNode(i + (i != "all" ? "@wrdsb.ca" : ""));
             data.appendChild(text);
             data.setAttribute('onclick', `confirmDelete("${i}")`);
             data.classList.add('buttonrow');
@@ -51,6 +51,7 @@
   {% endfor %}
   <h2>Add a Payment</h2>
   <p>Write the email with or without the domain of the student who made the payment.</p>
+  <p>Insert "all" in order for all students to be eligible. Use this if you aren't keeping track of payments.</p>
   <label for="addemail">Enter an email:</label>
   <input id="addemail" name="email" type="text" oninput="generateTable()"><br />
   <button id="fakesubmit" onclick="addPayment()">Add</button><br />

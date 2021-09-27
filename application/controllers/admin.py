@@ -193,10 +193,12 @@ def deleteteam(teamid):
     delete_team(teamid)
     return redirect("/users/teams")
 
-# Endpoint to generate a new join code
+# Endpoint to remove a team member
 @bp.route("/removeteammember/<teamid>/<wrdsbusername>")
 @login_required
 def removeteammember(teamid, wrdsbusername):
+    if not current_user.is_admin():
+        abort(403)
     join_team(get_credentials_from_wrdsbusername(wrdsbusername)[0])
     flash("Successfully removed team member!")
     return redirect("/admin/teams/edit/" + teamid)
@@ -227,7 +229,7 @@ def addpayment(wrdsbusername):
     if not current_user.is_admin():
         abort(403)
 
-    email = wrdsbusername + "@wrdsb.ca"
+    email = wrdsbusername + ("@wrdsb.ca" if wrdsbusername != "all" else "")
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
@@ -252,7 +254,7 @@ def deletepayment(wrdsbusername):
     if not current_user.is_admin():
         abort(403)
 
-    email = wrdsbusername + "@wrdsb.ca"
+    email = wrdsbusername + ("@wrdsb.ca" if wrdsbusername != "all" else "")
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(

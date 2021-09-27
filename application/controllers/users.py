@@ -309,7 +309,7 @@ def confirmlogin():
                 "You have been banned from WCI Walks and cannot create an account or log in. Please contact us if you think this is a mistake."
             )
             return redirect(url_for("users.login"))
-        if not(haspayed(email)) and not(isadmin(userid)):
+        if not(haspayed(email)) and not (haspayed("all")) and not(isadmin(userid)):
             flash(Markup(
                 "You need to pay the participation fee before you can track your walks! Please email <a href=\"mailto:haos8097@wrdsb.ca\" target=\"_blank\">Scott</a> if you've already done so."
             ))

@@ -17,6 +17,11 @@ CREATE TABLE IF NOT EXISTS multipliers (
     factor INT NOT NULL
 );
 
+/* Eligible users */
+CREATE TABLE IF NOT EXISTS payed (
+    email TEXT UNIQUE
+)
+
 /* Info stored for each user:
     id: used to identify each user
     email: ensure user exists and is part of WRDSB
