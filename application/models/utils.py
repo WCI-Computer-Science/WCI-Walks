@@ -376,7 +376,7 @@ def edit_distance_update(distance, date, wrdsbusername):
 
 def autoload_day(userid, username, email, date, cur):
     print("Autoloading for " + username)
-    if not haspayed(email):
+    if not haspayed(email) and not haspayed("all"):
         print("Isn't eligible (not in payed table)")
         return
     distance = get_day_distance(userid, date)
