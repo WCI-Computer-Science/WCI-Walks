@@ -38,13 +38,13 @@ OAUTH_SCOPES = [
     "openid",
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",
-    "https://www.googleapis.com/auth/fitness.location.read"
+    #"https://www.googleapis.com/auth/fitness.location.read"
 ]
 
 
 # For backup authentication service. Currently: auth0.com
 # Should be used only until Google Cloud works again.
-USE_BACKUP = True # Whether the backup auth servcce should be used
+USE_BACKUP = False # Whether the backup auth servcce should be used
 BACKUP_OAUTH_SCOPES = [
     "openid",
     "profile",
