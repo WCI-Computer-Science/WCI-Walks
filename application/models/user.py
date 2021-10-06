@@ -209,6 +209,12 @@ class User:
                 walks[walkdate] = walkdistance
 
         return list(walks.keys()), list(walks.values())
+    
+    def toggle_googlefit(self, userid, cur, val=None):
+        if val is None:
+            cur.execute("UPDATE users SET googlefit = NOT googlefit WHERE id=%s;", (userid,))
+        else:
+            cur.execute("UPDATE users SET googlefit=%s WHERE id=%s;", (val, userid))
 
     def get_id(self):
         return self.id
@@ -240,10 +246,6 @@ class User:
             cur.execute("SELECT googlefit FROM users WHERE id=%s;", (userid,))
             googlefit = cur.fetchone()[0]
         return googlefit
-    
-    @staticmethod
-    def toggle_googlefit(userid, cur):
-        cur.execute("UPDATE users SET googlefit = NOT googlefit WHERE id=%s;", (userid,))
 
 @login_manager.user_loader
 def load_user(userid):

@@ -18,7 +18,7 @@ To take over support of this project please:
 WCI Walks tracks the walkathon progress of students at WCI. It tracks individual as well as total progress.
 
 Each student can sign up for an account, and then log in.
-Once logged in, they can access user-specific information. This includes the distance they walked on different days, whether they're on the leaderboard, personal statistics, etc. They have two options to log their distances: downloading the Google Fit app and signing in with their account (recommended), or manually inputting distances.
+Once logged in, they can access user-specific information. This includes the distance they walked on different days, whether they're on the leaderboard, personal statistics, etc. They have two options to log their distances: downloading the Strava app and signing in with their account (recommended), or manually inputting distances.
 
 Basic information is displayed on the main page. This includes a leaderboard ranking the people who have walked the most all-time, as well as for the previous day.
 
@@ -37,8 +37,11 @@ Then ensure you have created a file called secrets.py with the following variabl
 secret_key = # Put your secure code for signing cookies
 google_client_id = # Put the Client ID of your Google Oauth web application
 google_client_secret = # Put the Client Secret of your Google Oauth web application
+walkapi_client_id = # Put the Client ID of your walk API Oauth app (currently Strava)
+walkapi_client_secret = # Put the Client Secret of your walk API Oauth app (currently Strava)
 database_url = # Put the url to connect to your database here
 ```
+Alternatively, you can set environment variables for the above. Check configs.py to ensure you have everything added.
 
 After that, follow the instructions below.
 
@@ -74,9 +77,9 @@ flask run
 ```
 
 ## Technical info
-This web application is built with a Flask backend and Jinja2/HTML/CSS frontend.  
+This web application is built with a Flask backend and HTML(Jinja2)/JavaScript frontend.  
 It's deployed to Heroku and uses a Heroku PostgreSQL database add-on.  
-It connects with Google's Fit API to automatically log distances.  
+It connects with Strava's API to automatically log distances.  
 
 ## App directory
 The starting point of the app is in wsgi.py.

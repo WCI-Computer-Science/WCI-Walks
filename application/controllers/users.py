@@ -173,7 +173,7 @@ def leaveteam():
 def togglegooglefit():
     db = database.get_db()
     with db.cursor() as cur:
-        user.User.toggle_googlefit(current_user.id, cur)
+        current_user.toggle_googlefit(current_user.id, cur)
     db.commit()
     return redirect("/users")
 
@@ -345,6 +345,36 @@ def confirmlogin():
     except:
         # Probably entered URL by mistake
         return redirect(url_for("users.login"))
+
+
+# Authorize the walking API for the user
+# Currently: Strava
+@bp.route("/authorizewalk", methods=("GET", "POST"))
+@login_required
+def authorizewalk():
+    auth_url = oauth.walkapi_get_auth_url()
+    print(auth_url)
+    return redirect(auth_url)
+
+
+@bp.route("/authorizewalk/confirmlogin", methods=("GET", "POST"))
+@login_required
+def confirmwalklogin():
+    try:
+        code = request.args.get("code")
+        token, refresh, expiresat = oauth.walkapi_get_access_token(code)
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute(
+                "UPDATE users SET walkapi_accesstoken=%s, walkapi_refreshtoken=%s, walkapi_expiresat=%s",
+                (token, refresh, expiresat)
+            )
+            current_user.toggle_googlefit(current_user.id, cur, val=True)
+            db.commit()
+    except:
+        flash("Something went wrong logging you in. Please try again.")
+    
+    return redirect(url_for("users.info"))
 
 
 @bp.route("/logout", methods=("GET", "POST", "PUT", "PATCH", "DELETE"))
