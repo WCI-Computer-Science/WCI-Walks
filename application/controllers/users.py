@@ -372,9 +372,10 @@ def confirmwalklogin():
                 walkapi_accesstoken=%s,
                 walkapi_refreshtoken=%s,
                 walkapi_expiresat=%s,
-                walkapi_id=%s
+                walkapi_id=%s 
+                WHERE id=%s
                 """,
-                (token, refresh, expiresat, athlete["id"])
+                (token, refresh, expiresat, athlete["id"], current_user.id)
             )
             current_user.toggle_googlefit(current_user.id, cur, val=True)
             db.commit()

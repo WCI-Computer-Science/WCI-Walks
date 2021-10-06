@@ -20,7 +20,7 @@ bp = Blueprint("index", __name__, url_prefix="/")
 def home():
     db = database.get_db()
     with db.cursor() as cur:
-        total = database.get_total(cur)[0]
+        total = database.get_total(cur)
     
     multiplier = get_multipliers(date=datetime.date.today())
     if multiplier:
