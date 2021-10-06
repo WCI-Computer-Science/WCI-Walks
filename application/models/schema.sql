@@ -1,8 +1,12 @@
 /* Initialize the database */
 
-/* Total distance travelled as a school */
+/* General information used by the app:
+   distance: total distance travelled as a school
+   load_pointer: index of student being loaded (see autoload_day_all function for details)
+*/
 CREATE TABLE IF NOT EXISTS total (
-    distance NUMERIC(7,1)
+    distance NUMERIC(7,1),
+    load_pointer INT NOT NULL DEFAULT 0
 );
 
 /* Any announcements */

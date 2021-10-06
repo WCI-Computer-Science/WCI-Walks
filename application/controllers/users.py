@@ -417,7 +417,8 @@ def loaddistance():
                 request.json["object_type"] == "activity" and
                 request.json["aspect_type"] == "create"
             ):
-                autoload_day(userid, username, email, datetime.date.today())
+                autoload_day(userid, username, email, datetime.date.today(), cur)
+        db.commit()
         return {"message": "ok"}
 
 

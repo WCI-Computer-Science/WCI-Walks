@@ -42,5 +42,5 @@ def init_app(app):
 
 # Get total from database
 def get_total(cur):
-    cur.execute("SELECT * FROM total;")
-    return cur.fetchone()
+    cur.execute("SELECT distance FROM total;")
+    return cur.fetchone()[0]

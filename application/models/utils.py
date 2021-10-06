@@ -412,11 +412,14 @@ def autoload_day(userid, username, email, date, cur):
         add_to_total(distance, cur)
         add_to_team(distance, getteamid(userid), cur)
 
-def autoload_day_all(date): # Autoload all users with google fit connected
+# Since the walk API may have restrictive rates (such as Strava), not all of the users
+# can be loaded at one time.
+# TODO: come up with a way to only autoload users once/twice a day without webhooks, and do it so that only 25 users are loaded per 15 minutes
+def autoload_day_all(date): # Autoload all users with Strava connected
     db = database.get_db()
     print("Autoloading all")
     with db.cursor() as cur:
-        cur.execute("SELECT id, username, email FROM users WHERE googlefit=True;")
+        cur.execute("SELECT id, username, email FROM users WHERE googlefit=True ORDER BY id;")
         users = cur.fetchall()
         for userid, username, email in users:
             try:
@@ -677,7 +680,7 @@ def get_team_member_names(userid=None, teamid=None):
 def update_tick(context):
     with context:
         update_leaderboard_positions()
-        autoload_day_all(date.today())
+        #autoload_day_all(date.today())
 
 def long_update_tick(context):
     with context:
