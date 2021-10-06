@@ -395,12 +395,12 @@ def loaddistance():
             abort(404)
         return {"hub.challenge": request.args.get("hub.challenge")}
     else:
-        if request.json.get("subscription_id") != current_app.config["WALKAPI_WEBHOOK_SUBSCRIPTION_ID"]:
+        if str(request.json.get("subscription_id")) != str(current_app.config["WALKAPI_WEBHOOK_SUBSCRIPTION_ID"]):
             print("VERIFY WEBHOOK FAILED. ABORT.")
             abort(404)
         
         print("Webhook received")
-        ownerid = request.json["owner_id"]
+        ownerid = str(request.json["owner_id"])
         db = database.get_db()
         with db.cursor() as cur:
             cur.execute("SELECT id, username, email FROM users WHERE walkapi_id=%s", (ownerid,))
