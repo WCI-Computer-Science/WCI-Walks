@@ -23,6 +23,7 @@ from application.models import *
 from application.models.utils import (
     add_to_total,
     add_to_team,
+    autoload_day,
     cap_distance,
     create_team,
     get_credentials_from_wrdsbusername,
@@ -362,12 +363,18 @@ def authorizewalk():
 def confirmwalklogin():
     try:
         code = request.args.get("code")
-        token, refresh, expiresat = oauth.walkapi_get_access_token(code)
+        token, refresh, expiresat, athlete = oauth.walkapi_get_access_token(code)
         db = database.get_db()
         with db.cursor() as cur:
             cur.execute(
-                "UPDATE users SET walkapi_accesstoken=%s, walkapi_refreshtoken=%s, walkapi_expiresat=%s",
-                (token, refresh, expiresat)
+                """
+                UPDATE users SET
+                walkapi_accesstoken=%s,
+                walkapi_refreshtoken=%s,
+                walkapi_expiresat=%s,
+                walkapi_id=%s
+                """,
+                (token, refresh, expiresat, athlete["id"])
             )
             current_user.toggle_googlefit(current_user.id, cur, val=True)
             db.commit()
@@ -375,6 +382,43 @@ def confirmwalklogin():
         flash("Something went wrong logging you in. Please try again.")
     
     return redirect(url_for("users.info"))
+
+
+# Endpoint for webhook to load distance for a user
+# Distance information is not included with the webhook notification
+# However, we can simply only update a user's distance information on a webhook ping
+@bp.route("/walkwebhook", methods=("GET", "POST"))
+def loaddistance():
+    if request.method == "GET":
+        if request.args.get("hub.verify_token") != current_app.config["WALKAPI_WEBHOOK_SECRET"]:
+            print("VERIFY WEBHOOK FAILED. ABORT.")
+            abort(404)
+        return {"hub.challenge": request.args.get("hub.challenge")}
+    else:
+        if request.json.get("subscription_id") != current_app.config["WALKAPI_WEBHOOK_SUBSCRIPTION_ID"]:
+            print("VERIFY WEBHOOK FAILED. ABORT.")
+            abort(404)
+        
+        print("Webhook received")
+        ownerid = request.json["owner_id"]
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute("SELECT id, username, email FROM users WHERE walkapi_id=%s", (ownerid,))
+            userid, username, email = cur.fetchone()
+            print(ownerid, userid)
+            if (
+                request.json["object_type"] == "athlete" and
+                "authorized" in request.json["updates"] and
+                request.json["updates"]["authorized"] == False
+            ):
+                print("Revoking access")
+                oauth.walkapi_disconnect(userid, cur)
+            elif (
+                request.json["object_type"] == "activity" and
+                request.json["aspect_type"] == "create"
+            ):
+                autoload_day(userid, username, email, datetime.date.today())
+        return {"message": "ok"}
 
 
 @bp.route("/logout", methods=("GET", "POST", "PUT", "PATCH", "DELETE"))

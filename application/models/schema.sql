@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS payed (
     likes, likediff, liked: part of liking system
     active: whether a user is active
     refreshtoken: OAuth refresh token
-    walkapi_refreshtoken: OAuth refresh token for walking API (currently Strava)
+    walkapi_id: ID of the user in the walking API (currently Strava)
+    walkapi_refreshtoken: OAuth refresh token for walking API
     walkapi_accesstoken: OAuth access token for walking API
     walkapi_expiresat: Expiry time of walkapi_accesstoken
     googlefit: whether a user is connected with Google Fit
@@ -50,6 +51,7 @@ CREATE TABLE IF NOT EXISTS users (
     liked TEXT,
     active SMALLINT DEFAULT 1,
     refreshtoken TEXT,
+    walkapi_id TEXT,
     walkapi_refreshtoken TEXT,
     walkapi_accesstoken TEXT,
     walkapi_expiresat BIGINT,

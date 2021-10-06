@@ -21,5 +21,8 @@ def get_day_distance(userid, date, cur): #date should be datetime.date object
     except:
         print("Error fetching distance. Returned result: ")
         print(res)
-        oauth.walkapi_disconnect(userid, cur)
+        # Probably a revoked refresh token
+        if res["message"] == "Authorization Error":
+            # Disconnect user from Strava
+            oauth.walkapi_disconnect(userid, cur)
     return val
