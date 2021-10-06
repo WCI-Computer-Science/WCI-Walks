@@ -1,4 +1,4 @@
-import requests
+import requests, datetime
 from flask import current_app, g, request, session
 from application.models import database
 
@@ -99,14 +99,15 @@ def walkapi_get_access_token(auth_code):
 
 
 def walkapi_refresh_access_token(refresh, cur):
+    print("refresh access token")
     res = requests.post(
         "https://www.strava.com/oauth/token",
         json={
             "refresh_token": refresh,
-            "client_id": current_app.config["GOOGLE_CLIENT_ID"],
-            "client_secret": current_app.config["GOOGLE_CLIENT_SECRET"],
+            "client_id": current_app.config["WALKAPI_CLIENT_ID"],
+            "client_secret": current_app.config["WALKAPI_CLIENT_SECRET"],
             "grant_type": "refresh_token",
-            "redirect_uri": "https://wciwalks.herokuapp.com/" + "users/authorize/confirmlogin" #TODO: GET ROOT URL THAT DOESN'T REQUIRE REQUEST CONTEXT
+            "redirect_uri": "https://wciwalks.herokuapp.com/" + "users/authorizewalk/confirmlogin" #TODO: GET ROOT URL THAT DOESN'T REQUIRE REQUEST CONTEXT
         } # HARDCODING FOR NOW
     )
     res = res.json()
@@ -116,7 +117,7 @@ def walkapi_refresh_access_token(refresh, cur):
         "UPDATE users SET walkapi_accesstoken=%s, walkapi_refreshtoken=%s, walkapi_expiresat=%s",
         (access, refresh, expires_at)
     )
-    
+
     return access
 
 
@@ -136,9 +137,32 @@ def walkapi_get_access(userid):
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT walkapi_accesstoken, walkapi_refreshtoken, walk"
+            "SELECT walkapi_accesstoken, walkapi_refreshtoken, walkapi_expiresat FROM users WHERE id=%s",
+            (userid,)
         )
+        result = cur.fetchone()
+        access, refresh, expiresat = result[0], result[1], result[2]
+        if int(datetime.datetime.now().timestamp()) > expiresat - 300:
+            access = walkapi_refresh_access_token(refresh, cur)
+            db.commit()
+    
+    return access
 
+
+# Delete tokens from user and disconnect them from walk API
+def walkapi_disconnect(userid, cur):
+    print("DISCONNECT WALKAPI")
+    cur.execute(
+        """
+        UPDATE users SET
+        walkapi_accesstoken=NULL,
+        walkapi_refreshtoken=NULL,
+        walkapi_expiresat=NULL,
+        googlefit=false
+        WHERE id=%s
+        """,
+        (userid,)
+    )
 
 
 

@@ -62,8 +62,8 @@
                 </form>
             </div>
         {% else %}
-            <h2>Google Fit Connected</h2>
-            <p>Your distance will be automatically uploaded from the Google Fit app every 30 minutes or so.</p>
+            <h2>Strava Connected</h2>
+            <p>Your distance will be automatically uploaded from the Strava app every 30 minutes or so.</p>
         {% endif %}
     </div>
     <div class="chart">
@@ -72,15 +72,16 @@
     </div>
     <div id="googlefit">
         <h3>
-            <a href="/users/togglegooglefit" class="button adminbutton">
-                {% if current_user.connected_with_googlefit(current_user.id) %}
-                    Disconnect from Google Fit
-                {% else %}
-                    Connect to Google Fit
-                {% endif %}
+            {% if current_user.connected_with_googlefit(current_user.id) %}
+                <a href="/users/togglegooglefit" class="button adminbutton">
+                Disconnect from Strava
+            {% else %}
+                <a href="/users/authorizewalk" class="button adminbutton">
+                Connect to Strava
+            {% endif %}
             </a>
         </h3>
-        <p>Make sure you haven't submitted anything today before connecting with Google Fit!</p>
+        <p>Make sure you haven't submitted anything today before connecting with Strava!</p>
     </div>
 </div>
 {% endblock %}

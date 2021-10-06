@@ -1,31 +1,25 @@
 import requests, datetime
 from application.models import oauth, database
 
-def get_day_distance(userid, date): #date should be datetime.date object
-    access_token = oauth.refresh_access_token(oauth.get_refresh(userid))
-    start_time = int(datetime.datetime.combine(date, datetime.datetime.min.time()).timestamp())*1000
-    end_time = start_time + 86400000
-    res = requests.post(
-        "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate",
+def get_day_distance(userid, date, cur): #date should be datetime.date object
+    access_token = oauth.walkapi_get_access(userid)
+    start_time = int(datetime.datetime.combine(date, datetime.datetime.min.time()).timestamp())
+    end_time = start_time + 86400
+    res = requests.get(
+        "https://www.strava.com/api/v3/athlete/activities?after=" + str(start_time) + "&before=" + str(end_time) + "&per_page=128",
         headers={
             "Content-type": "application/json",
             "Authorization": "Bearer " + access_token
-        },
-        json={
-            "aggregateBy": [{
-                "dataTypeName": "com.google.distance.delta",
-                "dataSourceId": "derived:com.google.distance.delta:com.google.android.gms:platform_distance_delta"
-            }],
-            "bucketByTime": { "durationMillis": 86400000 },
-            "startTimeMillis": start_time,
-            "endTimeMillis": end_time
         }
     )
     res = res.json()
+    val = 0
     try:
-        val = round(res["bucket"][0]["dataset"][0]["point"][0]["value"][0]["fpVal"]/1000, 1)
+        for r in res:
+            val += r["distance"]/1000
+        val = round(val, 1)
     except:
         print("Error fetching distance. Returned result: ")
         print(res)
-        val = 0
+        oauth.walkapi_disconnect(userid, cur)
     return val

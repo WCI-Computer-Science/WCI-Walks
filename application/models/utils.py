@@ -379,7 +379,7 @@ def autoload_day(userid, username, email, date, cur):
     if not haspayed(email) and not haspayed("all"):
         print("Isn't eligible (not in payed table)")
         return
-    distance = get_day_distance(userid, date)
+    distance = get_day_distance(userid, date, cur)
     cur.execute(
             "SELECT distance FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
             (userid, date)
@@ -411,7 +411,6 @@ def autoload_day(userid, username, email, date, cur):
         )
         add_to_total(distance, cur)
         add_to_team(distance, getteamid(userid), cur)
-    print("Success")
 
 def autoload_day_all(date): # Autoload all users with google fit connected
     db = database.get_db()
@@ -422,6 +421,7 @@ def autoload_day_all(date): # Autoload all users with google fit connected
         for userid, username, email in users:
             try:
                 autoload_day(userid, username, email, date, cur)
+                print("ok")
             except:
                 print("Something went wrong. Possibly revoked access token.")
     db.commit()
