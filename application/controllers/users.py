@@ -26,6 +26,7 @@ from application.models.utils import (
     autoload_day,
     cap_distance,
     create_team,
+    fancy_float,
     get_credentials_from_wrdsbusername,
     haspayed,
     isadmin,
@@ -115,7 +116,7 @@ def info():
     return render_template(
         "users.html",
         username=current_user.username,
-        distance=current_user.distance,
+        distance=fancy_float(current_user.distance),
         form=form,
         labels=labels,
         data=data,

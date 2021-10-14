@@ -19,7 +19,7 @@ except (ModuleNotFoundError, AttributeError):
         WALKAPI_CLIENT_SECRET = os.environ["WALKAPI_CLIENT_SECRET"]
         WALKAPI_WEBHOOK_SECRET = os.environ["WALKAPI_WEBHOOK_SECRET"]
         WALKAPI_WEBHOOK_SUBSCRIPTION_ID = os.environ["WALKAPI_WEBHOOK_SUBSCRIPTION_ID"]
-    except KeyError:  # Probably running on travis, no need for real values here, but warn anyways
+    except KeyError:  # Probably running tests, no need for real values here, but warn anyways
         print("Warn: Could not load secrets, using bogus values.")
         SECRET_KEY = ""
         GOOGLE_CLIENT_ID = ""
