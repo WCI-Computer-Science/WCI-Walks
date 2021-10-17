@@ -46,6 +46,7 @@
 {% block body %}
 <div class="contentw admindiv">
   <h1>Edit {{username}}'s Distances</h1>
+  <h4 style="color:red">Warning: Editing distances will freeze the server momentarily. Only edit distances if absolutely necessary.</h4>
   <p id="message" hidden></p>
   <table id="distancetable">
     {% for userwalk in userdata %}
