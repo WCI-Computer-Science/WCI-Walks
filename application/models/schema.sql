@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS payed (
     walkapi_refreshtoken: OAuth refresh token for walking API
     walkapi_accesstoken: OAuth access token for walking API
     walkapi_expiresat: Expiry time of walkapi_accesstoken
-    googlefit: whether a user is connected with Google Fit
+    googlefit: whether a user is connected with walking API (NOT necessarily Google Fit)
     teamid: the ID of the team the user's on
  */
 CREATE TABLE IF NOT EXISTS users (

@@ -417,7 +417,8 @@ def loaddistance():
                 oauth.walkapi_disconnect(userid, cur)
             elif (
                 request.json["object_type"] == "activity" and
-                request.json["aspect_type"] == "create"
+                request.json["aspect_type"] == "create" and
+                current_user.connected_with_googlefit(current_user.id)
             ):
                 autoload_day(userid, username, email, datetime.date.today(), cur)
         db.commit()
