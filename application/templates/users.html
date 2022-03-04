@@ -50,7 +50,7 @@
     {% if current_user.get_likes()!=0 or current_user.get_new_likes()!=0 %}You have {% if current_user.get_likes()>=0 %}{{ current_user.get_likes() }}{% else %}0{% endif %} like{% if current_user.get_likes()>1 %}s{% endif %}{% if current_user.get_new_likes()!=0 %} ({% if current_user.get_new_likes()>0 %}+{% endif %}{{current_user.get_new_likes(clear=True)}} since last time){% endif %}.{% endif %}
     </h3>
     <div id="distancediv">
-        {% if not current_user.connected_with_googlefit(current_user.id) %}
+        {% if not current_user.connected_with_googlefit() %}
             {% for message in get_flashed_messages() %}
                 <div class='message'><p>{{ message }}</p></div>
             {% endfor %}
@@ -72,7 +72,7 @@
     </div>
     <div id="googlefit">
         <h3>
-            {% if current_user.connected_with_googlefit(current_user.id) %}
+            {% if current_user.connected_with_googlefit() %}
                 <a href="/users/togglegooglefit" class="button adminbutton">
                 Disconnect from Strava
             {% else %}

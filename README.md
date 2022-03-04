@@ -1,6 +1,20 @@
 # WCI Walks
 ![Build Status](https://travis-ci.com/WCI-Computer-Science/WCI-Walks.svg?branch=main "Build Status")
 
+WCI Walks tracks the walkathon progress of students at WCI. It can assign users to teams and host team relays.
+
+As of the time of writing, you can access the app on this URL: https://wciwalks.herokuapp.com.
+
+Basic information is displayed on the main page. This includes a day leaderboard and an all-time leaderboard, for both individuals and teams.
+
+Each student can sign up for an account, and then log in. Students must sign in through
+their school Google account.
+Once logged in, they can access user-specific information. This includes the distance they walked on different days, profile likes, personal statistics, etc. They have two options to log their distances: downloading the Strava app and signing in with their account, or manually inputting distances.
+
+Colour scheme:
+Main colour #706c74, Accent color #746444
+
+## Contributing
 This project will no longer be supported on July 2nd, 2023.
 
 This project is currently maintained by **[@scott-22](https://github.com/scott-22)** and **[@awenelo](https://github.com/awenelo)**.
@@ -14,21 +28,7 @@ To take over support of this project please:
 6. In the `application/templates/contact.html` file, change the names and email address in the urgently contact us section to you and anyone you're working with's emails and names
 7. Submit a pull request to merge your fork into this repository - A sample pull request and fork can be found in [#26](https://github.com/WCI-Computer-Science/WCI-Walks/pull/26)
 
-## About this app
-WCI Walks tracks the walkathon progress of students at WCI. It tracks individual as well as total progress.
-
-Each student can sign up for an account, and then log in.
-Once logged in, they can access user-specific information. This includes the distance they walked on different days, whether they're on the leaderboard, personal statistics, etc. They have two options to log their distances: downloading the Strava app and signing in with their account (recommended), or manually inputting distances.
-
-Basic information is displayed on the main page. This includes a leaderboard ranking the people who have walked the most all-time, as well as for the previous day.
-
-As of the time of writing, you can access the app on this URL: https://wciwalks.herokuapp.com.  
-
-Colour scheme:
-Main colour: #706c74
-Accent color: #746444
-
-## Contributing
+### Development
 Detailed instructions on setting up a development environment to test the app locally are given below.
 
 First, ensure you have PostgreSQL installed and have a database set up.
@@ -41,7 +41,7 @@ walkapi_client_id = # Put the Client ID of your walk API Oauth app (currently St
 walkapi_client_secret = # Put the Client Secret of your walk API Oauth app (currently Strava)
 database_url = # Put the url to connect to your database here
 ```
-Alternatively, you can set environment variables for the above. Check configs.py to ensure you have everything added.
+Alternatively, you can set environment variables for the above. Check `configs.py` to ensure you have everything added.
 
 After that, follow the instructions below.
 

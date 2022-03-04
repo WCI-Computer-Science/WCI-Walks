@@ -36,7 +36,8 @@ from application.models.utils import (
     new_join_code,
     verify_walk_form,
     walk_is_maxed,
-    walk_will_max_distance
+    walk_will_max_distance,
+    connected_with_googlefit
 )
 
 bp = Blueprint("users", __name__, url_prefix="/users")
@@ -394,12 +395,13 @@ def loaddistance():
     if request.method == "GET":
         if request.args.get("hub.verify_token") != current_app.config["WALKAPI_WEBHOOK_SECRET"]:
             print("VERIFY WEBHOOK FAILED. ABORT.")
-            abort(404)
+            abort(403)
         return {"hub.challenge": request.args.get("hub.challenge")}
     else:
         if str(request.json.get("subscription_id")) != str(current_app.config["WALKAPI_WEBHOOK_SUBSCRIPTION_ID"]):
+            print(current_app.config["WALKAPI_WEBHOOK_SUBSCRIPTION_ID"])
             print("VERIFY WEBHOOK FAILED. ABORT.")
-            abort(404)
+            abort(403)
         
         print("Webhook received")
         ownerid = str(request.json["owner_id"])
@@ -407,6 +409,7 @@ def loaddistance():
         with db.cursor() as cur:
             cur.execute("SELECT id, username, email FROM users WHERE walkapi_id=%s", (ownerid,))
             userid, username, email = cur.fetchone()
+            # Deal with if ownerid does not exist
             print(ownerid, userid)
             if (
                 request.json["object_type"] == "athlete" and
@@ -418,7 +421,7 @@ def loaddistance():
             elif (
                 request.json["object_type"] == "activity" and
                 request.json["aspect_type"] == "create" and
-                current_user.connected_with_googlefit(current_user.id)
+                connected_with_googlefit(userid)
             ):
                 autoload_day(userid, username, email, datetime.date.today(), cur)
         db.commit()

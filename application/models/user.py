@@ -215,6 +215,13 @@ class User:
             cur.execute("UPDATE users SET googlefit = NOT googlefit WHERE id=%s;", (userid,))
         else:
             cur.execute("UPDATE users SET googlefit=%s WHERE id=%s;", (val, userid))
+    
+    def connected_with_googlefit(self):
+        db = database.get_db()
+        with db.cursor() as cur:
+            cur.execute("SELECT googlefit FROM users WHERE id=%s;", (self.id,))
+            googlefit = cur.fetchone()[0]
+        return googlefit
 
     def get_id(self):
         return self.id
@@ -238,14 +245,6 @@ class User:
     def exists(userid, cur):
         cur.execute("SELECT id FROM users WHERE id=%s LIMIT 1;", (userid,))
         return cur.fetchone()
-    
-    @staticmethod
-    def connected_with_googlefit(userid):
-        db = database.get_db()
-        with db.cursor() as cur:
-            cur.execute("SELECT googlefit FROM users WHERE id=%s;", (userid,))
-            googlefit = cur.fetchone()[0]
-        return googlefit
 
 @login_manager.user_loader
 def load_user(userid):

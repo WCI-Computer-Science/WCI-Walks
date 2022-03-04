@@ -375,6 +375,14 @@ def edit_distance_update(distance, date, wrdsbusername):
             db.commit()
             update_total()
 
+# Function needed for when current_user is out of context (such as webhook)
+def connected_with_googlefit(userid):
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute("SELECT googlefit FROM users WHERE id=%s;", (userid,))
+        googlefit = cur.fetchone()[0]
+    return googlefit
+
 def autoload_day(userid, username, email, date, cur):
     print("Autoloading for " + username)
     if not haspayed(email) and not haspayed("all"):
