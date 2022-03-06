@@ -11,3 +11,4 @@ requests
 pyopenssl
 psycopg2-binary
 apscheduler
+redis

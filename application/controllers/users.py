@@ -37,7 +37,9 @@ from application.models.utils import (
     verify_walk_form,
     walk_is_maxed,
     walk_will_max_distance,
-    connected_with_googlefit
+    connected_with_googlefit,
+    mqadd_walkapi_create,
+    mqadd_update_leaderboard
 )
 
 bp = Blueprint("users", __name__, url_prefix="/users")
@@ -408,8 +410,10 @@ def loaddistance():
         db = database.get_db()
         with db.cursor() as cur:
             cur.execute("SELECT id, username, email FROM users WHERE walkapi_id=%s", (ownerid,))
-            userid, username, email = cur.fetchone()
-            # Deal with if ownerid does not exist
+            res = cur.fetchone()
+            if not res: # Error occured, ownerid doesn't exist
+                abort(403)
+            userid, username, email = res
             print(ownerid, userid)
             if (
                 request.json["object_type"] == "athlete" and
@@ -423,7 +427,10 @@ def loaddistance():
                 request.json["aspect_type"] == "create" and
                 connected_with_googlefit(userid)
             ):
-                autoload_day(userid, username, email, datetime.date.today(), cur)
+                print("Creating webhook message")
+                # Create message for message queue
+                mqadd_walkapi_create(userid, username, email)
+                #autoload_day(userid, username, email, datetime.date.today(), cur)
         db.commit()
         return {"message": "ok"}
 

@@ -40,6 +40,7 @@ google_client_secret = # Put the Client Secret of your Google Oauth web applicat
 walkapi_client_id = # Put the Client ID of your walk API Oauth app (currently Strava)
 walkapi_client_secret = # Put the Client Secret of your walk API Oauth app (currently Strava)
 database_url = # Put the url to connect to your database here
+redis_url = # Put the url to connect to redis here
 ```
 Alternatively, you can set environment variables for the above. Check `configs.py` to ensure you have everything added.
 

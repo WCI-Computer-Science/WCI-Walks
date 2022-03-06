@@ -1,6 +1,7 @@
 # Connects to database
 
-import time
+import datetime, json
+import redis
 
 import psycopg2
 import psycopg2.extras
@@ -19,20 +20,22 @@ def get_db():
     return g.db
 
 
-# Close the database
+# Close the database connection
 def teardown_db(err=None):
     db = g.pop("db", None)
     if db is not None:
         db.close()
 
 
-# Initialize the database (first time use only)
-def init_db():
-    db = get_db()
-    with open("schema.sql", "r") as schema:
-        with db.cursor() as cur:
-            cur.execute(schema.read().decode("utf8"))
-    db.commit()
+# Redis client will automatically close itself, no teardown function needed
+def get_redis():
+    if "r" not in g:
+        g.r = redis.Redis.from_url(
+            current_app.config["REDIS"],
+            decode_responses=True # Convert byte responses into strings
+        )
+
+    return g.r
 
 
 # Close database after every request, register command line command

@@ -96,11 +96,11 @@ def walkapi_refresh_access_token(refresh, cur):
         } # HARDCODING FOR NOW
     )
     res = res.json()
-    access, refresh, expires_at = res["access_token"], res["refresh_token"], res["expires_at"]
+    access, newrefresh, expires_at = res["access_token"], res["refresh_token"], res["expires_at"]
 
     cur.execute(
-        "UPDATE users SET walkapi_accesstoken=%s, walkapi_refreshtoken=%s, walkapi_expiresat=%s",
-        (access, refresh, expires_at)
+        "UPDATE users SET walkapi_accesstoken=%s, walkapi_refreshtoken=%s, walkapi_expiresat=%s WHERE walkapi_refreshtoken=%s",
+        (access, newrefresh, expires_at, refresh)
     )
 
     return access
@@ -116,7 +116,7 @@ def walkapi_get_access(userid):
         )
         result = cur.fetchone()
         access, refresh, expiresat = result[0], result[1], result[2]
-        if int(datetime.datetime.now().timestamp()) > expiresat - 300:
+        if int(datetime.datetime.now().timestamp()) > expiresat - 300 or not access:
             access = walkapi_refresh_access_token(refresh, cur)
             db.commit()
     

@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+import time, json
 
 from flask import current_app
 import random, string
@@ -278,6 +279,7 @@ def update_team_total(teamid=None):
 
 def add_to_total(num, cur):
     cur.execute("UPDATE total SET distance=distance+%s", (num,))
+    mqadd_update_leaderboard()
 
 
 def add_to_team(num, teamid, cur):
@@ -686,10 +688,105 @@ def get_team_member_names(userid=None, teamid=None):
         # If no members in team, empty list is returned
         return [[i[0], fancy_float(i[1]), i[2]] for i in res]
 
+
+# Various messages functions regarding redis message queue
+
+# Webhook request from walkapi for creating walk
+def mqadd_walkapi_create(userid, username, email):
+    r = database.get_redis()
+    message = {
+        "type": "walkapi", # Type of message being sent (determines handler of message)
+        "op": "create", # Kind of operation being performed
+        "userid": userid,
+        "username": username,
+        "email": email,
+        "date": date.today().isoformat()
+    }
+    r.rpush("messagequeue", json.dumps(message))
+
+# Process a singular walkapi message from redis message queue, returns whether processing was successful (limit wasn't hit)
+def mqprocess_walkapi(message, cur): # message should be dictionary
+    r = database.get_redis()
+    # Subject to walkapi rate limit (currently Strava: 100 req / 15 minutes)
+    #TODO: change the rate limit IF the walk api changes
+    WALKAPI_RATE_LIMIT = 100
+    WALKAPI_LIMIT_TIME = 15*60 # In seconds
+    # Check if redis walkapi queue has more than 100 elements in past 15 minutes
+    if (r.llen("walkapi_ratelim_queue") > 0):
+        tm = int(r.lindex("walkapi_ratelim_queue", 0))
+    else:
+        tm = -1
+    while (tm > 0 and tm < int(time.time())-WALKAPI_LIMIT_TIME):
+        r.lpop("walkapi_ratelim_queue")
+        if (r.llen("walkapi_ratelim_queue") > 0):
+            tm = int(r.lindex("walkapi_ratelim_queue", 0))
+        else:
+            tm = -1
+    
+    if r.llen("walkapi_ratelim_queue") >= WALKAPI_RATE_LIMIT:
+        print("\nRATE LIMIT HIT\n")
+        return False
+        
+    if message["op"] == "create":
+        autoload_day(message["userid"], message["username"], message["email"], date.fromisoformat(message["date"]), cur)
+        r.rpush("walkapi_ratelim_queue", int(time.time()))
+        return True
+    
+    return False
+
+# Update leaderboard message due to changes in distance
+def mqadd_update_leaderboard():
+    r = database.get_redis()
+    message = {
+        "type": "leaderboard",
+        "op": "update"
+    }
+    r.rpush("messagequeue", json.dumps(message))
+    r.set("update_leaderboard", "1") # Indicate leaderboard needs to be updated
+
+def mqprocess_leaderboard(message):
+    r = database.get_redis()
+
+    # Leaderboard already updated
+    if r.get("update_leaderboard") != "1":
+        return True # Leaderboard messages don't need to be reprocessed
+        
+    if message["op"] == "update":
+        update_leaderboard_positions()
+        r.set("update_leaderboard", "0")
+    
+    return True
+
+# Process items in messagequeue
+def process_messagequeue():
+    db = database.get_db()
+    r = database.get_redis()
+    with db.cursor() as cur:
+        message = r.lmove("messagequeue", "unprocessedmessagequeue") # temporary storage of unprocessed messages
+        while message:
+            message = json.loads(message)
+            if message["type"] == "walkapi":
+                print("Message loaded: walkapi", message)
+                processed = mqprocess_walkapi(message, cur)
+            elif message["type"] == "leaderboard":
+                print("Message loaded: leaderboard", message)
+                processed = mqprocess_leaderboard(message)
+            
+            if processed:
+                r.rpop("unprocessedmessagequeue")
+            
+            message = r.lmove("messagequeue", "unprocessedmessagequeue")
+    db.commit()
+
+    if r.llen("unprocessedmessagequeue") > 0:
+        print(r.llen("unprocessedmessagequeue"), " unprocessed messages left")
+        r.rename("unprocessedmessagequeue", "messagequeue")
+
 def update_tick(context):
     with context:
-        update_leaderboard_positions()
+        #update_leaderboard_positions()
         #autoload_day_all(date.today())
+        process_messagequeue()
 
 def long_update_tick(context):
     with context:
