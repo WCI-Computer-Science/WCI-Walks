@@ -1,7 +1,7 @@
 /* Temporary formatting */
 #tempalert {
   padding: 0 20px;
-  background-color: #543767;
+  background-color: var(--main-color);
   color: white;
   text-align: center;
 }
@@ -28,7 +28,7 @@ body {
 
 .content {
   min-height: calc(100vh - 140px);
-  background-color: #543767;
+  background-color: var(--main-color);
 }
 
 .button {
@@ -57,11 +57,11 @@ input[type="submit"], #fakesubmit {
   height: 2em;
   border: 1px solid rgb(36, 36, 37);
   border-radius: 7px;
-  background-color: rgba(84, 55, 103, 0.25);
+  background-color: var(--main-color-mostly-transparent);
 }
 
 input[type="submit"]:hover, #fakesubmit:hover {
-  background-color: #543767;
+  background-color: var(--main-color);
   color: white;
   cursor: pointer;
 }
@@ -218,7 +218,7 @@ footer a:hover {
 }
 
 .contentr {
-  background-color: #543767;
+  background-color: var(--main-color);
 }
 
 
@@ -290,12 +290,12 @@ footer a:hover {
   border: 1px solid rgb(36, 36, 37);
   color: rgb(36, 36, 37);
   border-radius: 0px;
-  background-color: rgba(84, 55, 103, 0.25);
+  background-color: var(--main-color-mostly-transparent);
   cursor: pointer;
 }
 
 #switchview button:hover {
-  background-color: rgba(84, 55, 103, 0.5);
+  background-color: var(--main-color-partly-transparent);
   padding: 8px;
   border-width: 3px;
 }
@@ -313,7 +313,7 @@ footer a:hover {
 
 #appinfo a {
   text-decoration: none;
-  color: #543767;
+  color: var(--main-color);
 }
 
 #alltimeleaderboard {
@@ -468,7 +468,7 @@ footer a:hover {
 
 .error a {
   text-decoration: none;
-  color: rgb(120, 100, 68);
+  color: var(--main-color);
 }
 
 .googlebtn {
@@ -500,7 +500,7 @@ footer a:hover {
 
 .consent a {
   text-decoration: none;
-  color: #543767;
+  color: var(--main-color);
 }
 
 /* Admin and some user page formatting */
@@ -532,7 +532,7 @@ footer a:hover {
   font-size: 1em;
   border: 1px solid rgb(36, 36, 37);
   border-radius: 7px;
-  background-color: rgba(88, 44, 116, 0.25);
+  background-color: var(--main-color-mostly-transparent);
 }
 
 .panicbutton {
@@ -545,7 +545,7 @@ footer a:hover {
 }
 
 .adminbutton:hover {
-  background-color: #543767;
+  background-color: var(--main-color);
   color: white;
 }
 
@@ -720,5 +720,5 @@ footer a:hover {
 
 .legal a {
   text-decoration: none;
-  color: #8b5da9;
+  color: var(--main-color);
 }

@@ -24,6 +24,13 @@
         </script>
         {% block scripts %}
         {% endblock %}
+        <style>
+            * {
+                --main-color: rgb(84, 55, 103);
+                --main-color-mostly-transparent: rgba(84, 55, 103, 0.25);
+                --main-color-partly-transparent: rgba(84, 55, 103, 0.5);
+            }
+        </style>
     </head>
     <body>
         {% include "utils/navbar.html" %}
