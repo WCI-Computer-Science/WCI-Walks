@@ -433,5 +433,5 @@ def uisettings():
         db.commit()
         return render_template("uisettings.html")
     currentSettings = get_ui_settings(id=current_user.id)
-    currentColourString = f"#{str(hex(currentSettings['themeR'])[2:]).zfill(2)}{str(hex(currentSettings['themeG'])[2:]).zfill(2)}{str(hex(currentSettings['themeB'])[2:]).zfill(2)}"
+    currentColourString = f"#{hex(currentSettings['themeR'])[2:].zfill(2)}{hex(currentSettings['themeG'])[2:].zfill(2)}{hex(currentSettings['themeB'])[2:].zfill(2)}"
     return render_template("uisettings.html", colourString=currentColourString)
