@@ -1,6 +1,8 @@
 import datetime
 
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, render_template, current_app, Response
+
+from flask_login import current_user
 
 from application.models import database
 from application.models.utils import (
@@ -10,7 +12,8 @@ from application.models.utils import (
     get_all_time_leaderboard,
     get_day_leaderboard,
     get_all_time_team_leaderboard,
-    get_day_team_leaderboard
+    get_day_team_leaderboard,
+    get_ui_settings
 )
 
 bp = Blueprint("index", __name__, url_prefix="/")
@@ -56,3 +59,16 @@ def termsofservice():
 @bp.route("/help", methods=("GET",))
 def userhelp():
     return render_template("help.html")
+
+@bp.route("/theme.css", methods=("GET",))
+def themestyle():
+    if current_user.is_authenticated:
+        uiSettings = get_ui_settings(id=current_user.id)
+    else:
+        uiSettings = get_ui_settings()
+    css = render_template("theme.css",
+        themeR=uiSettings["themeR"],
+        themeG=uiSettings["themeG"],
+        themeB=uiSettings["themeB"])
+    resp = Response(css, mimetype="text/css")
+    return resp

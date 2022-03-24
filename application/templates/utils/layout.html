@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2_0_1" type="text/css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/theme.css">
         <link rel="icon" href="{{ url_for('static', filename='wcilogo.ico') }}"/>
         {% block head %}
         {% endblock %}
@@ -25,11 +26,7 @@
         {% block scripts %}
         {% endblock %}
         <style>
-            * {
-                --main-color: rgb(84, 55, 103);
-                --main-color-mostly-transparent: rgba(84, 55, 103, 0.25);
-                --main-color-partly-transparent: rgba(84, 55, 103, 0.5);
-            }
+            
         </style>
     </head>
     <body>

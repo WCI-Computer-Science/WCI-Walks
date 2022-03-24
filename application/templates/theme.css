@@ -1,0 +1,7 @@
+/* Global styling */
+* {
+    --main-color: rgb({{themeR}}, {{themeG}}, {{themeB}});
+    --main-color-mostly-transparent: rgba({{themeR}}, {{themeG}}, {{themeB}}, 0.25);
+    --main-color-partly-transparent: rgba({{themeR}}, {{themeG}}, {{themeB}}, 0.5);
+  }
+  

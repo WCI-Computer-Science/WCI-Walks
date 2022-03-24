@@ -416,3 +416,22 @@ def deleteuser(wrdsbusername):
         username=user["username"],
         wrdsbusername=wrdsbusername
     )
+
+@bp.route("/uisettings", methods=("GET", "POST"))
+@login_required
+def uisettings():
+    if request.method == "POST":
+        colourString = request.form.get("colour", None)
+        uiSettings = {}
+        if colourString is not None:
+            uiSettings["themeR"] = int(colourString[1:3], 16)
+            uiSettings["themeG"] = int(colourString[3:5], 16)
+            uiSettings["themeB"] = int(colourString[5:], 16)
+        db = database.get_db()
+        with db.cursor() as cur:
+            current_user.set_ui_settings(uiSettings, cur, True)
+        db.commit()
+        return render_template("uisettings.html")
+    currentSettings = get_ui_settings(id=current_user.id)
+    currentColourString = f"#{str(hex(currentSettings['themeR'])[2:]).zfill(2)}{str(hex(currentSettings['themeG'])[2:]).zfill(2)}{str(hex(currentSettings['themeB'])[2:]).zfill(2)}"
+    return render_template("uisettings.html", colourString=currentColourString)

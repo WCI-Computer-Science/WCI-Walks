@@ -121,3 +121,25 @@ CREATE TABLE IF NOT EXISTS team_members (
     id INT NOT NULL,
     memberid TEXT UNIQUE NOT NULL
 );
+
+/* Store settings about the app's ui:
+    userid: the id of the user that the settings should be displayed for, the settings with the id of _ are displayed for everyone without a specific row entry
+    themeR: the red value of the theme's colour scheme
+    themeG: the green value of the theme's colour scheme
+    themeB: the blue value of the theme's colour scheme
+    bigimage: the base-64 encoded image to be displayed on the main page
+    bigimage_hash: sha1 hash of bigimage, used to prevent caching if the image has been updated
+    favicon: the base-64 encoded website's favicon
+    favicon_hash: sha1 hash of favicon, used to prevent caching if the image has been updated
+   Any value other than userid can be null, and will use the matching setting for the userid _ instead
+*/
+CREATE TABLE IF NOT EXISTS ui_settings (
+    userid TEXT PRIMARY KEY,
+    themeR SMALLINT,
+    themeB SMALLINT,
+    themeG SMALLINT,
+    bigimage BYTEA,
+    bigimage_hash TEXT,
+    favicon BYTEA,
+    favicon_hash TEXT
+);

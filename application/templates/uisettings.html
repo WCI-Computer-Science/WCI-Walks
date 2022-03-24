@@ -1,0 +1,14 @@
+{% extends "utils/layout.html" %}
+{% block body %}
+<div class="contentw admindiv">
+  <h1>Edit UI Settings</h1>
+  {% for message in get_flashed_messages() %}
+    <div class='message'><h3>{{ message }}</h3></div>
+  {% endfor %}
+  <form method="post">
+    <label for="colour">Colour:</label>
+    <input id="colour" name="colour" type="color" value="{{colourString}}"><br />
+    <input type="submit" value="Apply">
+  </form>
+</div>
+{% endblock %}

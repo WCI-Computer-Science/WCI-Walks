@@ -170,6 +170,20 @@ class User:
             (useid, username, distance, date)
         )
 
+    def set_ui_settings(self, settings, cur, globally):
+        if globally:
+            useid = "_"
+        else:
+            useid = self.id
+        for settingName in settings:
+            if settingName not in ["themeR", "themeB", "themeG", "bigimage", "bigimage_hash", "favicon", "favicon_hash"]:
+                print("Setting name not in allowed list (themeR, themeB, themeG, bigimage, bigimage_hash, favicon and favicon_hash), skipping")
+                continue
+            cur.execute(
+                "UPDATE ui_settings SET " + settingName + "=%s WHERE userid=%s",
+                (settings[settingName], useid,)
+            )
+
     def update_walk(self, distance, date, walk, cur, replace=False, id=None):
         if id is not None:
             useid = id

@@ -793,3 +793,24 @@ def long_update_tick(context):
         multiply_by_factor(date.today()-timedelta(days=1))
         update_total()
         update_team_total()
+
+def get_ui_settings(id=None):
+    if id is None:
+        id = "_"
+    db = database.get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT userid, themeR, themeB, themeG, bigimage_hash, favicon_hash FROM ui_settings WHERE userid=%s OR userid='_'",
+            (id,)
+        )
+        res = cur.fetchall()
+    uiSettings = {}
+    # A maximum of 2 results should be returned, one with _ and one with the user's id
+    # We want to proccess defaults before any user-specific values, which we can ensure
+    # by sorting the list, using a key that assigns "_" 0 and everything else 1
+    res.sort(key=lambda a: 0 if a[0] == "_" else 1)
+    for row in res:
+        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "bigimage_hash", "favicon_hash"], row[1:]):
+            if settingValue != None:
+                uiSettings.update({settingName: settingValue})
+    return uiSettings
