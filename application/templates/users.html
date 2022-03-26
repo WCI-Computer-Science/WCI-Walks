@@ -12,8 +12,8 @@
                     datasets: [{
                         label: "{{ username }}",
                         data: [{% for i in data %}{{ i }},{% endfor %}],
-                        borderColor: 'rgb({{uiSettings[themeR]}}, {{uiSettings[themeG]}}, {{uiSettings[themeB]}})',
-                        backgroundColor: 'rgba({{uiSettings[themeR]}}, {{uiSettings[themeG]}}, {{uiSettings[themeB]}}, 0.2)',
+                        borderColor: 'rgb({{uiSettings["themeR"]}}, {{uiSettings["themeG"]}}, {{uiSettings["themeB"]}})',
+                        backgroundColor: 'rgba({{uiSettings["themeR"]}}, {{uiSettings["themeG"]}}, {{uiSettings["themeB"]}}, 0.2)',
                         borderWidth: 1
                     }]
                 },
