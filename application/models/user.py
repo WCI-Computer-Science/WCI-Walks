@@ -176,8 +176,8 @@ class User:
         else:
             useid = self.id
         for settingName in settings:
-            if settingName not in ["themeR", "themeB", "themeG", "bigimage", "bigimage_hash", "favicon", "favicon_hash"]:
-                print("Setting name not in allowed list (themeR, themeB, themeG, bigimage, bigimage_hash, favicon and favicon_hash), skipping")
+            if settingName not in ["themeR", "themeB", "themeG", "bigimage", "bigimage_hash"]:
+                print(f"Setting name ({settingName}) not in allowed list (themeR, themeB, themeG, bigimage and bigimage_hash), skipping")
                 continue
             cur.execute(
                 "UPDATE ui_settings SET " + settingName + "=%s WHERE userid=%s",
