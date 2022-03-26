@@ -422,6 +422,9 @@ def deleteuser(wrdsbusername):
 @bp.route("/uisettings", methods=("GET", "POST"))
 @login_required
 def uisettings():
+    if not current_user.is_admin():
+        abort(403)
+    
     if request.method == "POST":
         colourString = request.form.get("colour", None)
         uiSettings = {}
