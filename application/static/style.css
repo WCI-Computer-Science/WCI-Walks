@@ -228,21 +228,24 @@ footer a:hover {
 
 #logocontainer {
   padding: 50px 20%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 #logo {
   box-sizing: content-box;
   position: relative;
   margin: 0 auto;
-  padding-top: 50%;
   overflow: hidden;
   border-radius: 40px;
+  display: flex;
+  flex-direction: column;
 }
 
 #logo img {
-  width: 90%;
-  position: absolute;
-  top: 7.5%; right: 0; bottom: 7.5%; left: 5%;
+  padding: 3%;
+  width: 100%
 }
 
 #maininfo {

@@ -5,9 +5,11 @@
   {% for message in get_flashed_messages() %}
     <div class='message'><h3>{{ message }}</h3></div>
   {% endfor %}
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     <label for="colour">Colour:</label>
     <input id="colour" name="colour" type="color" value="{{colourString}}"><br />
+    <label for="bigimage">Big image:</label>
+    <input id="bigimage" name="bigimage" type="file" accept=".png"><br />
     <input type="submit" value="Apply">
   </form>
 </div>

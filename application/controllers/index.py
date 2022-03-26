@@ -1,8 +1,10 @@
 import datetime
 
-from flask import Blueprint, render_template, current_app, Response
+from flask import Blueprint, render_template, current_app, Response, send_file, request, abort
 
 from flask_login import current_user
+
+from io import BytesIO
 
 from application.models import database
 from application.models.utils import (
@@ -13,7 +15,8 @@ from application.models.utils import (
     get_day_leaderboard,
     get_all_time_team_leaderboard,
     get_day_team_leaderboard,
-    get_ui_settings
+    get_ui_settings,
+    get_big_image
 )
 
 bp = Blueprint("index", __name__, url_prefix="/")
@@ -71,4 +74,19 @@ def themestyle():
         themeG=uiSettings["themeG"],
         themeB=uiSettings["themeB"])
     resp = Response(css, mimetype="text/css")
+    resp.headers["Cache-Control"] = "no-cache"
+    return resp
+
+@bp.route("/bigimage.png", methods=("GET",))
+def bigimage():
+    if current_user.is_authenticated:
+        bigimage, bigimagehash = get_big_image(id=current_user.id)
+    else:
+        bigimage, bigimagehash = get_big_image()
+    if "If-None-Match" in request.headers:
+        if request.headers["If-None-Match"] == bigimagehash:
+            return Response(status=304)
+    resp = send_file(BytesIO(bigimage), mimetype="image/png")
+    resp.headers["Cache-Control"] = "no-cache"
+    resp.headers["ETag"] = bigimagehash
     return resp

@@ -5,6 +5,8 @@ from functools import wraps
 from flask import Blueprint, abort, flash, redirect, render_template, request
 from flask_login import current_user, login_required
 
+from hashlib import sha1
+
 from application.models import *
 from application.models.utils import (
     add_to_total,
@@ -427,6 +429,16 @@ def uisettings():
             uiSettings["themeR"] = int(colourString[1:3], 16)
             uiSettings["themeG"] = int(colourString[3:5], 16)
             uiSettings["themeB"] = int(colourString[5:], 16)
+        # Get file uploaded to form
+        bigimageFile = request.files.get("bigimage", None)
+        if bigimageFile is not None:
+            bigimageFilename = bigimageFile.filename
+            if bigimageFilename != "":
+                if bigimageFilename.split(".")[-1] != "png":
+                    flash("Only .png files are supported!")
+                else:
+                    uiSettings["bigimage"] = bigimageFile.read()
+                    uiSettings["bigimage_hash"] = sha1(uiSettings["bigimage"]).hexdigest()
         db = database.get_db()
         with db.cursor() as cur:
             current_user.set_ui_settings(uiSettings, cur, True)

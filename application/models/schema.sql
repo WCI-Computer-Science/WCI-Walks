@@ -139,7 +139,5 @@ CREATE TABLE IF NOT EXISTS ui_settings (
     themeB SMALLINT,
     themeG SMALLINT,
     bigimage BYTEA,
-    bigimage_hash TEXT,
-    favicon BYTEA,
-    favicon_hash TEXT
+    bigimage_hash BYTEA
 );
