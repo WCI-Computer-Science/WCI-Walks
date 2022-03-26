@@ -116,6 +116,7 @@ def info():
     with db.cursor() as cur:
         labels, data = current_user.get_walk_chart_data(cur)
 
+    uiSettings = get_ui_settings(id=current_user.id)
     return render_template(
         "users.html",
         username=current_user.username,
@@ -123,6 +124,7 @@ def info():
         form=form,
         labels=labels,
         data=data,
+        uiSettings=uiSettings
     )
 
 # Get information about the team you're on, if you're not on a team, put buttons to join a team and create a team
@@ -240,6 +242,7 @@ def viewprofile(wrdsbusername):
                 + str(wrdsbusername)
                 + " in our database.",
             )
+    uiSettings = get_ui_settings(id=current_user.id)
     return render_template(
         "otherusers.html",
         labels=labels,
@@ -247,6 +250,7 @@ def viewprofile(wrdsbusername):
         name=name,
         wrdsbusername=wrdsbusername,
         userid=userid,
+        uiSettings=uiSettings
     )
 
 @bp.route("/loggedin")
