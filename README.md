@@ -11,9 +11,6 @@ Each student can sign up for an account, and then log in. Students must sign in 
 their school Google account.
 Once logged in, they can access user-specific information. This includes the distance they walked on different days, profile likes, personal statistics, etc. They have two options to log their distances: downloading the Strava app and signing in with their account, or manually inputting distances.
 
-Colour scheme:
-Main colour #706c74, Accent color #746444
-
 ## Contributing
 This project will no longer be supported on July 2nd, 2023.
 
@@ -79,7 +76,7 @@ flask run
 
 ## Technical info
 This web application is built with a Flask backend and HTML(Jinja2)/JavaScript frontend.  
-It's deployed to Heroku and uses a Heroku PostgreSQL database add-on.  
+It's deployed to Heroku and uses the Heroku PostgreSQL and Heroku Redis add-ons.  
 It connects with Strava's API to automatically log distances.  
 
 ## App directory
@@ -88,9 +85,8 @@ The dependencies are given in requirements.txt.
 The Python version is given in runtime.txt.
 The commands necessary for Heroku are given in Procfile.
 
-
 App related content is inside the application folder.
-The files roughly follow a Model-View-Controller pattern.  
+The architecture roughly follow a MVC pattern.  
 The _models_ folder contains database-related code and class implementations.  
 The _templates_ folder contains everything the user sees and related code.  
 The _controllers_ folder contains URL routing and form handling.
