@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS multipliers (
     factor INT NOT NULL
 );
 
-/* Eligible users */
+/* Eligible users, if the value "all" is present then all users will be eligible */
 CREATE TABLE IF NOT EXISTS payed (
     email TEXT UNIQUE
 )
