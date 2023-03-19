@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS multipliers (
 /* Eligible users */
 CREATE TABLE IF NOT EXISTS payed (
     email TEXT UNIQUE
-)
+);
 
 /* Info stored for each user:
     id: used to identify each user
