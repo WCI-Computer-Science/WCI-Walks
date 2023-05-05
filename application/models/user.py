@@ -177,7 +177,7 @@ class User:
         else:
             useid = self.id
         for settingName in settings:
-            if settingName not in ["themeR", "themeB", "themeG", "appName", "bigimage", "bigimage_hash"]:
+            if settingName not in ["themeR", "themeB", "themeG", "appName", "bigimage", "bigimage_hash", "hideDayLeaderboard"]:
                 print(f"Setting name ({settingName}) not in allowed list (themeR, themeB, themeG, appName, bigimage and bigimage_hash), skipping")
                 continue
             cur.execute(

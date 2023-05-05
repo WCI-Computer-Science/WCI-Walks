@@ -437,6 +437,8 @@ def uisettings():
         if appName is not None:
             uiSettings["appName"] = appName
 
+        uiSettings["hideDayLeaderboard"] = request.form.get("hideDayLeaderboard", False, type=lambda a: a == "on")
+
         # Get file uploaded to form
         bigimageFile = request.files.get("bigimage", None)
         if bigimageFile is not None:
@@ -451,7 +453,6 @@ def uisettings():
         with db.cursor() as cur:
             current_user.set_ui_settings(uiSettings, cur, True)
         db.commit()
-        return render_template("uisettings.html")
     currentSettings = get_ui_settings(id=current_user.id)
     currentColourString = f"#{hex(currentSettings['themeR'])[2:].zfill(2)}{hex(currentSettings['themeG'])[2:].zfill(2)}{hex(currentSettings['themeB'])[2:].zfill(2)}"
-    return render_template("uisettings.html", colourString=currentColourString, appName=currentSettings["appName"])
+    return render_template("uisettings.html", colourString=currentColourString)

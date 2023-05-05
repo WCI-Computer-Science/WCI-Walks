@@ -283,7 +283,6 @@ footer a:hover {
   grid-column-end: 13;
   grid-row-start: 1;
   grid-row-end: 2;
-  margin-top: 40px;
 }
 
 #switchview button {
@@ -319,28 +318,14 @@ footer a:hover {
   color: var(--main-color);
 }
 
-#alltimeleaderboard {
+.leftcolumn {
   grid-column-start: 1;
   grid-column-end: 13;
   grid-row-start: 3;
   grid-row-end: 4;
 }
 
-#yesterdayleaderboard {
-  grid-column-start: 1;
-  grid-column-end: 13;
-  grid-row-start: 4;
-  grid-row-end: 5;
-}
-
-#alltimeteamleaderboard {
-  grid-column-start: 1;
-  grid-column-end: 13;
-  grid-row-start: 3;
-  grid-row-end: 4;
-}
-
-#yesterdayteamleaderboard {
+.rightcolumn {
   grid-column-start: 1;
   grid-column-end: 13;
   grid-row-start: 4;
@@ -371,7 +356,7 @@ footer a:hover {
 
 @media (min-width: 600px) {
   .columns {
-    padding: 10% 5%;
+    padding: 3% 5% 10% 5%;
   }
 
   #switchview {
@@ -389,28 +374,14 @@ footer a:hover {
     grid-row-end: 3;
   }
 
-  #alltimeleaderboard {
+  .leftcolumn {
     grid-column-start: 1;
     grid-column-end: 7;
     grid-row-start: 3;
     grid-row-end: 4;
   }
 
-  #yesterdayleaderboard {
-    grid-column-start: 7;
-    grid-column-end: 13;
-    grid-row-start: 3;
-    grid-row-end: 4;
-  }
-
-  #alltimeteamleaderboard {
-    grid-column-start: 1;
-    grid-column-end: 7;
-    grid-row-start: 3;
-    grid-row-end: 4;
-  }
-
-  #yesterdayteamleaderboard {
+  .rightcolumn {
     grid-column-start: 7;
     grid-column-end: 13;
     grid-row-start: 3;
@@ -419,10 +390,6 @@ footer a:hover {
 }
 
 @media (min-width: 992px) {
-  #switchview {
-    margin: -15% 5% 7% 0;
-  }
-
   #switchview button {
     width: 22vw;
   }
@@ -434,28 +401,14 @@ footer a:hover {
     grid-row-end: 3;
   }
   
-  #alltimeleaderboard {
+  .leftcolumn {
     grid-column-start: 5;
     grid-column-end: 9;
     grid-row-start: 2;
     grid-row-end: 3;
   }
   
-  #yesterdayleaderboard {
-    grid-column-start: 9;
-    grid-column-end: 13;
-    grid-row-start: 2;
-    grid-row-end: 3;
-  }
-
-  #alltimeteamleaderboard {
-    grid-column-start: 5;
-    grid-column-end: 9;
-    grid-row-start: 2;
-    grid-row-end: 3;
-  }
-  
-  #yesterdayteamleaderboard {
+  .rightcolumn {
     grid-column-start: 9;
     grid-column-end: 13;
     grid-row-start: 2;

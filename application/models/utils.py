@@ -800,7 +800,7 @@ def get_ui_settings(id=None):
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT userid, themeR, themeB, themeG, appname FROM ui_settings WHERE userid=%s OR userid='_'",
+            "SELECT userid, themeR, themeB, themeG, appname, hidedayleaderboard FROM ui_settings WHERE userid=%s OR userid='_'",
             (id,)
         )
         res = cur.fetchall()
@@ -810,7 +810,7 @@ def get_ui_settings(id=None):
     # by sorting the list, using a key that assigns "_" 0 and everything else 1
     res.sort(key=lambda a: 0 if a[0] == "_" else 1)
     for row in res:
-        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "appName"], row[1:]):
+        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "appName", "hideDayLeaderboard"], row[1:]):
             if settingValue != None:
                 uiSettings.update({settingName: settingValue})
             elif settingName not in uiSettings:

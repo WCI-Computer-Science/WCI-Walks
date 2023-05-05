@@ -129,8 +129,8 @@ CREATE TABLE IF NOT EXISTS team_members (
     themeB: the blue value of the theme's colour scheme
     bigimage: the base-64 encoded image to be displayed on the main page
     bigimage_hash: sha1 hash of bigimage, used to prevent caching if the image has been updated
-    favicon: the base-64 encoded website's favicon
-    favicon_hash: sha1 hash of favicon, used to prevent caching if the image has been updated
+    appname: the title of the app, in various locations throughout the app
+    hidedayleaderboard: whether the day leaderboard should be hidden
    Any value other than userid can be null, and will use the matching setting for the userid _ instead
 */
 CREATE TABLE IF NOT EXISTS ui_settings (
@@ -140,5 +140,6 @@ CREATE TABLE IF NOT EXISTS ui_settings (
     themeG SMALLINT,
     bigimage BYTEA,
     bigimage_hash BYTEA,
-    appname TEXT
+    appname TEXT,
+    hidedayleaderboard BOOLEAN NOT NULL
 );

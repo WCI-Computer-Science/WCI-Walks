@@ -11,7 +11,9 @@
     <label for="bigimage">Big image:</label>
     <input id="bigimage" name="bigimage" type="file" accept=".png"><br />
     <label for="appname">App name:</label>
-    <input id="appname" name="appName" type="text" value="{{appName}}"><br />
+    <input id="appname" name="appName" type="text" value="{{app_name()}}"><br />
+    <input id="hidedayleaderboard" name="hideDayLeaderboard" type="checkbox" {% if ui_settings["hideDayLeaderboard"] %}checked{% endif %}>
+    <label for="hidedayleaderboard">Hide day leaderboard</label><br />
     <input type="submit" value="Apply">
   </form>
 </div>

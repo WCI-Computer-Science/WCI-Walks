@@ -1,5 +1,48 @@
 {% extends "utils/layout.html" %}
 
+{% macro leaderboard(board, no_walk_message) %}
+    <table class="leaderboard">
+        {% if board|length > 0 and board[0][1] > 0 %}
+            <tr>
+                <th></th>
+                <th class="name">
+                    Name
+                </th>
+                <th class="distance">
+                    km
+                </th>
+            </tr>
+            {% for i in range(0, [board|length, 30] | min) %}
+                {% if board[i][1]>0 %} 
+                    <tr>
+                        <td class="rank">
+                            <a href="/users/viewprofile/{{board[i][2]}}">
+                                {{i+1}}.
+                            </a>
+                        </td>
+                        {% if board[i][0]|length > 16 %}
+                            <td class="name small">
+                        {% else %}
+                            <td class="name">
+                        {% endif %}
+                            <a href="/users/viewprofile/{{board[i][2]}}">
+                                {{board[i][0]}}
+                            </a>
+                        </td>
+                        <td class="distance">
+                            <a href="/users/viewprofile/{{board[i][2]}}">
+                                {{board[i][1]}}
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <tr><td>{{no_walk_message}}</td></tr>
+        {% endif %}
+    </table>
+{% endmacro %}
+
 {% block scripts %}
     <script>
         function viewteams() {
@@ -48,10 +91,12 @@
 
 <div class='columns contentw'>
 
-    <div id='switchview'>
-        <button id='switchteamview' onclick='viewteams();'>See Team Leaderboards</button>
-        <button id='switchuserview' style='display: none' onclick='viewusers();'>See Personal Leaderboards</button>
-    </div>
+    {% if not ui_settings.hideDayLeaderboard %}
+        <div id='switchview'>
+            <button id='switchteamview' onclick='viewteams();'>See Team Leaderboards</button>
+            <button id='switchuserview' style='display: none' onclick='viewusers();'>See Personal Leaderboards</button>
+        </div>
+    {% endif %}
 
     <div id='appinfo' class="column">
         <h2>About</br>this app</h2>
@@ -67,184 +112,28 @@
         </p>
     </div>
 
-    <div id="alltimeleaderboard" class="column">
-        <h2>All Time</br>Leaderboard</h2>
-        <table class="leaderboard">
-            {% if alltimeleaderboard|length > 0 and alltimeleaderboard[0][1] > 0 %}
-                <tr>
-                    <th></th>
-                    <th class="name">
-                        Name
-                    </th>
-                    <th class="distance">
-                        km
-                    </th>
-                </tr>
-                {% for i in range(0, [alltimeleaderboard|length, 30] | min) %}
-                    {% if alltimeleaderboard[i][1]>0 %} 
-                        <tr>
-                            <td class="rank">
-                                <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
-                                    {{i+1}}.
-                                </a>
-                            </td>
-                            {% if alltimeleaderboard[i][0]|length > 16 %}
-                                <td class="name small">
-                            {% else %}
-                                <td class="name">
-                            {% endif %}
-                                <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
-                                    {{alltimeleaderboard[i][0]}}
-                                </a>
-                            </td>
-                            <td class="distance">
-                                <a href="/users/viewprofile/{{alltimeleaderboard[i][2]}}">
-                                    {{alltimeleaderboard[i][1]}}
-                                </a>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                <tr><td>No one's walked yet.</td></tr>
-            {% endif %}
-        </table>
+    <div id="alltimeleaderboard" class="column leftcolumn">
+        <h2>{% if not ui_settings.hideDayLeaderboard %}All Time</br>{% endif %}Personal Leaderboard</h2>
+        {{ leaderboard(alltimeleaderboard, "No one has walked yet.")}}
+    </div>
+    
+    {% if not ui_settings.hideDayLeaderboard %}
+        <div id='yesterdayleaderboard' class="column rightcolumn">
+            <h2>Day</br>Personal Leaderboard</h2>
+            {{ leaderboard(yesterdayleaderboard, "No one has walked today yet.")}}
+        </div>
+    {% endif %}
+
+    <div id="alltimeteamleaderboard" class="column {% if ui_settings.hideDayLeaderboard %}rightcolumn{% else %}leftcolumn{% endif %}"{% if not ui_settings.hideDayLeaderboard %} style="display: none"{% endif %}>
+        <h2>{% if not ui_settings.hideDayLeaderboard %}All Time</br>{% endif %}Team Leaderboard</h2>
+        {{ leaderboard(alltimeteamleaderboard, "No team has walked yet.")}}
     </div>
 
-    <div id='yesterdayleaderboard' class="column">
-        <h2>Day</br>Leaderboard</h2>
-        <table class="leaderboard">
-            {% if yesterdayleaderboard|length > 0 and yesterdayleaderboard[0][1] > 0 %}
-                <tr>
-                    <th></th>
-                    <th class="name">
-                        Name
-                    </th>
-                    <th class="distance">
-                        km
-                    </th>
-                </tr>
-                {% for i in range(0, [yesterdayleaderboard|length, 30] | min) %}
-                    {% if yesterdayleaderboard[i][1]>0 %}
-                        <tr>
-                            <td class="rank">
-                                <a href="/users/viewprofile/{{yesterdayleaderboard[i][2]}}">
-                                    {{i+1}}.
-                                </a>
-                            </td>
-                            {% if yesterdayleaderboard[i][0]|length > 16 %}
-                                <td class="name small">
-                            {% else %}
-                                <td class="name">
-                            {% endif %}
-                                <a href="/users/viewprofile/{{yesterdayleaderboard[i][2]}}">
-                                    {{yesterdayleaderboard[i][0]}}
-                                </a>
-                            </td>
-                            <td class="distance">
-                                <a href="/users/viewprofile/{{yesterdayleaderboard[i][2]}}">
-                                    {% if multiplier %}
-                                        {{yesterdayleaderboard[i][1]}} x {{multiplier}}
-                                    {% else %}
-                                        {{yesterdayleaderboard[i][1]}}
-                                    {% endif %}
-                                </a>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                <tr><td>No one walked today yet.</td></tr>
-            {% endif %}
-        </table>
-    </div>
-
-    <div id="alltimeteamleaderboard" class="column" style="display: none">
-        <h2>All Time</br>Team Leaderboard</h2>
-        <table class="leaderboard">
-            {% if alltimeteamleaderboard|length > 0 %}
-                <tr>
-                    <th></th>
-                    <th class="name">
-                        Team
-                    </th>
-                    <th class="distance">
-                        km
-                    </th>
-                </tr>
-                {% for i in range(0, [alltimeteamleaderboard|length, 30] | min) %}
-                    <tr>
-                        <td class="rank">
-                            <a href="/users/viewteam/{{alltimeteamleaderboard[i][2]}}">
-                                {{i+1}}.
-                            </a>
-                        </td>
-                        {% if alltimeteamleaderboard[i][0]|length > 16 %}
-                            <td class="name small">
-                        {% else %}
-                            <td class="name">
-                        {% endif %}
-                            <a href="/users/viewteam/{{alltimeteamleaderboard[i][2]}}">
-                                {{alltimeteamleaderboard[i][0]}}
-                            </a>
-                        </td>
-                        <td class="distance">
-                            <a href="/users/viewteam/{{alltimeteamleaderboard[i][2]}}">
-                                {{alltimeteamleaderboard[i][1]}}
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                <tr><td>No team has walked yet.</td></tr>
-            {% endif %}
-        </table>
-    </div>
-
-    <div id='yesterdayteamleaderboard' class="column" style="display: none">
-        <h2>Day</br>Team Leaderboard</h2>
-        <table class="leaderboard">
-            {% if yesterdayteamleaderboard|length > 0 and yesterdayteamleaderboard[0][1] > 0 %}
-                <tr>
-                    <th></th>
-                    <th class="name">
-                        Team
-                    </th>
-                    <th class="distance">
-                        km
-                    </th>
-                </tr>
-                {% for i in range(0, [yesterdayteamleaderboard|length, 30] | min) %}
-                    <tr>
-                        <td class="rank">
-                            <a href="/users/viewteam/{{yesterdayteamleaderboard[i][2]}}">
-                                {{i+1}}.
-                            </a>
-                        </td>
-                        {% if yesterdayteamleaderboard[i][0]|length > 16 %}
-                            <td class="name small">
-                        {% else %}
-                            <td class="name">
-                        {% endif %}
-                            <a href="/users/viewteam/{{yesterdayteamleaderboard[i][2]}}">
-                                {{yesterdayteamleaderboard[i][0]}}
-                            </a>
-                        </td>
-                        <td class="distance">
-                            <a href="/users/viewteam/{{yesterdayteamleaderboard[i][2]}}">
-                                {% if multiplier %}
-                                    {{yesterdayteamleaderboard[i][1]}} x {{multiplier}}
-                                {% else %}
-                                    {{yesterdayteamleaderboard[i][1]}}
-                                {% endif %}
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                <tr><td>No team has walked today yet.</td></tr>
-            {% endif %}
-        </table>
-    </div>
+    {% if not ui_settings.hideDayLeaderboard %}
+        <div id='yesterdayteamleaderboard' class="column rightcolumn" style="display: none">
+            <h2>Day</br>Team Leaderboard</h2>
+            {{ leaderboard(yesterdayteamleaderboard, "No team has walked today yet.")}}
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
