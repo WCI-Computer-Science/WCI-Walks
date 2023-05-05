@@ -1,5 +1,5 @@
 {%- if current_user is defined and current_user.is_authenticated %}{%set ui_settings = current_user.get_ui_settings() %}{% else %}{% set ui_settings = get_ui_settings() %}{% endif -%}
-{%- macro app_name() -%}{% if current_user is defined and current_user.is_authenticated %}{{ui_settings["appName"]}}{% else %}{{ui_settings["appName"]}}{% endif %}{%- endmacro -%}}
+{%- macro app_name() -%}{% if current_user is defined and current_user.is_authenticated %}{{ui_settings["appName"]}}{% else %}{{ui_settings["appName"]}}{% endif %}{%- endmacro -%}
 <!DOCTYPE html>
 <html height="100%">
     <head>
