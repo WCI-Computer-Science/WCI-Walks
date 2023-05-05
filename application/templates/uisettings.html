@@ -14,6 +14,8 @@
     <input id="appname" name="appName" type="text" value="{{app_name()}}"><br />
     <input id="hidedayleaderboard" name="hideDayLeaderboard" type="checkbox" {% if ui_settings["hideDayLeaderboard"] %}checked{% endif %}>
     <label for="hidedayleaderboard">Hide day leaderboard</label><br />
+    <input id="enablestrava" name="enableStrava" type="checkbox" {% if ui_settings["enableStrava"] %}checked{% endif %}>
+    <label for="enablestrava">Enable Strava</label><br />
     <input type="submit" value="Apply">
   </form>
 </div>

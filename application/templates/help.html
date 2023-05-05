@@ -30,17 +30,20 @@
     </p>
 
     <h3 id="helpwalks">Adding Walks</h3>
-    <p>
-        You have two options to add your walks.
-        You can sync with Strava on your phone to do it automatically,
-        or you can manually input them yourself.
-    </p>
+    {% if ui_settings.enableStrava %}
+        <p>
+            You have two options to add your walks.
+            You can sync with Strava on your phone to do it automatically,
+            or you can manually input them yourself.
+        </p>
+    {% endif %}
     <p>
         Each time you enter distance, it is counted towards your total for that day.
         You cannot change distances from previous days.
         If you need to do that, please <a href="/contact">contact us</a>.
     </p>
-    <h4 id="helpwalksfit">Strava</h5>
+    {% if ui_settings.enableStrava %}
+    <h4 id="helpwalksfit">Strava</h4>
     <p>
         To sync with Strava, you first need to download the
         <a href="https://www.strava.com/mobile">Strava</a> app on your phone,
@@ -55,9 +58,10 @@
         <strong>However</strong>, in order to get distances to show up, 
         you need to ensure they've shown up in the Strava app.
     </p>
-    <h4 id="helpwalksmanual">Manual Inputting</h5>
+    <h4 id="helpwalksmanual">Manually Inputting Distances</h4>
+    {% endif %}
     <p>
-        To manually input distances, simply head to your
+        To{% if ui_settings.stravaEnabled %} manually{% endif %} input distances, simply head to your
         <a href="/users/">Profile</a>,
         enter your distance in km into the form, and click submit.
     </p>

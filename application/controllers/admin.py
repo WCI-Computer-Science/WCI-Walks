@@ -438,6 +438,7 @@ def uisettings():
             uiSettings["appName"] = appName
 
         uiSettings["hideDayLeaderboard"] = request.form.get("hideDayLeaderboard", False, type=lambda a: a == "on")
+        uiSettings["enableStrava"] = request.form.get("enableStrava", False, type=lambda a: a == "on")
 
         # Get file uploaded to form
         bigimageFile = request.files.get("bigimage", None)

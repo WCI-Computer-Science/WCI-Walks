@@ -433,11 +433,12 @@ def autoload_day_all(date): # Autoload all users with Strava connected
         cur.execute("SELECT id, username, email FROM users WHERE googlefit=True ORDER BY id;")
         users = cur.fetchall()
         for userid, username, email in users:
-            try:
-                autoload_day(userid, username, email, date, cur)
-                print("ok")
-            except:
-                print("Something went wrong. Possibly revoked access token.")
+            if get_ui_settings(userid, cur=cur)["enableStrava"]:
+                try:
+                    autoload_day(userid, username, email, date, cur)
+                    print("ok")
+                except:
+                    print("Something went wrong. Possibly revoked access token.")
     db.commit()
     print("Done autoloading all")
 
@@ -794,23 +795,31 @@ def long_update_tick(context):
         update_total()
         update_team_total()
 
-def get_ui_settings(id=None):
+def get_ui_settings(id=None, cur=None):
     if id is None:
         id = "_"
     db = database.get_db()
-    with db.cursor() as cur:
-        cur.execute(
-            "SELECT userid, themeR, themeB, themeG, appname, hidedayleaderboard FROM ui_settings WHERE userid=%s OR userid='_'",
-            (id,)
-        )
-        res = cur.fetchall()
+    created_cur = False
+    try:
+        if cur is None:
+            cur = db.cursor()
+            created_cur = True
+        with db.cursor() as cur:
+            cur.execute(
+                "SELECT userid, themeR, themeB, themeG, appname, hidedayleaderboard, enablestrava FROM ui_settings WHERE userid=%s OR userid='_'",
+                (id,)
+            )
+            res = cur.fetchall()
+    finally:
+        if created_cur and cur is not None:
+            cur.close()
     uiSettings = {}
     # A maximum of 2 results should be returned, one with _ and one with the user's id
     # We want to proccess defaults before any user-specific values, which we can ensure
     # by sorting the list, using a key that assigns "_" 0 and everything else 1
     res.sort(key=lambda a: 0 if a[0] == "_" else 1)
     for row in res:
-        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "appName", "hideDayLeaderboard"], row[1:]):
+        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "appName", "hideDayLeaderboard", "enableStrava"], row[1:]):
             if settingValue != None:
                 uiSettings.update({settingName: settingValue})
             elif settingName not in uiSettings:

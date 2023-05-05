@@ -141,5 +141,6 @@ CREATE TABLE IF NOT EXISTS ui_settings (
     bigimage BYTEA,
     bigimage_hash BYTEA,
     appname TEXT,
-    hidedayleaderboard BOOLEAN NOT NULL
+    hidedayleaderboard BOOLEAN NOT NULL DEFAULT false,
+    enablestrava BOOLEAN NOT NULL DEFAULT true
 );

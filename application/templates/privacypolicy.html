@@ -34,9 +34,9 @@
         or perform any other action on this site linked to your account.
         The personal information we store about you is limited to
         your first and last name, your WRDSB email, and the distance you've traveled
-        (whether that be distance you manually input, or distance taken from Strava).
-        We will request Strava data from you, but won't access it unless you enable
-        automatic distance tracking from your profile.
+        {% if ui_settings.enableStrava %}(whether that be distance you manually input, or distance taken from Strava){% endif %}.
+        {% if ui_settings.enableStrava %}We will request Strava data from you, but won't access it unless you enable
+        automatic distance tracking from your profile.{% endif %}
     </p>
     <p>
         We reserve the right to share your name and your distance information,
@@ -55,9 +55,9 @@
         We use Heroku's web hosting services. For privacy information, please see
         <a href="https://www.heroku.com/policy/privacy">https://www.heroku.com/policy/privacy</a>.
         </br>
-        We use Strava's walk API services. For privacy information, please see
+        {% if ui_settings.enableStrava %}We use Strava's walk API services. For privacy information, please see
         <a href="https://www.strava.com/legal/privacy">https://www.strava.com/legal/privacy</a>.
-        </br>
+        </br>{% endif %}
         We are not responsible for the practices of any third party sites.
     </p>
 
