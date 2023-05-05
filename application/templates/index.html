@@ -29,7 +29,7 @@
 </div>
 
 <div id='maininfo' class='contentb'>
-    <h1>WCI</h1>
+    <h1>{{app_name()}}</h1>
         {% if total %}
             <h2>In total, we've walked {{ total }}km!</h2>
         {% else %}
@@ -56,7 +56,7 @@
     <div id='appinfo' class="column">
         <h2>About</br>this app</h2>
         <p>
-            Welcome to WCI Walks, a platform
+            Welcome to {{ app_name() }}, a platform
             for your walkathon progress.
         </p>
         <p>

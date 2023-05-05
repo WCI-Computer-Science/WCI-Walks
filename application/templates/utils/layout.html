@@ -1,7 +1,8 @@
+{%- macro app_name() -%}{% if current_user is defined and current_user.is_authenticated %}{{current_user.get_ui_settings()["appName"]}}{% else %}{{get_ui_settings()["appName"]}}{% endif %}{%- endmacro -%}
 <!DOCTYPE html>
 <html height="100%">
     <head>
-        <title>WCI Walks</title>
+        <title>{{ app_name() }}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2_0_1" type="text/css"/>

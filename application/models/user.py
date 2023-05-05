@@ -7,6 +7,7 @@ from application.models.utils import (
     getteamname,
     getteamid,
     isadmin,
+    get_ui_settings,
 )
 
 from . import database, loginmanager
@@ -176,13 +177,16 @@ class User:
         else:
             useid = self.id
         for settingName in settings:
-            if settingName not in ["themeR", "themeB", "themeG", "bigimage", "bigimage_hash"]:
-                print(f"Setting name ({settingName}) not in allowed list (themeR, themeB, themeG, bigimage and bigimage_hash), skipping")
+            if settingName not in ["themeR", "themeB", "themeG", "appName", "bigimage", "bigimage_hash"]:
+                print(f"Setting name ({settingName}) not in allowed list (themeR, themeB, themeG, appName, bigimage and bigimage_hash), skipping")
                 continue
             cur.execute(
                 "UPDATE ui_settings SET " + settingName + "=%s WHERE userid=%s",
                 (settings[settingName], useid,)
             )
+
+    def get_ui_settings(self):
+        return get_ui_settings(id=self.id)
 
     def update_walk(self, distance, date, walk, cur, replace=False, id=None):
         if id is not None:

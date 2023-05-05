@@ -139,5 +139,6 @@ CREATE TABLE IF NOT EXISTS ui_settings (
     themeB SMALLINT,
     themeG SMALLINT,
     bigimage BYTEA,
-    bigimage_hash BYTEA
+    bigimage_hash BYTEA,
+    appname TEXT
 );

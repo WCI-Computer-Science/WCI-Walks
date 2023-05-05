@@ -432,6 +432,11 @@ def uisettings():
             uiSettings["themeR"] = int(colourString[1:3], 16)
             uiSettings["themeG"] = int(colourString[3:5], 16)
             uiSettings["themeB"] = int(colourString[5:], 16)
+
+        appName = request.form.get("appName", None)
+        if appName is not None:
+            uiSettings["appName"] = appName
+
         # Get file uploaded to form
         bigimageFile = request.files.get("bigimage", None)
         if bigimageFile is not None:
@@ -449,4 +454,4 @@ def uisettings():
         return render_template("uisettings.html")
     currentSettings = get_ui_settings(id=current_user.id)
     currentColourString = f"#{hex(currentSettings['themeR'])[2:].zfill(2)}{hex(currentSettings['themeG'])[2:].zfill(2)}{hex(currentSettings['themeB'])[2:].zfill(2)}"
-    return render_template("uisettings.html", colourString=currentColourString)
+    return render_template("uisettings.html", colourString=currentColourString, appName=currentSettings["appName"])

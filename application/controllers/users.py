@@ -314,8 +314,9 @@ def confirmlogin():
 
         db = database.get_db()
         if isblacklisted(userid, email):
+            appName = get_ui_settings(id=userid)["appName"]
             flash(
-                "You have been banned from WCI Walks and cannot create an account or log in. Please contact us if you think this is a mistake."
+                f"You have been banned from {appName} and cannot create an account or log in. Please contact us if you think this is a mistake."
             )
             return redirect(url_for("users.login"))
         if not(haspayed(email)) and not (haspayed("all")) and not(isadmin(userid)):

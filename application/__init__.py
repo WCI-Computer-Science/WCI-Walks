@@ -18,7 +18,7 @@ def create_app():
 
     with app.app_context():
         from .models import database, loginmanager, oauth, user
-        from .models.utils import update_tick, long_update_tick
+        from .models.utils import update_tick, long_update_tick, get_ui_settings
         from .controllers import index, users, admin
         from .controllers.errors import error404, error500
         scheduler = BackgroundScheduler()
@@ -37,6 +37,8 @@ def create_app():
 
         # Route /admin to admin pages
         app.register_blueprint(admin.bp)
+
+        app.context_processor(lambda: {"get_ui_settings": get_ui_settings})
 
         # Route errors
         app.register_error_handler(404, error404)
