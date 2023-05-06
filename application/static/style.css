@@ -678,3 +678,31 @@ footer a:hover {
   text-decoration: none;
   color: var(--main-color);
 }
+
+input[type=color] {
+  width: 5ch;
+  height: 2em;
+  background-color: transparent;
+  border-radius: 1ch;
+}
+
+.filepreview img {
+  height: 64px;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.filepreview p {
+  line-height: 24px;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  margin-top: 20px;
+  padding-right: 10px;
+}
+
+.filepreview {
+  border: 2px solid black;
+  border-radius: 10px;
+  display: inline-flex;
+  cursor: pointer;
+}

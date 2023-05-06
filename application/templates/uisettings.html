@@ -1,4 +1,18 @@
 {% extends "utils/layout.html" %}
+
+{% block scripts %}
+  <script>
+    function updateImagePreview(input) {
+      file = input.files[0];
+      console.log(file);
+      if (file.type == "image/png") {
+        document.getElementById("filename").innerText = file.name;
+        document.getElementById("imagepreview").src = URL.createObjectURL(file);
+      }
+    }
+  </script>
+{% endblock %}
+
 {% block body %}
 <div class="contentw admindiv">
   <h1>Edit UI Settings</h1>
@@ -8,16 +22,20 @@
   <form method="post" enctype="multipart/form-data">
     <label for="colour">Colour:</label>
     <input id="colour" name="colour" type="color" value="{{colourString}}"><br />
-    <label for="bigimage">Big image:</label>
-    <input id="bigimage" name="bigimage" type="file" accept=".png"><br />
     <label for="appname">App name:</label>
     <input id="appname" name="appName" type="text" value="{{app_name()}}"><br />
     <input id="hidedayleaderboard" name="hideDayLeaderboard" type="checkbox" {% if ui_settings["hideDayLeaderboard"] %}checked{% endif %}>
-    <label for="hidedayleaderboard">Hide day leaderboard</label><br />
+    <label for="hidedayleaderboard">Hide daily leaderboard</label><br />
     <input id="enablestrava" name="enableStrava" type="checkbox" {% if ui_settings["enableStrava"] %}checked{% endif %}>
     <label for="enablestrava">Enable Strava</label><br />
     <input id="showwalksbyhour" name="showWalksByHour" type="checkbox" {% if ui_settings["showWalksByHour"] %}checked{% endif %}>
     <label for="showwalksbyhour">Show walks by hour</label><br />
+    <hr>
+    <label for="bigimage">Select Main Image<br>
+    <div class="filepreview">
+      <img id="imagepreview" src="/bigimage.png"><p id="filename"> Current Logo</p>
+    </div></label>
+    <input id="bigimage" name="bigimage" type="file" accept=".png" style="display:none;" onchange="updateImagePreview(this)"><br />
     <input type="submit" value="Apply">
   </form>
 </div>
