@@ -1,6 +1,6 @@
 import datetime
 
-from flask import Blueprint, render_template, current_app, Response, send_file, request, abort
+from flask import Blueprint, flash, jsonify, render_template, current_app, Response, send_file, request, abort, session
 
 from flask_login import current_user
 
@@ -65,10 +65,7 @@ def userhelp():
 
 @bp.route("/theme.css", methods=("GET",))
 def themestyle():
-    if current_user.is_authenticated:
-        uiSettings = get_ui_settings(id=current_user.id)
-    else:
-        uiSettings = get_ui_settings()
+    uiSettings = get_ui_settings(consider_current_user=True)
     css = render_template("theme.css",
         themeR=uiSettings["themeR"],
         themeG=uiSettings["themeG"],
@@ -90,3 +87,44 @@ def bigimage():
     resp.headers["Cache-Control"] = "no-cache"
     resp.headers["ETag"] = bigimagehash
     return resp
+
+@bp.route("/leaderboards", methods=("GET","POST"))
+def full_page_leaderboards():
+    # This isn't intended to actually be secure, more as a deterrent from people randomly accessing it, as
+    # the page makes regular requests to keep the leaderboard up to date, which most people don't need.
+    uiSettings = get_ui_settings(consider_current_user=True)
+    password = uiSettings["leaderboardPassword"]
+    needs_password = True
+    if "leaderboardPassword" in session and session["leaderboardPassword"] == password:
+        needs_password = False
+    if request.method == "POST":
+        reqPassword = request.form.get("password")
+        if reqPassword == password:
+            # Because this doesn't need to be totally secure, stick the password in session
+            # Session isn't accessible without the APP_KEY anyways, so this isn't a major issue
+            session["leaderboardPassword"] = password
+            needs_password = False
+        else:
+            flash("Incorrect password")
+
+    return render_template("leaderboards.html", needs_password=needs_password)
+
+@bp.route("/leaderboards/<leaderboard_name>", methods=("GET",))
+def leaderboard_data(leaderboard_name):
+    """
+    alltimeleaderboard=[[i[0] if len(i[0].split()) == 1 else ' '.join((i[0].split()[0], i[0].split()[-1])), i[1], i[2], i[3], i[4]] for i in get_all_time_leaderboard()],
+    yesterdayleaderboard=[[i[0] if len(i[0].split()) == 1 else ' '.join((i[0].split()[0], i[0].split()[-1])), i[1], i[2]] for i in get_day_leaderboard(datetime.date.today())],
+    alltimeteamleaderboard=get_all_time_team_leaderboard(),
+    yesterdayteamleaderboard=get_day_team_leaderboard(datetime.date.today()),
+    """
+    if "leaderboardPassword" not in session or session["leaderboardPassword"] != get_ui_settings(consider_current_user=True)["leaderboardPassword"]:
+        abort(403)
+    if leaderboard_name == "alltimeleaderboard":
+        return jsonify([[i[0] if len(i[0].split()) == 1 else ' '.join((i[0].split()[0], i[0].split()[-1])), i[1], i[2], i[3], i[4]] for i in get_all_time_leaderboard()])
+    elif leaderboard_name == "yesterdayleaderboard":
+        return jsonify([[i[0] if len(i[0].split()) == 1 else ' '.join((i[0].split()[0], i[0].split()[-1])), i[1], i[2]] for i in get_day_leaderboard(datetime.date.today())])
+    elif leaderboard_name == "alltimeteamleaderboard":
+        return jsonify(get_all_time_team_leaderboard())
+    elif leaderboard_name == "yesterdayteamleaderboard":
+        return jsonify(get_day_team_leaderboard(datetime.date.today()))
+    abort(404)

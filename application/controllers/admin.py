@@ -441,6 +441,10 @@ def uisettings():
         uiSettings["enableStrava"] = request.form.get("enableStrava", False, type=lambda a: a == "on")
         uiSettings["showWalksByHour"] = request.form.get("showWalksByHour", False, type=lambda a: a == "on")
 
+        leaderboardPassword = request.form.get("leaderboardPassword", None)
+        if leaderboardPassword is not None:
+            uiSettings["leaderboardPassword"] = leaderboardPassword
+
         # Get file uploaded to form
         bigimageFile = request.files.get("bigimage", None)
         if bigimageFile is not None:

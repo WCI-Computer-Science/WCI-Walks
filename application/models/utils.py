@@ -4,6 +4,7 @@ import time, json
 
 from flask import current_app
 import random, string
+from flask_login import current_user
 from wtforms.validators import ValidationError
 
 from application.models import database, user
@@ -805,7 +806,10 @@ def long_update_tick(context):
         update_total()
         update_team_total()
 
-def get_ui_settings(id=None, cur=None):
+def get_ui_settings(id=None, cur=None, consider_current_user=False):
+    if consider_current_user:
+        if current_user.is_authenticated:
+            current_user.get_ui_settings()
     if id is None:
         id = "_"
     db = database.get_db()
@@ -816,7 +820,7 @@ def get_ui_settings(id=None, cur=None):
             created_cur = True
         with db.cursor() as cur:
             cur.execute(
-                "SELECT userid, themeR, themeB, themeG, appname, hidedayleaderboard, enablestrava, showwalksbyhour FROM ui_settings WHERE userid=%s OR userid='_'",
+                "SELECT userid, themeR, themeB, themeG, appname, hidedayleaderboard, enablestrava, showwalksbyhour, leaderboardpassword FROM ui_settings WHERE userid=%s OR userid='_'",
                 (id,)
             )
             res = cur.fetchall()
@@ -829,7 +833,7 @@ def get_ui_settings(id=None, cur=None):
     # by sorting the list, using a key that assigns "_" 0 and everything else 1
     res.sort(key=lambda a: 0 if a[0] == "_" else 1)
     for row in res:
-        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "appName", "hideDayLeaderboard", "enableStrava", "showWalksByHour"], row[1:]):
+        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "appName", "hideDayLeaderboard", "enableStrava", "showWalksByHour", "leaderboardPassword"], row[1:]):
             if settingValue != None:
                 uiSettings.update({settingName: settingValue})
             elif settingName not in uiSettings:

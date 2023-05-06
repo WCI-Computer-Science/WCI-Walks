@@ -1,0 +1,141 @@
+{% set no_navbar = true %}
+{% set no_footer = true %}
+{% extends "utils/layout.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='hide_show_password.js') }}"></script>
+    <script src="{{ url_for('static', filename='create_leaderboard.js') }}"></script>
+    <script>
+        var shownLeaderboards = ["alltimeleaderboard", "yesterdayleaderboard"];
+
+        function update_shown_leaderboards(o) {
+            let checkboxes = document.getElementsByName("selectLeaderboards");
+            let checked = 0;
+            let prevShownLeaderboards = shownLeaderboards;
+            shownLeaderboards = [];
+            let oPassed = false;
+            for (let box of checkboxes) {
+                if (checked >= 2) {
+                    box.checked = false
+                }
+                if (box.checked) {
+                    checked++;
+                    shownLeaderboards.push(box.value);
+                    if (box === o) {
+                        oPassed = true;
+                    }
+                }
+            }
+
+            refresh_leaderboards(prevShownLeaderboards);
+        }
+
+        function refresh_leaderboards(prevLeaderboards=null) {
+            //console.log("Refreshing leaderboards...");
+            // check that prevleadboards is a list
+            if (prevLeaderboards.constructor.name != "Array") {
+                prevLeaderboards = null;
+            }
+            clearInterval(refreshLeaderboardsIntervalId);
+            let leaderboards = [document.getElementById("leaderboard-1"), document.getElementById("leaderboard-2")]
+            for (let leaderboard of leaderboards) {
+                remove_column_classes(leaderboard);
+            }
+            switch (shownLeaderboards.length) {
+                case 1:
+                    leaderboards[0].classList.add("fullcolumn");
+                    leaderboards[1].classList.add("hide");
+                    break;
+                case 2:
+                    leaderboards[0].classList.add("leftcolumn");
+                    leaderboards[1].classList.add("rightcolumn");
+                    break;
+                default:
+                    leaderboards[0].classList.add("hide");
+                    leaderboards[1].classList.add("hide");
+                    break;
+            }
+            i = 0;
+            for (let leaderboardName of shownLeaderboards) {
+                let leaderboard = leaderboards[i];
+                let label = document.getElementById("show_" + leaderboardName).parentElement.textContent.trim();
+                if (prevLeaderboards != null && (prevLeaderboards.length < i || prevLeaderboards[i] != leaderboardName)) {
+                    clear_leaderboard(leaderboard);
+                    add_leaderboard_heading(leaderboard, label);
+                    add_leaderboard_loading(leaderboard);
+                }
+                make_leaderboard_request(leaderboardName, (data) => {create_leaderboard(leaderboard, label, data)});
+                i++;
+            }
+
+            refreshLeaderboardsIntervalId = setInterval(refresh_leaderboards, 3000);
+        }
+        var refreshLeaderboardsIntervalId = setInterval(refresh_leaderboards, 3000);
+
+        document.addEventListener("DOMContentLoaded", () => {refresh_leaderboards([])});
+
+        function remove_column_classes(o) {
+            o.classList.remove("leftcolumn");
+            o.classList.remove("rightcolumn");
+            o.classList.remove("fullcolumn");
+            o.classList.remove("hide");
+        }
+
+        function make_leaderboard_request(name, callback) {
+            // Make a request to /leaderboards/<leaderboard_name> and parse the response as json
+            let request = new XMLHttpRequest();
+            request.open("GET", "/leaderboards/" + name);
+            request.send();
+            request.onload = () => {
+                if (request.status == 200) {
+                    let response = JSON.parse(request.responseText);
+                    callback(response);
+                }
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+<div class="contentw admindiv">
+    <h1>Leaderboards</h1>
+    {% if needs_password is defined and needs_password %}
+        {% for message in get_flashed_messages() %}
+            <div class='message'><h3>{{ message }}</h3></div>
+        {% endfor %}
+        <form method="post">
+            <label for="password">Password:</label>
+            <input id="password" name="password" type="password"> <span class="mini underlined clickable" onclick="toggle_password_visibility(this, 'password')">Show</span><br />
+            <input type="submit" value="Enter">
+        </form>
+    {% else %}
+        <div class="columns">
+            <div class="column leftcolumn fullscreen" id="leaderboard-1">
+            </div>
+            <div class="column rightcolumn fullscreen" id="leaderboard-2">
+            </div>
+        </div>
+        <details class="noarrow">
+            <summary class="clickable mini underlined">Settings</summary>
+            <h4 class="nobottommargin">Show Leaderboards:</h4>
+            <p class="notopmargin small">(Maximum of 2 can be selected at once)</p>
+            <label for="show_alltimeleaderboard">
+                <input type="checkbox" id="show_alltimeleaderboard" name="selectLeaderboards" value="alltimeleaderboard" onclick="update_shown_leaderboards(this)" checked>
+                Personal Leaderboard
+            </label><br />
+            <label for="show_yesterdayleaderboard">
+                <input type="checkbox" id="show_yesterdayleaderboard" name="selectLeaderboards" value="yesterdayleaderboard" onclick="update_shown_leaderboards(this)" checked>
+                Daily Personal Leaderboard
+            </label><br />
+            <label for="show_alltimeteamleaderboard">
+                <input type="checkbox" id="show_alltimeteamleaderboard" name="selectLeaderboards" value="alltimeteamleaderboard" onclick="update_shown_leaderboards(this)">
+                Team Leaderboard
+            </label><br />
+            <label for="show_yesterdayteamleaderboard">
+                <input type="checkbox" id="show_yesterdayteamleaderboard" name="selectLeaderboards" value="yesterdayteamleaderboard" onclick="update_shown_leaderboards(this)">
+                Daily Team Leaderboard
+            </label>
+        </details>
+    {% endif %}
+</div>
+{% endblock %}

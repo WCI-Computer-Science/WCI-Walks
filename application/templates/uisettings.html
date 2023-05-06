@@ -11,6 +11,7 @@
       }
     }
   </script>
+  <script src="{{ url_for('static', filename='hide_show_password.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -40,6 +41,8 @@
     <h3>Leaderboard Settings</h3>
     <input id="hidedayleaderboard" name="hideDayLeaderboard" type="checkbox" {% if ui_settings["hideDayLeaderboard"] %}checked{% endif %}>
     <label for="hidedayleaderboard">Hide daily leaderboard</label><br />
+    <label for="leaderboardpassword">Leaderboard page password:</label>
+    <input id="leaderboardpassword" name="leaderboardPassword" type="password" value="{{ui_settings["leaderboardPassword"]}}"> <span class="mini underlined clickable" onclick="toggle_password_visibility(this, 'leaderboardpassword')">Show</span><br />
     <input type="submit" value="Apply">
   </form>
 </div>

@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS team_members (
     bigimage_hash: sha1 hash of bigimage, used to prevent caching if the image has been updated
     appname: the title of the app, in various locations throughout the app
     hidedayleaderboard: whether the day leaderboard should be hidden
+    leaderboardpassword: password to access the leaderboard page
    Any value other than userid can be null, and will use the matching setting for the userid _ instead
 */
 CREATE TABLE IF NOT EXISTS ui_settings (
@@ -145,5 +146,6 @@ CREATE TABLE IF NOT EXISTS ui_settings (
     appname TEXT,
     hidedayleaderboard BOOLEAN NOT NULL DEFAULT false,
     enablestrava BOOLEAN NOT NULL DEFAULT true,
-    showwalksbyhour BOOLEAN NOT NULL DEFUALT false
+    showwalksbyhour BOOLEAN NOT NULL DEFUALT false,
+    leaderboardpassword TEXT
 );

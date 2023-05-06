@@ -12,31 +12,37 @@
         <link rel="icon" href="{{ url_for('static', filename='wcilogo.ico') }}"/>
         {% block head %}
         {% endblock %}
-        <script>
-            function toggleMenu() {
-                document.getElementById("menu").classList.toggle("hide");
-            }
-            var touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click';
-            window.addEventListener(touchEvent, (e) => {
-                if (
-                    !e.target.closest("#menubutton") && 
-                    !e.target.closest("#menu") && 
-                    !document.getElementById("menu").classList.contains("hide")
-                ) toggleMenu();
-            });
-        </script>
+        {% if not (no_navbar is defined and no_navbar) %}
+            <script>
+                function toggleMenu() {
+                    document.getElementById("menu").classList.toggle("hide");
+                }
+                var touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click';
+                window.addEventListener(touchEvent, (e) => {
+                    if (
+                        !e.target.closest("#menubutton") && 
+                        !e.target.closest("#menu") && 
+                        !document.getElementById("menu").classList.contains("hide")
+                    ) toggleMenu();
+                });
+            </script>
+        {% endif %}
         {% block scripts %}
         {% endblock %}
         <style>
             
         </style>
     </head>
-    <body>
-        {% include "utils/navbar.html" %}
+    <body{% if no_footer is defined and no_footer %} class="nofooter"{% endif %}>
+        {% if not (no_navbar is defined and no_navbar) %}
+            {% include "utils/navbar.html" %}
+        {% endif %}
         <div class="content">
             {% block body %}
             {% endblock %}
         </div>
-        {% include "utils/footer.html" %}
+        {% if not (no_footer is defined and no_footer) %}
+            {% include "utils/footer.html" %}
+        {% endif %}
     </body>
 </html>

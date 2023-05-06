@@ -188,8 +188,8 @@ class User:
         else:
             useid = self.id
         for settingName in settings:
-            if settingName not in ["themeR", "themeB", "themeG", "appName", "bigimage", "bigimage_hash", "hideDayLeaderboard", "enableStrava", "showWalksByHour"]:
-                print(f"Setting name ({settingName}) not in allowed list (themeR, themeB, themeG, appName, bigimage, bigimage_hash, hideDayLeaderboard, enableStrava, showWalksByHour), skipping")
+            if settingName not in ["themeR", "themeB", "themeG", "appName", "bigimage", "bigimage_hash", "hideDayLeaderboard", "enableStrava", "showWalksByHour", "leaderboardPassword"]:
+                print(f"Setting name ({settingName}) not in allowed list (themeR, themeB, themeG, appName, bigimage, bigimage_hash, hideDayLeaderboard, enableStrava, showWalksByHour, leaderboardPassword), skipping")
                 continue
             cur.execute(
                 "UPDATE ui_settings SET " + settingName + "=%s WHERE userid=%s",

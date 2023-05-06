@@ -26,6 +26,10 @@ body {
   font-size: 1em;
 }
 
+body.nofooter {
+  padding: 0;
+}
+
 .content {
   min-height: calc(100vh - 140px);
   background-color: var(--main-color);
@@ -45,7 +49,7 @@ body {
   background-color: #FFF;
 }
 
-input[type="text"], input[type="number"] {
+input[type="text"], input[type="number"], input[type="password"] {
     font-size: 1em;
     border-radius: 10px;
     padding: 3px;
@@ -333,6 +337,23 @@ footer a:hover {
   grid-row-end: 5;
 }
 
+.fullcolumn {
+  grid-column-start: 1;
+  grid-column-end: 13;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+.leftcolumn.fullscreen {
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+.rightcolumn.fullscreen {
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+
 .leaderboard {
   width: 100%;
 }
@@ -347,7 +368,7 @@ footer a:hover {
   text-align: left;
 }
 
-.leaderboard .small {
+.small {
   font-size: 0.9em;
 }
 
@@ -388,6 +409,18 @@ footer a:hover {
     grid-row-start: 3;
     grid-row-end: 4;
   }
+
+  .fullcolumn {
+    grid-column-start: 1;
+    grid-column-end: 13;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+
+  .leftcolumn.fullscreen, .rightcolumn.fullscreen, .fullcolumn.fullscreen {
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
 }
 
 @media (min-width: 992px) {
@@ -402,18 +435,40 @@ footer a:hover {
     grid-row-end: 3;
   }
   
-  .leftcolumn {
+  .leftcolumn:not(.fullscreen) {
     grid-column-start: 5;
     grid-column-end: 9;
     grid-row-start: 2;
     grid-row-end: 3;
   }
   
-  .rightcolumn {
+  .rightcolumn:not(.fullscreen) {
     grid-column-start: 9;
     grid-column-end: 13;
     grid-row-start: 2;
     grid-row-end: 3;
+  }
+
+  .fullcolumn:not(.fullscreen) {
+    grid-column-start: 5;
+    grid-column-end: 13;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  .leftcolumn.fullscreen {
+    grid-column-start: 1;
+    grid-column-end: 7;
+  }
+  
+  .rightcolumn.fullscreen {
+    grid-column-start: 7;
+    grid-column-end: 13;
+  }
+
+  .fullcolumn.fullscreen {
+    grid-column-start: 1;
+    grid-column-end: 13;
   }
 }
 
@@ -710,4 +765,28 @@ input[type=color] {
   border-radius: 10px;
   display: inline-flex;
   cursor: pointer;
+}
+
+.mini {
+  font-size: .5em;
+}
+
+.underlined {
+  text-decoration: underline;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+details.noarrow summary {
+  list-style-type: none;
+}
+
+.notopmargin {
+  margin-top: 0;
+}
+
+.nobottommargin {
+  margin-bottom: 0;
 }
