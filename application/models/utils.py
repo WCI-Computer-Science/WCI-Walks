@@ -287,7 +287,7 @@ def update_team_total(teamid=None):
 
 def add_to_total(num, cur):
     cur.execute("UPDATE total SET distance=distance+%s", (num,))
-    #mqadd_update_leaderboard()
+    mqadd_update_leaderboard()
 
 
 def add_to_team(num, teamid, cur):
