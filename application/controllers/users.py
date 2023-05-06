@@ -39,7 +39,8 @@ from application.models.utils import (
     walk_will_max_distance,
     connected_with_googlefit,
     mqadd_walkapi_create,
-    mqadd_update_leaderboard
+    mqadd_update_leaderboard,
+    convert_custom_unit_to_km,
 )
 
 bp = Blueprint("users", __name__, url_prefix="/users")
@@ -62,8 +63,8 @@ def info():
         form.distance.validators = [
             validators.InputRequired(),
             validators.NumberRange(
-                min=0.01,
-                max=300,
+                min=convert_custom_unit_to_km(0.01),
+                max=convert_custom_unit_to_km(300),
                 message="Invalid distance"
             ),
             walk_is_maxed(current_user.get_id(), max=300),
@@ -72,12 +73,13 @@ def info():
             with db.cursor() as cur:
                 walk = current_user.get_walk(date, cur)
                 
+                distance = convert_custom_unit_to_km(float(form.distance.data))
                 walkwillmaxdistance = walk_will_max_distance(
-                    float(form.distance.data), current_user.get_id()
+                    distance, current_user.get_id()
                 )
                 distance = round(
                     (
-                        float(cap_distance(form.distance.data, current_user.id))
+                        float(cap_distance(distance, current_user.id))
                     ),
                     1,
                 )

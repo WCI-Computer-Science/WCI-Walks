@@ -134,6 +134,8 @@ CREATE TABLE IF NOT EXISTS team_members (
     appname: the title of the app, in various locations throughout the app
     hidedayleaderboard: whether the day leaderboard should be hidden
     leaderboardpassword: password to access the leaderboard page
+    walkunit: the unit that distance gets entered in
+    unitconversion: the conversion factor to convert the walkunit to km
    Any value other than userid can be null, and will use the matching setting for the userid _ instead
 */
 CREATE TABLE IF NOT EXISTS ui_settings (
@@ -147,5 +149,7 @@ CREATE TABLE IF NOT EXISTS ui_settings (
     hidedayleaderboard BOOLEAN NOT NULL DEFAULT false,
     enablestrava BOOLEAN NOT NULL DEFAULT true,
     showwalksbyhour BOOLEAN NOT NULL DEFUALT false,
-    leaderboardpassword TEXT
+    leaderboardpassword TEXT,
+    walkunit TEXT NOT NULL DEFAULT 'km',
+    unitconversion NUMERIC(6,5) NOT NULL DEFAULT 1
 );

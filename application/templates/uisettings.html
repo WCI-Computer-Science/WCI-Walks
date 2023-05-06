@@ -16,7 +16,7 @@
 
 {% block body %}
 <div class="contentw admindiv">
-  <h1>Edit UI Settings</h1>
+  <h1>Edit App Settings</h1>
   {% for message in get_flashed_messages() %}
     <div class='message'><h3>{{ message }}</h3></div>
   {% endfor %}
@@ -26,6 +26,8 @@
     <label for="enablestrava">Enable Strava</label><br />
     <input id="showwalksbyhour" name="showWalksByHour" type="checkbox" {% if ui_settings["showWalksByHour"] %}checked{% endif %}>
     <label for="showwalksbyhour">Show walks by hour</label><br />
+    <label for="walkunit">Walk unit (km/laps/...): </label><input id="walkunit" name="walkUnit" type="text" value="{{ui_settings["walkUnit"]}}"><br />
+    <label for="unitconversion">Conversion between unit and km: </label><input id="unitconversion" name="unitConversion" type="text" value="{{fancy_float(ui_settings["unitConversion"])}}"><br />
     <hr>
     <h3>Appearance</h3>
     <label for="appname">App name:</label>

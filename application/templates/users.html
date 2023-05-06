@@ -57,7 +57,7 @@
             <div id='submitdistance'>
                 <h2>Submit distance</h2>
                 <form id='submitdistanceform'  method="post">
-                    <div>{{ form.distance.label }}: {{ form.distance(min="0.1", max="300") }}</div>
+                    <div>Log your walk distance (in {{ui_settings["walkUnit"]}}): {{ form.distance(min="0.1", max="300") }}</div>
                     {{ form.submit() }}
                 </form>
             </div>

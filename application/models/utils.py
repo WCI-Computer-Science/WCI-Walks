@@ -2,7 +2,7 @@ from datetime import date, timedelta
 import datetime
 import time, json
 
-from flask import current_app
+from flask import current_app, g
 import random, string
 from flask_login import current_user
 from wtforms.validators import ValidationError
@@ -287,7 +287,7 @@ def update_team_total(teamid=None):
 
 def add_to_total(num, cur):
     cur.execute("UPDATE total SET distance=distance+%s", (num,))
-    mqadd_update_leaderboard()
+    #mqadd_update_leaderboard()
 
 
 def add_to_team(num, teamid, cur):
@@ -807,6 +807,10 @@ def long_update_tick(context):
         update_team_total()
 
 def get_ui_settings(id=None, cur=None, consider_current_user=False):
+    if "ui_settings" not in g:
+        g.ui_settings = {}
+    if id in g.ui_settings:
+        return g.ui_settings[id]
     if consider_current_user:
         if current_user.is_authenticated:
             current_user.get_ui_settings()
@@ -820,7 +824,7 @@ def get_ui_settings(id=None, cur=None, consider_current_user=False):
             created_cur = True
         with db.cursor() as cur:
             cur.execute(
-                "SELECT userid, themeR, themeB, themeG, appname, hidedayleaderboard, enablestrava, showwalksbyhour, leaderboardpassword FROM ui_settings WHERE userid=%s OR userid='_'",
+                "SELECT userid, themeR, themeB, themeG, appname, hidedayleaderboard, enablestrava, showwalksbyhour, leaderboardpassword, walkunit, unitconversion FROM ui_settings WHERE userid=%s OR userid='_'",
                 (id,)
             )
             res = cur.fetchall()
@@ -833,7 +837,7 @@ def get_ui_settings(id=None, cur=None, consider_current_user=False):
     # by sorting the list, using a key that assigns "_" 0 and everything else 1
     res.sort(key=lambda a: 0 if a[0] == "_" else 1)
     for row in res:
-        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "appName", "hideDayLeaderboard", "enableStrava", "showWalksByHour", "leaderboardPassword"], row[1:]):
+        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "appName", "hideDayLeaderboard", "enableStrava", "showWalksByHour", "leaderboardPassword", "walkUnit", "unitConversion"], row[1:]):
             if settingValue != None:
                 uiSettings.update({settingName: settingValue})
             elif settingName not in uiSettings:
@@ -867,3 +871,7 @@ def pretty_time(time, by_hour):
             hour = hour[1:]
         return s + " " + hour
     return s
+
+def convert_custom_unit_to_km(distance):
+    uiSettings = get_ui_settings(consider_current_user=True)
+    return distance * float(uiSettings["unitConversion"])

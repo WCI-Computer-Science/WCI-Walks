@@ -441,6 +441,13 @@ def uisettings():
         uiSettings["enableStrava"] = request.form.get("enableStrava", False, type=lambda a: a == "on")
         uiSettings["showWalksByHour"] = request.form.get("showWalksByHour", False, type=lambda a: a == "on")
 
+        walkUnit = request.form.get("walkUnit", None)
+        if walkUnit is not None:
+            uiSettings["walkUnit"] = walkUnit
+        unitConversion = request.form.get("unitConversion", None)
+        if unitConversion is not None and unitConversion != "":
+            uiSettings["unitConversion"] = float(unitConversion)
+
         leaderboardPassword = request.form.get("leaderboardPassword", None)
         if leaderboardPassword is not None:
             uiSettings["leaderboardPassword"] = leaderboardPassword
@@ -459,6 +466,7 @@ def uisettings():
         with db.cursor() as cur:
             current_user.set_ui_settings(uiSettings, cur, True)
         db.commit()
+    g.ui_settings = {}
     currentSettings = get_ui_settings(id=current_user.id)
     currentColourString = f"#{hex(currentSettings['themeR'])[2:].zfill(2)}{hex(currentSettings['themeG'])[2:].zfill(2)}{hex(currentSettings['themeB'])[2:].zfill(2)}"
     return render_template("uisettings.html", colourString=currentColourString)
