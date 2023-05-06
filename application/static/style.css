@@ -635,6 +635,10 @@ footer a:hover {
   padding-bottom: 10px;
 }
 
+.teammembers ul {
+  padding-inline-start: 0;
+}
+
 .teammembers a {
   text-decoration: none;
   color: inherit;
