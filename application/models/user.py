@@ -1,6 +1,6 @@
 from datetime import timedelta
 import datetime
-from math import ceil
+from math import floor
 
 from application.models.utils import (
     get_credentials_from_wrdsbusername,
@@ -238,10 +238,14 @@ class User:
             if show_by_hour:
                 startdate = datetime.datetime.combine(startdate, allwalks[0][1])
                 enddate = datetime.datetime.combine(enddate, allwalks[-1][1])
-            loops = ceil(((enddate - startdate).seconds/3600) if show_by_hour else (enddate - startdate).days) + 1
+                startdate = startdate.replace(minute=0, second=0, microsecond=0)
+                enddate = enddate.replace(minute=0, second=0, microsecond=0)
+            loops = floor(((enddate - startdate).seconds/3600) if show_by_hour else (enddate - startdate).days) + 1
+            print(loops)
             for i in range(loops):
                 delta = timedelta(hours=i) if show_by_hour else timedelta(days=i)
                 walks[pretty_time(startdate + delta, show_by_hour)] = 0
+            print(walks)
             for walkdate, walktime, walkdistance in allwalks:
                 time = datetime.datetime.combine(walkdate, walktime)
                 
