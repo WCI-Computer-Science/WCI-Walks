@@ -790,3 +790,7 @@ details.noarrow summary {
 .nobottommargin {
   margin-bottom: 0;
 }
+
+.notoppadding {
+  padding-top: 0;
+}

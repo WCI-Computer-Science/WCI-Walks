@@ -98,7 +98,7 @@
 
 {% block body %}
 <div class="contentw admindiv">
-    <h1>Leaderboards</h1>
+    <h1 class="nobottommargin">Leaderboards</h1>
     {% if needs_password is defined and needs_password %}
         {% for message in get_flashed_messages() %}
             <div class='message'><h3>{{ message }}</h3></div>
@@ -109,7 +109,7 @@
             <input type="submit" value="Enter">
         </form>
     {% else %}
-        <div class="columns">
+        <div class="columns notoppading">
             <div class="column leftcolumn fullscreen" id="leaderboard-1">
             </div>
             <div class="column rightcolumn fullscreen" id="leaderboard-2">
