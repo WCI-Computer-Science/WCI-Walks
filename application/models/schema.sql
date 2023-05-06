@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS blacklist (
     username: used to identify student who did the walk
     distance: student's distance for that day
     walkdate: date of walk stored as YYYY-MM-DD
+    walktime: time of walk
     trackedwithfit: whether a walk was inputted by Google Fit
 */
 CREATE TABLE IF NOT EXISTS walks (
@@ -97,6 +98,7 @@ CREATE TABLE IF NOT EXISTS walks (
     username TEXT NOT NULL,
     distance NUMERIC(6,1) NOT NULL,
     walkdate DATE NOT NULL,
+    walktime TIME WITH TIME ZONE NOT NULL,
     trackedwithfit BOOLEAN DEFAULT FALSE
 );
 
@@ -142,5 +144,6 @@ CREATE TABLE IF NOT EXISTS ui_settings (
     bigimage_hash BYTEA,
     appname TEXT,
     hidedayleaderboard BOOLEAN NOT NULL DEFAULT false,
-    enablestrava BOOLEAN NOT NULL DEFAULT true
+    enablestrava BOOLEAN NOT NULL DEFAULT true,
+    showwalksbyhour BOOLEAN NOT NULL DEFUALT false
 );

@@ -1,4 +1,6 @@
 from datetime import timedelta
+import datetime
+from math import ceil
 
 from application.models.utils import (
     get_credentials_from_wrdsbusername,
@@ -8,6 +10,7 @@ from application.models.utils import (
     getteamid,
     isadmin,
     get_ui_settings,
+    pretty_time
 )
 
 from . import database, loginmanager
@@ -149,12 +152,20 @@ class User:
         else:
             useid = self.id
         cur.execute(
-            "SELECT * FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
+            "SELECT id, username, distance, walkdate, trackedwithfit FROM walks WHERE id=%s AND walkdate=%s;",
             (useid, date)
         )
-        return cur.fetchone()
+        walk = []
+        for row in cur.fetchall():
+            if len(walk) == 0:
+                walk += row
+            else:
+                walk[2] += row[2]
+        if len(walk) == 0:
+            return None
+        return walk
 
-    def insert_walk(self, distance, date, cur, id=None):
+    def insert_walk(self, distance, date, time, cur, id=None):
         if id is not None:
             useid = id
         else:
@@ -165,10 +176,10 @@ class User:
         cur.execute(
             """
                 INSERT INTO walks
-                (id, username, distance, walkdate)
-                VALUES (%s, %s, %s, %s);
+                (id, username, distance, walkdate, walktime)
+                VALUES (%s, %s, %s, %s, %s);
             """,
-            (useid, username, distance, date)
+            (useid, username, distance, date, time)
         )
 
     def set_ui_settings(self, settings, cur, globally):
@@ -177,8 +188,8 @@ class User:
         else:
             useid = self.id
         for settingName in settings:
-            if settingName not in ["themeR", "themeB", "themeG", "appName", "bigimage", "bigimage_hash", "hideDayLeaderboard", "enableStrava"]:
-                print(f"Setting name ({settingName}) not in allowed list (themeR, themeB, themeG, appName, bigimage, bigimage_hash, hideDayLeaderboard and enableStrava), skipping")
+            if settingName not in ["themeR", "themeB", "themeG", "appName", "bigimage", "bigimage_hash", "hideDayLeaderboard", "enableStrava", "showWalksByHour"]:
+                print(f"Setting name ({settingName}) not in allowed list (themeR, themeB, themeG, appName, bigimage, bigimage_hash, hideDayLeaderboard, enableStrava, showWalksByHour), skipping")
                 continue
             cur.execute(
                 "UPDATE ui_settings SET " + settingName + "=%s WHERE userid=%s",
@@ -188,43 +199,40 @@ class User:
     def get_ui_settings(self):
         return get_ui_settings(id=self.id)
 
-    def update_walk(self, distance, date, walk, cur, replace=False, id=None):
+    def update_walk(self, distance, date, time, walk, cur, replace=False, id=None):
         if id is not None:
             useid = id
         else:
             useid = self.id
-        if self.get_walk(date, cur, id=useid) is not None:
-            cur.execute(
-                "UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;",
-                (
-                    round(
-                        (distance if replace else float(walk["distance"]) + distance),
-                        1
-                    ),
-                    useid,
-                    date,
-                )
-            )
-        else:
-            self.insert_walk(distance, date, cur, id=useid)
+        self.insert_walk(distance, date, time, cur, id=useid)
 
-    def get_walk_chart_data(self, cur, id=None):
+    def get_walk_chart_data(self, cur, id=None): # TODO: Handle times
         if id is None:
             useid = self.id
         else:
             useid = id
         cur.execute(
-            "SELECT walkdate, distance FROM walks WHERE id=%s;", (useid,)
+            "SELECT walkdate, walktime, distance FROM walks WHERE id=%s;", (useid,)
         )
         allwalks = cur.fetchall()
-        allwalks.sort(key=lambda row: row["walkdate"])
-
+        allwalks.sort(key=lambda row: datetime.datetime.combine(row["walkdate"], row["walktime"]))
+        
         walks = {}
+        show_by_hour = get_ui_settings(id=useid)["showWalksByHour"]
         if len(allwalks) > 0:
-            for i in range((allwalks[-1][0] - allwalks[0][0]).days + 1):
-                walks[allwalks[0][0] + timedelta(days=i)] = 0
-            for walkdate, walkdistance in allwalks:
-                walks[walkdate] = walkdistance
+            startdate = allwalks[0][0]
+            enddate = allwalks[-1][0]
+            if show_by_hour:
+                startdate = datetime.datetime.combine(startdate, allwalks[0][1])
+                enddate = datetime.datetime.combine(enddate, allwalks[-1][1])
+            loops = ceil(((enddate - startdate).seconds/3600) if show_by_hour else (enddate - startdate).days) + 1
+            for i in range(loops):
+                delta = timedelta(hours=i) if show_by_hour else timedelta(days=i)
+                walks[pretty_time(startdate + delta, show_by_hour)] = 0
+            for walkdate, walktime, walkdistance in allwalks:
+                time = datetime.datetime.combine(walkdate, walktime)
+                
+                walks[pretty_time(time, show_by_hour)] += walkdistance
 
         return list(walks.keys()), list(walks.values())
     

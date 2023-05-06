@@ -16,6 +16,8 @@
     <label for="hidedayleaderboard">Hide day leaderboard</label><br />
     <input id="enablestrava" name="enableStrava" type="checkbox" {% if ui_settings["enableStrava"] %}checked{% endif %}>
     <label for="enablestrava">Enable Strava</label><br />
+    <input id="showwalksbyhour" name="showWalksByHour" type="checkbox" {% if ui_settings["showWalksByHour"] %}checked{% endif %}>
+    <label for="showwalksbyhour">Show walks by hour</label><br />
     <input type="submit" value="Apply">
   </form>
 </div>

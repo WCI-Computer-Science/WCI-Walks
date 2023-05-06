@@ -351,7 +351,7 @@ def newedituserdistancespage(wrdsbusername):
 
     if request.method == "GET":
         userdata = get_edit_distance_data(wrdsbusername)
-        userdata = list(map(lambda a: [a[0], fancy_float(a[1]), a[2], a[0].strftime("%A, %B %d, %Y")], userdata))
+        userdata = list(map(lambda a: [a[0].isoformat(), fancy_float(a[1]), a[2], a[0].strftime("%H:%M:%S, %A, %B %d, %Y")], userdata))
         userid, username = get_credentials_from_wrdsbusername(wrdsbusername)
         return render_template(
             "editdistances.html",
@@ -361,7 +361,7 @@ def newedituserdistancespage(wrdsbusername):
         )
     else:
         distance = float(request.form.get("distance"))
-        date = request.form.get("date")
+        date = request.form.get("date", type=datetime.datetime.fromisoformat)
         edit_distance_update(distance, date, wrdsbusername)
         return ""
 
@@ -439,6 +439,7 @@ def uisettings():
 
         uiSettings["hideDayLeaderboard"] = request.form.get("hideDayLeaderboard", False, type=lambda a: a == "on")
         uiSettings["enableStrava"] = request.form.get("enableStrava", False, type=lambda a: a == "on")
+        uiSettings["showWalksByHour"] = request.form.get("showWalksByHour", False, type=lambda a: a == "on")
 
         # Get file uploaded to form
         bigimageFile = request.files.get("bigimage", None)

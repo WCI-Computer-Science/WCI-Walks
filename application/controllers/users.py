@@ -55,6 +55,7 @@ class SubmitDistanceForm(Form):
 def info():
     db = database.get_db()
     date = datetime.date.today()
+    time = datetime.datetime.now().time()
     form = SubmitDistanceForm(request.form)
 
     if request.method == "POST":
@@ -81,7 +82,7 @@ def info():
                     1,
                 )
 
-                current_user.update_walk(distance, date, walk, cur)
+                current_user.update_walk(distance, date, time, walk, cur)
 
                 add_to_total(distance, cur)
                 add_to_team(distance, current_user.team_id(), cur)

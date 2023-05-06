@@ -32,14 +32,14 @@
                 document.getElementById(date.concat("loadingimage")).setAttribute("hidden", "true");
                 document.getElementById(date.concat("doneimage")).removeAttribute("hidden");
             } else if (xmlHttp.status==403 || xmlHttp.status==302) {
-                hideall("You don't have admin powers. You must have admin powers to be able to change distances. If you think this is a mistake, please <a href='https://wciwalks.herokuapp.com/contact'>contact us</a> or try again later.");
+                hideall("You don't have admin powers. You must have admin powers to be able to change distances. If you think this is a mistake, please <a href='/contact'>contact us</a> or try again later.");
             } else {
                 hideall("Uh oh... Something went wrong. Please try again later.");
             }
             walkfield.disabled = false;
         }
         xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xmlHttp.send("distance=".concat(distance.toString()).concat("&date=").concat(date));
+        xmlHttp.send("distance=".concat(distance.toString()).concat("&date=").concat(encodeURIComponent(date)));
     }
 </script>
 {% endblock %}

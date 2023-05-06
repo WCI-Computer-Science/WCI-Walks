@@ -1,11 +1,12 @@
 from datetime import date, timedelta
+import datetime
 import time, json
 
 from flask import current_app
 import random, string
 from wtforms.validators import ValidationError
 
-from application.models import database
+from application.models import database, user
 from application.models.fitapi import get_day_distance
 from application.models import nouns, adjectives
 
@@ -26,10 +27,21 @@ def get_day_leaderboard(date):
             "SELECT username, distance, id FROM walks WHERE walkdate=%s;",
             (date,)
         )
-        userdistances = cur.fetchall()
-    userdistances.sort(key=lambda user: user[1], reverse=True)
-    userdistances = list(map(_convert_id_to_wrdsbusername, userdistances))
-    return [[i[0], fancy_float(i[1]), i[2]] for i in userdistances]
+        userdistances = {}
+        usernames = {}
+        for row in cur.fetchall():
+            if row[2] in userdistances:
+                userdistances[row[2]] += row[1]
+            else:
+                userdistances[row[2]] = row[1]
+                usernames[row[2]] = row[0]
+
+    distances = []
+    for key, value in userdistances.items():
+        distances.append([usernames[key], value, key])
+    distances.sort(key=lambda user: user[1], reverse=True)
+    distances = list(map(_convert_id_to_wrdsbusername, distances))
+    return [[i[0], fancy_float(i[1]), i[2]] for i in distances]
 
 
 def get_all_time_team_leaderboard():
@@ -159,29 +171,24 @@ def haspayed(email):
         return cur.fetchone() != None
 
 def walk_will_max_distance(distance, id):
+    distance = float(distance)
     curdistance = _get_walk_distance(id)
     return (distance + curdistance) > 300 or (distance + curdistance) < 0
 
 def cap_distance(distance, id):
+    distance = float(distance)
     curdistance = _get_walk_distance(id)
     return (300-curdistance if distance>0 else curdistance*-1) if walk_will_max_distance(distance, id) else distance
 
 def _get_walk_distance(id):
-    db = database.get_db()
     walkdate = date.today()
+    u = user.load_user(id)
+    db = database.get_db()
     with db.cursor() as cur:
-        cur.execute(
-            "SELECT distance FROM walks WHERE walkdate=%s AND id=%s LIMIT 1;",
-            (
-                walkdate,
-                id,
-            ),
-        )
-        walk = cur.fetchone()
-        if walk is not None:
-            return int(walk[0])
-        else:
-            return 0
+        walk = u.get_walk(walkdate, cur)
+    if walk is None:
+        return 0
+    return float(walk[2])
 
 
 def walk_is_maxed(id, max=300):
@@ -342,31 +349,34 @@ def verify_walk_form(form, id):
         return "You can't go less that 0 km per day!"
     return True
 
-def get_edit_distance_data(wrdsbusername):
+def get_edit_distance_data(wrdsbusername): # TODO: Handle times
     userid, username = get_credentials_from_wrdsbusername(wrdsbusername)
     db = database.get_db()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT walkdate, distance, trackedwithfit FROM walks WHERE id=%s;", (userid,)
+            "SELECT walkdate, walktime, distance, trackedwithfit FROM walks WHERE id=%s;", (userid,)
         )
         allwalks = cur.fetchall()
+        allwalks = list(map(lambda row: (datetime.datetime.combine(row[0], row[1]), row[2], row[3]), allwalks))
         allwalks.sort(key=lambda row: row[0])
     return allwalks
 
-def edit_distance_update(distance, date, wrdsbusername):
+def edit_distance_update(distance, date: datetime.datetime, wrdsbusername): # TODO: Handle times
     userid, username = get_credentials_from_wrdsbusername(wrdsbusername)
     db = database.get_db()
+    time = date.time()
+    date = date.date()
     with db.cursor() as cur:
         cur.execute(
-            "SELECT distance FROM walks WHERE id=%s AND walkdate=%s;",
-            (userid, date)
+            "SELECT distance FROM walks WHERE id=%s AND walkdate=%s AND walktime=%s;",
+            (userid, date, time)
         )
         olddistance = float(cur.fetchone()[0])
         if olddistance != distance:
             distancechange = distance-olddistance
             cur.execute(
-                "UPDATE walks SET distance=%s, trackedwithfit=False WHERE id=%s AND walkdate=%s;",
-                (distance, userid, date)
+                "UPDATE walks SET distance=%s, trackedwithfit=False WHERE id=%s AND walkdate=%s AND walktime=%s;",
+                (distance, userid, date, time)
             )
             cur.execute(
                 "UPDATE users SET distance=distance+%s WHERE id=%s;",
@@ -392,7 +402,7 @@ def autoload_day(userid, username, email, date, cur):
         return
     distance = get_day_distance(userid, date, cur)
     cur.execute(
-            "SELECT distance FROM walks WHERE id=%s AND walkdate=%s LIMIT 1;",
+            "SELECT distance FROM walks WHERE id=%s AND walkdate=%s AND trackedwithfit=TRUE LIMIT 1;",
             (userid, date)
         )
     walk = cur.fetchone()
@@ -403,7 +413,7 @@ def autoload_day(userid, username, email, date, cur):
                 (round(distance-float(walk[0]), 1), userid)
             )
             cur.execute(
-                "UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s;",
+                "UPDATE walks SET distance=%s WHERE id=%s AND walkdate=%s AND trackedwithfit=TRUE;",
                 (round(distance, 1), userid, date)
             )
             add_to_total(distance-float(walk[0]), cur)
@@ -415,10 +425,10 @@ def autoload_day(userid, username, email, date, cur):
         )
         cur.execute(
             """
-                INSERT INTO walks (id, username, distance, walkdate, trackedwithfit)
-                VALUES (%s, %s, %s, %s, TRUE);
+                INSERT INTO walks (id, username, distance, walkdate, walktime, trackedwithfit)
+                VALUES (%s, %s, %s, %s, %s, TRUE);
             """,
-            (userid, username, round(distance, 1), date),
+            (userid, username, round(distance, 1), date, datetime.datetime.now().time()),
         )
         add_to_total(distance, cur)
         add_to_team(distance, getteamid(userid), cur)
@@ -806,7 +816,7 @@ def get_ui_settings(id=None, cur=None):
             created_cur = True
         with db.cursor() as cur:
             cur.execute(
-                "SELECT userid, themeR, themeB, themeG, appname, hidedayleaderboard, enablestrava FROM ui_settings WHERE userid=%s OR userid='_'",
+                "SELECT userid, themeR, themeB, themeG, appname, hidedayleaderboard, enablestrava, showwalksbyhour FROM ui_settings WHERE userid=%s OR userid='_'",
                 (id,)
             )
             res = cur.fetchall()
@@ -819,7 +829,7 @@ def get_ui_settings(id=None, cur=None):
     # by sorting the list, using a key that assigns "_" 0 and everything else 1
     res.sort(key=lambda a: 0 if a[0] == "_" else 1)
     for row in res:
-        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "appName", "hideDayLeaderboard", "enableStrava"], row[1:]):
+        for settingName, settingValue in zip(["themeR", "themeB", "themeG", "appName", "hideDayLeaderboard", "enableStrava", "showWalksByHour"], row[1:]):
             if settingValue != None:
                 uiSettings.update({settingName: settingValue})
             elif settingName not in uiSettings:
@@ -841,3 +851,15 @@ def get_big_image(id=None):
             bigimage = row[1]
             bigimage_hash = row[2].hex()
     return bigimage, bigimage_hash
+
+def pretty_time(time, by_hour):
+    s = time.strftime("%Y-%m-%d")
+    if type(time) == datetime.date:
+        return s
+    time = time.replace(minute=0, second=0, microsecond=0)
+    if by_hour:
+        hour = time.strftime("%I %p")
+        if hour.startswith("0"):
+            hour = hour[1:]
+        return s + " " + hour
+    return s
