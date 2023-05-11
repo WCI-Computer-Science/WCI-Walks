@@ -33,9 +33,6 @@
         function refresh_leaderboards(prevLeaderboards=null) {
             //console.log("Refreshing leaderboards...");
             // check that prevleadboards is a list
-            if (prevLeaderboards.constructor.name != "Array") {
-                prevLeaderboards = null;
-            }
             clearInterval(refreshLeaderboardsIntervalId);
             let leaderboards = [document.getElementById("leaderboard-1"), document.getElementById("leaderboard-2")]
             for (let leaderboard of leaderboards) {
